@@ -1,7 +1,7 @@
 import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdminSession } from "@/lib/auth/session";
-import { MaintenanceRecord } from "@/types/database.types";
+import { ServiceRecord } from "@/types/database.types";
 import { MaintenanceTableClient } from "@/components/maintenance/MaintenanceTableClient";
 
 export const metadata = {
@@ -13,8 +13,8 @@ export default async function MaintenancePage() {
   const supabase = await createClient();
 
   const { data: records } = await supabase
-    .from("maintenance_records")
-    .select("*, vehicle:vehicles(brand, model, license_plate), user:profiles(full_name, email)")
+    .from("service_records")
+    .select("*, vehicle:vehicles(vehicle_type, odometer), user:profiles(full_name, email)")
     .order("service_date", { ascending: false });
 
   return (
@@ -26,7 +26,7 @@ export default async function MaintenancePage() {
         </p>
       </div>
 
-      <MaintenanceTableClient initialRecords={(records as MaintenanceRecord[]) || []} />
+      <MaintenanceTableClient initialRecords={(records as ServiceRecord[]) || []} />
     </div>
   );
 }

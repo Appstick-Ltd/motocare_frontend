@@ -52,9 +52,9 @@ export default function LoginPage() {
           .from("profiles")
           .select("role")
           .eq("id", authData.user.id)
-          .single();
+          .maybeSingle();
 
-        const role = profile?.role || "SUPER_ADMIN"; // Fallback to super_admin for admin portal initial setup
+        const role = profile?.role ? String(profile.role).toUpperCase() : "SUPER_ADMIN";
 
         if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "MODERATOR") {
           await supabase.auth.signOut();

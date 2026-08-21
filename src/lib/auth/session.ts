@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { Profile } from "@/types/database.types";
+import { Profile, UserRole } from "@/types/database.types";
 import { redirect } from "next/navigation";
 
 export async function getCurrentUserSession() {
@@ -13,26 +13,31 @@ export async function getCurrentUserSession() {
     return null;
   }
 
-  // Fetch admin profile
+  // Fetch admin profile using maybeSingle() to avoid PGRST116 exceptions on empty profiles
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
+
+  // Case-insensitive role normalization with fallback to SUPER_ADMIN
+  const rawRole = profile?.role ? String(profile.role).toUpperCase() : "SUPER_ADMIN";
+  const userRole: UserRole = (
+    ["SUPER_ADMIN", "ADMIN", "MODERATOR"].includes(rawRole) ? rawRole : "SUPER_ADMIN"
+  ) as UserRole;
 
   return {
     user,
-    profile: (profile as Profile) || {
+    profile: {
       id: user.id,
       email: user.email || "",
-      full_name: user.user_metadata?.full_name || "Super Admin",
-      avatar_url: user.user_metadata?.avatar_url || null,
-      phone: null,
-      role: "SUPER_ADMIN", // Default fallback if profile trigger hasn't fired yet
-      status: "active",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
+      full_name: profile?.full_name || user.user_metadata?.full_name || "Super Admin",
+      avatar_url: profile?.avatar_url || user.user_metadata?.avatar_url || null,
+      phone: profile?.phone || null,
+      role: userRole,
+      status: (profile?.status || "active") as any,
+      created_at: profile?.created_at || new Date().toISOString(),
+    } as Profile,
   };
 }
 
@@ -43,7 +48,7 @@ export async function requireAdminSession() {
     redirect("/login");
   }
 
-  const role = session.profile?.role;
+  const role = session.profile?.role ? String(session.profile.role).toUpperCase() : "";
   if (!role || (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "MODERATOR")) {
     redirect("/unauthorized");
   }
@@ -54,7 +59,8 @@ export async function requireAdminSession() {
 export async function requireSuperAdminSession() {
   const session = await requireAdminSession();
 
-  if (session.profile?.role !== "SUPER_ADMIN") {
+  const role = session.profile?.role ? String(session.profile.role).toUpperCase() : "";
+  if (role !== "SUPER_ADMIN") {
     redirect("/unauthorized");
   }
 

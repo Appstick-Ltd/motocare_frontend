@@ -7,7 +7,7 @@ const supabase = createClient(supabaseUrl, publishableKey);
 
 async function inspect() {
   console.log("=== Testing Supabase Connection ===");
-  
+
   const commonTables = [
     "profiles",
     "users",

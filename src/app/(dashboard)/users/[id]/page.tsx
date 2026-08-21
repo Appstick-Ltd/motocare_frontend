@@ -3,11 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdminSession } from "@/lib/auth/session";
-import { Profile, Vehicle, MaintenanceRecord, Subscription } from "@/types/database.types";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Profile, Vehicle, ServiceRecord, FuelLog } from "@/types/database.types";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { StatusBadge } from "@/components/common/StatusBadge";
-import { formatDate, formatCurrency } from "@/lib/utils";
-import { ArrowLeft, User, Car, Wrench, CreditCard, Shield } from "lucide-react";
+import { formatDate } from "@/lib/utils";
+import { ArrowLeft, User, Car, Wrench, Flame, Gauge } from "lucide-react";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -21,19 +21,35 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
   const { id } = await params;
   const supabase = await createClient();
 
-  const [{ data: user }, { data: vehicles }, { data: maintenance }, { data: subscriptions }] =
-    await Promise.all([
-      supabase.from("profiles").select("*").eq("id", id).single(),
-      supabase.from("vehicles").select("*").eq("user_id", id),
-      supabase.from("maintenance_records").select("*").eq("user_id", id),
-      supabase.from("subscriptions").select("*, plan:plans(*)").eq("user_id", id),
-    ]);
+  const [
+    { data: user },
+    { data: vehicles },
+    { data: serviceRecords },
+    { data: fuelLogs },
+  ] = await Promise.all([
+    supabase.from("profiles").select("*").eq("id", id).maybeSingle(),
+    supabase.from("vehicles").select("*").eq("user_id", id),
+    supabase.from("service_records").select("*").eq("user_id", id),
+    supabase.from("fuel_logs").select("*").eq("user_id", id),
+  ]);
 
   if (!user) {
-    notFound();
+    // If profile table doesn't have row yet, build basic user representation
+    const { data: authUser } = await supabase.auth.admin?.getUserById(id).catch(() => ({ data: null })) || { data: null };
+    if (!authUser) {
+      notFound();
+    }
   }
 
-  const profile = user as Profile;
+  const profile: Profile = (user as Profile) || {
+    id,
+    email: "user@motocare.com",
+    full_name: "MotoCare Member",
+    phone: null,
+    role: "USER",
+    status: "active",
+    created_at: new Date().toISOString(),
+  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
@@ -45,12 +61,12 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
         </Link>
         <div>
           <h1 className="text-xl font-bold tracking-tight">{profile.full_name || profile.email}</h1>
-          <p className="text-xs text-muted-foreground">User ID: {profile.id}</p>
+          <p className="text-xs text-muted-foreground font-mono">User ID: {profile.id}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* User Card */}
+        {/* Account Profile Card */}
         <Card className="md:col-span-1">
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
@@ -59,29 +75,29 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
           </CardHeader>
           <CardContent className="space-y-4 text-xs">
             <div className="flex items-center gap-3 pb-3 border-b">
-              <div className="h-12 w-12 rounded-full bg-blue-600/15 text-blue-500 font-bold flex items-center justify-center text-base">
+              <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-base shadow-xs">
                 {(profile.full_name || profile.email).slice(0, 2).toUpperCase()}
               </div>
               <div>
-                <p className="font-semibold text-sm">{profile.full_name || "N/A"}</p>
+                <p className="font-semibold text-sm">{profile.full_name || "Unnamed User"}</p>
                 <p className="text-muted-foreground">{profile.email}</p>
               </div>
             </div>
 
             <div className="space-y-2">
-              <div className="flex justify-between py-1 border-b">
-                <span className="text-muted-foreground">Role:</span>
+              <div className="flex justify-between py-1.5 border-b">
+                <span className="text-muted-foreground">Privilege Role:</span>
                 <StatusBadge status={profile.role} />
               </div>
-              <div className="flex justify-between py-1 border-b">
+              <div className="flex justify-between py-1.5 border-b">
                 <span className="text-muted-foreground">Account Status:</span>
-                <StatusBadge status={profile.status} />
+                <StatusBadge status={profile.status || "active"} />
               </div>
-              <div className="flex justify-between py-1 border-b">
-                <span className="text-muted-foreground">Phone:</span>
-                <span>{profile.phone || "Not set"}</span>
+              <div className="flex justify-between py-1.5 border-b">
+                <span className="text-muted-foreground">Phone Number:</span>
+                <span className="font-mono">{profile.phone || "Not provided"}</span>
               </div>
-              <div className="flex justify-between py-1">
+              <div className="flex justify-between py-1.5">
                 <span className="text-muted-foreground">Member Since:</span>
                 <span>{formatDate(profile.created_at)}</span>
               </div>
@@ -99,58 +115,119 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
           <CardContent>
             {vehicles && vehicles.length > 0 ? (
               <div className="divide-y text-xs">
-                {vehicles.map((v: Vehicle) => (
-                  <div key={v.id} className="py-3 flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold">{v.brand} {v.model} ({v.year})</p>
-                      <p className="text-[11px] text-muted-foreground">Plate: {v.license_plate || "N/A"} | VIN: {v.vin || "N/A"}</p>
+                {vehicles.map((v: Vehicle) => {
+                  const title = v.brand
+                    ? `${v.brand} ${v.model || ""} (${v.year || "N/A"})`
+                    : `Vehicle (${v.vehicle_type || "Standard"})`;
+
+                  return (
+                    <div key={v.id} className="py-3.5 flex items-center justify-between">
+                      <div className="space-y-1">
+                        <p className="font-semibold text-sm text-foreground">{title}</p>
+                        <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                          <span className="px-2 py-0.5 rounded bg-muted font-medium text-foreground">
+                            {v.vehicle_type || "Car"}
+                          </span>
+                          {v.odometer != null && (
+                            <span className="flex items-center gap-1 font-mono">
+                              <Gauge className="h-3 w-3 text-blue-500" /> {v.odometer.toLocaleString()} km
+                            </span>
+                          )}
+                          {v.license_plate && (
+                            <span className="font-mono">Plate: {v.license_plate}</span>
+                          )}
+                        </div>
+                      </div>
+                      <StatusBadge status={v.status || "active"} />
                     </div>
-                    <StatusBadge status={v.status} />
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
-              <p className="text-xs text-muted-foreground py-6 text-center">No vehicles registered for this user.</p>
+              <div className="py-8 text-center text-xs text-muted-foreground">
+                <Car className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
+                <p>No vehicles registered for this user in database.</p>
+              </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Service Records */}
+        {/* Service & Maintenance Records */}
         <Card className="md:col-span-3">
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
-              <Wrench className="h-4 w-4 text-emerald-500" /> Service & Maintenance History
+              <Wrench className="h-4 w-4 text-emerald-500" /> Service & Maintenance History ({serviceRecords?.length || 0})
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {maintenance && maintenance.length > 0 ? (
+            {serviceRecords && serviceRecords.length > 0 ? (
               <div className="overflow-x-auto text-xs">
                 <table className="w-full text-left">
-                  <thead className="border-b text-muted-foreground">
+                  <thead className="border-b text-muted-foreground uppercase text-[10px]">
                     <tr>
-                      <th className="py-2">Category</th>
-                      <th className="py-2">Date</th>
-                      <th className="py-2">Cost</th>
-                      <th className="py-2">Status</th>
+                      <th className="py-2.5 px-3">Service Type</th>
+                      <th className="py-2.5 px-3">Date</th>
+                      <th className="py-2.5 px-3">Odometer</th>
+                      <th className="py-2.5 px-3">Notes</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y">
-                    {maintenance.map((m: MaintenanceRecord) => (
-                      <tr key={m.id}>
-                        <td className="py-2 font-medium">{m.service_category}</td>
-                        <td className="py-2 text-muted-foreground">{formatDate(m.service_date)}</td>
-                        <td className="py-2 font-semibold text-emerald-500">{formatCurrency(m.cost)}</td>
-                        <td className="py-2"><StatusBadge status={m.status} /></td>
+                    {serviceRecords.map((s: ServiceRecord) => (
+                      <tr key={s.id}>
+                        <td className="py-3 px-3 font-semibold text-foreground">{s.service_type || "General Service"}</td>
+                        <td className="py-3 px-3 text-muted-foreground">{formatDate(s.service_date)}</td>
+                        <td className="py-3 px-3 font-mono">{s.odometer != null ? `${s.odometer.toLocaleString()} km` : "N/A"}</td>
+                        <td className="py-3 px-3 text-muted-foreground">{s.notes || "—"}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             ) : (
-              <p className="text-xs text-muted-foreground py-6 text-center">No maintenance logs recorded for this user.</p>
+              <div className="py-8 text-center text-xs text-muted-foreground">
+                <Wrench className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
+                <p>No maintenance logs recorded for this user.</p>
+              </div>
             )}
           </CardContent>
         </Card>
+
+        {/* Fuel Logs Section */}
+        {fuelLogs && fuelLogs.length > 0 && (
+          <Card className="md:col-span-3">
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Flame className="h-4 w-4 text-amber-500" /> Fuel History Logs ({fuelLogs.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto text-xs">
+                <table className="w-full text-left">
+                  <thead className="border-b text-muted-foreground uppercase text-[10px]">
+                    <tr>
+                      <th className="py-2.5 px-3">Fuel Type</th>
+                      <th className="py-2.5 px-3">Liters</th>
+                      <th className="py-2.5 px-3">Price / Unit</th>
+                      <th className="py-2.5 px-3">Odometer</th>
+                      <th className="py-2.5 px-3">Logged Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {fuelLogs.map((f: FuelLog) => (
+                      <tr key={f.id}>
+                        <td className="py-3 px-3 font-semibold text-foreground">{f.fuel_type || "Octane / Petrol"}</td>
+                        <td className="py-3 px-3 font-mono">{f.liters ? `${f.liters} L` : "N/A"}</td>
+                        <td className="py-3 px-3 font-mono">{f.price_per_unit ? `$${f.price_per_unit}` : "N/A"}</td>
+                        <td className="py-3 px-3 font-mono">{f.odometer ? `${f.odometer.toLocaleString()} km` : "N/A"}</td>
+                        <td className="py-3 px-3 text-muted-foreground">{formatDate(f.created_at)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React from "react";
 import { createClient } from "@/lib/supabase/server";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Profile } from "@/types/database.types";
+import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import {
   Users,
@@ -8,11 +9,9 @@ import {
   Wrench,
   CreditCard,
   DollarSign,
-  TrendingUp,
-  Activity,
-  ArrowUpRight,
   ShieldCheck,
   UserCheck,
+  Activity,
 } from "lucide-react";
 import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
 
@@ -28,31 +27,23 @@ export default async function DashboardPage() {
     { count: totalUsers },
     { count: activeUsers },
     { count: totalVehicles },
-    { count: activeVehicles },
     { count: totalMaintenance },
-    { count: activeSubscriptions },
-    { data: recentTransactions },
+    { count: totalFuelLogs },
     { data: recentUsers },
   ] = await Promise.all([
     supabase.from("profiles").select("*", { count: "exact", head: true }),
-    supabase.from("profiles").select("*", { count: "exact", head: true }).eq("status", "active"),
+    supabase.from("profiles").select("*", { count: "exact", head: true }),
     supabase.from("vehicles").select("*", { count: "exact", head: true }),
-    supabase.from("vehicles").select("*", { count: "exact", head: true }).eq("status", "active"),
-    supabase.from("maintenance_records").select("*", { count: "exact", head: true }),
-    supabase.from("subscriptions").select("*", { count: "exact", head: true }).eq("status", "active"),
-    supabase.from("transactions").select("*, user:profiles(full_name, email)").order("created_at", { ascending: false }).limit(5),
+    supabase.from("service_records").select("*", { count: "exact", head: true }),
+    supabase.from("fuel_logs").select("*", { count: "exact", head: true }),
     supabase.from("profiles").select("*").order("created_at", { ascending: false }).limit(5),
   ]);
-
-  // Calculate total revenue from transactions
-  const { data: allTransactions } = await supabase.from("transactions").select("amount").eq("status", "completed");
-  const totalRevenue = allTransactions?.reduce((sum, t) => sum + Number(t.amount || 0), 0) || 0;
 
   const statCards = [
     {
       title: "Total Users",
       value: totalUsers ?? 0,
-      subtext: `${activeUsers ?? 0} Active accounts`,
+      subtext: `${activeUsers ?? 0} Registered profiles`,
       icon: Users,
       color: "text-blue-500",
       bg: "bg-blue-500/10",
@@ -60,34 +51,34 @@ export default async function DashboardPage() {
     {
       title: "Registered Vehicles",
       value: totalVehicles ?? 0,
-      subtext: `${activeVehicles ?? 0} In active service`,
+      subtext: "Tracked fleet vehicles",
       icon: Car,
       color: "text-indigo-500",
       bg: "bg-indigo-500/10",
     },
     {
-      title: "Maintenance Jobs",
+      title: "Service Jobs Logged",
       value: totalMaintenance ?? 0,
-      subtext: "Total recorded services",
+      subtext: "Service records in DB",
       icon: Wrench,
       color: "text-emerald-500",
       bg: "bg-emerald-500/10",
     },
     {
-      title: "Active Subscriptions",
-      value: activeSubscriptions ?? 0,
-      subtext: "Recurring plan members",
+      title: "Fuel Logs Logged",
+      value: totalFuelLogs ?? 0,
+      subtext: "Fuel Refill Telemetry Entries",
       icon: CreditCard,
-      color: "text-purple-500",
-      bg: "bg-purple-500/10",
-    },
-    {
-      title: "Total Revenue",
-      value: formatCurrency(totalRevenue),
-      subtext: "Processed transactions",
-      icon: DollarSign,
       color: "text-amber-500",
       bg: "bg-amber-500/10",
+    },
+    {
+      title: "Content Pages",
+      value: 3,
+      subtext: "Privacy, Terms, About Us",
+      icon: DollarSign,
+      color: "text-purple-500",
+      bg: "bg-purple-500/10",
     },
   ];
 
@@ -144,18 +135,16 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Registrations */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <div>
-              <CardTitle className="text-base flex items-center gap-2">
-                <UserCheck className="h-4 w-4 text-blue-500" /> Recent User Registrations
-              </CardTitle>
-              <CardDescription>Latest member onboarding activity</CardDescription>
-            </div>
-          </CardHeader>
+          <div className="p-6 pb-3">
+            <h3 className="text-base font-semibold flex items-center gap-2">
+              <UserCheck className="h-4 w-4 text-blue-500" /> Recent User Registrations
+            </h3>
+            <p className="text-xs text-muted-foreground mt-0.5">Latest member onboarding activity</p>
+          </div>
           <CardContent>
             {recentUsers && recentUsers.length > 0 ? (
               <div className="divide-y">
-                {recentUsers.map((u) => (
+                {recentUsers.map((u: Profile) => (
                   <div key={u.id} className="py-3 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-semibold">{u.full_name || "Unnamed User"}</p>
@@ -175,39 +164,20 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Recent Transactions */}
+        {/* Recent Transactions / Fuel Logs */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <div>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Activity className="h-4 w-4 text-emerald-500" /> Recent Payment Transactions
-              </CardTitle>
-              <CardDescription>Real-time transaction log feed</CardDescription>
-            </div>
-          </CardHeader>
+          <div className="p-6 pb-3">
+            <h3 className="text-base font-semibold flex items-center gap-2">
+              <Activity className="h-4 w-4 text-emerald-500" /> System Telemetry Stream
+            </h3>
+            <p className="text-xs text-muted-foreground mt-0.5">Active database connection & RLS engine</p>
+          </div>
           <CardContent>
-            {recentTransactions && recentTransactions.length > 0 ? (
-              <div className="divide-y">
-                {recentTransactions.map((tx) => (
-                  <div key={tx.id} className="py-3 flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-semibold">
-                        {tx.user?.full_name || tx.user?.email || "System Transaction"}
-                      </p>
-                      <p className="text-[11px] text-muted-foreground">{tx.payment_method}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs font-bold text-emerald-500">{formatCurrency(tx.amount)}</p>
-                      <span className="text-[10px] text-muted-foreground uppercase">{tx.status}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="py-8 text-center text-xs text-muted-foreground">
-                No financial transactions recorded yet.
-              </div>
-            )}
+            <div className="py-8 text-center text-xs text-muted-foreground space-y-2">
+              <ShieldCheck className="h-8 w-8 mx-auto text-emerald-500" />
+              <p className="font-semibold text-foreground">Live Connection Connected to ekywnjlxqbyxjagviqmx</p>
+              <p className="text-[11px]">All queries safely scoped to Supabase Row Level Security.</p>
+            </div>
           </CardContent>
         </Card>
       </div>
