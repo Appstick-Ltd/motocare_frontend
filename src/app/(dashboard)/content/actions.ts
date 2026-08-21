@@ -11,30 +11,61 @@ export async function updateAppContentAction(data: ContentInput) {
   const parsed = contentSchema.parse(data);
   const supabase = await createClient();
 
-  const { error } = await supabase.from("app_content").upsert(
-    {
-      slug: parsed.slug,
-      title: parsed.title,
-      content: parsed.content,
-      updated_by: session.user.id,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "slug" }
-  );
+  // 1. Fetch active record using content_type + is_active
+  const { data: existing } = await supabase
+    .from("app_content")
+    .select("*")
+    .eq("content_type", parsed.contentType)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  let error;
+  if (existing) {
+    // 2. Update existing record using its id, updating title, content, is_active, version
+    const nextVersion = (existing.version || 1) + 1;
+    const res = await supabase
+      .from("app_content")
+      .update({
+        title: parsed.title,
+        content: parsed.content,
+        is_active: true,
+        version: nextVersion,
+      })
+      .eq("id", existing.id);
+    error = res.error;
+  } else {
+    // 3. Insert new record if none exists
+    const res = await supabase
+      .from("app_content")
+      .insert({
+        content_type: parsed.contentType,
+        title: parsed.title,
+        content: parsed.content,
+        is_active: true,
+        version: 1,
+      });
+    error = res.error;
+  }
 
   if (error) {
     throw new Error(error.message);
   }
 
-  // Audit log
+  // Record audit log
   await recordAuditLog({
     adminId: session.user.id,
     adminEmail: session.profile.email,
     action: "APP_CONTENT_UPDATED",
     resource: "app_content",
-    details: { slug: parsed.slug, title: parsed.title },
+    details: { content_type: parsed.contentType, title: parsed.title },
   });
 
-  revalidatePath(`/content/${parsed.slug}`);
+  const pathMap: Record<string, string> = {
+    privacy_policy: "/content/privacy-policy",
+    terms_conditions: "/content/terms",
+    about_us: "/content/about",
+  };
+
+  revalidatePath(pathMap[parsed.contentType] || "/content");
   return { success: true };
 }

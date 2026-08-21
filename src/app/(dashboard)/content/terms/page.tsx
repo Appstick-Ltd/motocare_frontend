@@ -14,8 +14,9 @@ export default async function TermsPage() {
   const { data } = await supabase
     .from("app_content")
     .select("*")
-    .eq("slug", "terms-conditions")
-    .single();
+    .eq("content_type", "terms_conditions")
+    .eq("is_active", true)
+    .maybeSingle();
 
   const defaultDoc = `# MotoCare Terms & Conditions\n\nEffective Date: January 1, 2026\n\nBy accessing or registering with MotoCare, you agree to comply with all terms governing vehicle service bookings, payments, and account responsibilities...`;
 
@@ -27,8 +28,8 @@ export default async function TermsPage() {
       </div>
 
       <ContentEditor
-        slug="terms-conditions"
-        defaultTitle={data?.title || "MotoCare Terms & Conditions"}
+        contentType="terms_conditions"
+        defaultTitle={data?.title || "Terms & Conditions"}
         defaultContent={data?.content || defaultDoc}
       />
     </div>

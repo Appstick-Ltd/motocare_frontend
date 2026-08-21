@@ -14,8 +14,9 @@ export default async function AboutPage() {
   const { data } = await supabase
     .from("app_content")
     .select("*")
-    .eq("slug", "about-us")
-    .single();
+    .eq("content_type", "about_us")
+    .eq("is_active", true)
+    .maybeSingle();
 
   const defaultDoc = `# About MotoCare\n\nMotoCare is a next-generation smart vehicle management and maintenance ecosystem empowering automobile owners with automated service tracking, telemetry metrics, and certified repair networks...`;
 
@@ -27,8 +28,8 @@ export default async function AboutPage() {
       </div>
 
       <ContentEditor
-        slug="about-us"
-        defaultTitle={data?.title || "About MotoCare"}
+        contentType="about_us"
+        defaultTitle={data?.title || "About Us"}
         defaultContent={data?.content || defaultDoc}
       />
     </div>

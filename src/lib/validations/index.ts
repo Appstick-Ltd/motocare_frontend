@@ -36,10 +36,43 @@ export const notificationSchema = z.object({
 
 export type NotificationInput = z.infer<typeof notificationSchema>;
 
-export const contentSchema = z.object({
-  slug: z.enum(["privacy-policy", "terms-conditions", "about-us"]),
-  title: z.string().min(3, "Title is required"),
-  content: z.string().min(10, "Content must be at least 10 characters long"),
-});
+export const contentSchema = z
+  .object({
+    contentType: z.string().optional(),
+    content_type: z.string().optional(),
+    slug: z.string().optional(),
+    title: z.string().min(3, "Title is required"),
+    content: z.string().min(10, "Content must be at least 10 characters long"),
+  })
+  .transform((data) => {
+    const raw = (data.contentType || data.content_type || data.slug || "").toLowerCase().replace(/-/g, "_");
+    let resolved: "privacy_policy" | "terms_conditions" | "about_us" | undefined;
 
-export type ContentInput = z.infer<typeof contentSchema>;
+    if (raw.includes("privacy")) {
+      resolved = "privacy_policy";
+    } else if (raw.includes("term")) {
+      resolved = "terms_conditions";
+    } else if (raw.includes("about")) {
+      resolved = "about_us";
+    }
+
+    // Fallback: Infer from document title if raw type was empty
+    if (!resolved && data.title) {
+      const titleLower = data.title.toLowerCase();
+      if (titleLower.includes("privacy")) resolved = "privacy_policy";
+      else if (titleLower.includes("term")) resolved = "terms_conditions";
+      else if (titleLower.includes("about")) resolved = "about_us";
+    }
+
+    if (!resolved) {
+      throw new Error(`Valid content_type is required ('privacy_policy', 'terms_conditions', or 'about_us').`);
+    }
+
+    return {
+      contentType: resolved,
+      title: data.title,
+      content: data.content,
+    };
+  });
+
+export type ContentInput = z.input<typeof contentSchema>;

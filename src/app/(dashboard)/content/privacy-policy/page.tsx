@@ -14,8 +14,9 @@ export default async function PrivacyPolicyPage() {
   const { data } = await supabase
     .from("app_content")
     .select("*")
-    .eq("slug", "privacy-policy")
-    .single();
+    .eq("content_type", "privacy_policy")
+    .eq("is_active", true)
+    .maybeSingle();
 
   const defaultDoc = `# MotoCare Privacy Policy\n\nEffective Date: January 1, 2026\n\nAt MotoCare, we prioritize user data confidentiality and vehicle telemetry security. This Privacy Policy details how we collect, store, and process your telemetry data...`;
 
@@ -27,8 +28,8 @@ export default async function PrivacyPolicyPage() {
       </div>
 
       <ContentEditor
-        slug="privacy-policy"
-        defaultTitle={data?.title || "MotoCare Privacy Policy"}
+        contentType="privacy_policy"
+        defaultTitle={data?.title || "Privacy Policy"}
         defaultContent={data?.content || defaultDoc}
       />
     </div>

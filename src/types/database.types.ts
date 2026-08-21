@@ -70,7 +70,6 @@ export interface AppContent {
   is_active: boolean;
   version: number;
   created_at: string;
-  updated_at: string;
 }
 
 // Admin-specific telemetry types for tables to be created in Phase 2
