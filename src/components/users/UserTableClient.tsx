@@ -138,7 +138,7 @@ export function UserTableClient({ initialUsers, currentAdminRole }: UserTableCli
                 title="Change Privilege Role"
                 onClick={() => {
                   setSelectedUser(u);
-                  setNewRole(u.role);
+                  setNewRole(u.role as UserRole);
                   setDialogType("role");
                 }}
               >

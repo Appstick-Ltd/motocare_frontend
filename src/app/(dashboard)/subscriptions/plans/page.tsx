@@ -81,7 +81,7 @@ export default async function SubscriptionPlansPage() {
 
                 <div className="space-y-2 pt-2 border-t text-xs">
                   <p className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wider">Plan Entitlements:</p>
-                  {p.features?.map((f, i) => (
+                  {p.features?.map((f: string, i: number) => (
                     <div key={i} className="flex items-center gap-2">
                       <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
                       <span>{f}</span>

@@ -1,7 +1,7 @@
 import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdminSession } from "@/lib/auth/session";
-import { Profile } from "@/types/database.types";
+import { Profile, UserRole } from "@/types/database.types";
 import { UserTableClient } from "@/components/users/UserTableClient";
 
 export const metadata = {
@@ -30,7 +30,7 @@ export default async function UsersPage() {
 
       <UserTableClient
         initialUsers={(profiles as Profile[]) || []}
-        currentAdminRole={session.profile.role}
+        currentAdminRole={session.profile.role as UserRole}
       />
     </div>
   );

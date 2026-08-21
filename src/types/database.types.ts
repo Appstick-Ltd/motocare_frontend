@@ -1,74 +1,79 @@
+// Database Types for MotoCare Supabase Project
+// Reflects discovered schema tables: profiles, vehicles, service_records, fuel_logs, app_content
+
 export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'MODERATOR' | 'USER';
 export type UserStatus = 'active' | 'suspended' | 'pending';
-export type MaintenanceStatus = 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
-export type SubscriptionStatus = 'active' | 'expired' | 'cancelled' | 'pending';
-export type PaymentStatus = 'completed' | 'pending' | 'failed' | 'refunded';
 
 export interface Profile {
-  id: string;
+  id: string; // FK to auth.users.id
   email: string;
   full_name: string | null;
   phone: string | null;
-  avatar_url: string | null;
   role: UserRole;
-  status: UserStatus;
+  status?: UserStatus;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 }
 
 export interface Vehicle {
   id: string;
-  user_id: string;
-  brand: string;
-  model: string;
-  year: number;
-  license_plate: string | null;
-  vin: string | null;
+  user_id: string; // FK to profiles.id
   vehicle_type: string;
-  status: string;
+  odometer?: number | null;
   created_at: string;
-  updated_at: string;
+  brand?: string;
+  model?: string;
+  year?: number;
+  license_plate?: string | null;
+  vin?: string | null;
+  status?: string;
   owner?: Profile;
 }
 
-export interface VehicleBrand {
+export interface ServiceRecord {
   id: string;
-  name: string;
-  icon_url: string | null;
-  is_active: boolean;
-  created_at: string;
-}
-
-export interface VehicleType {
-  id: string;
-  name: string;
-  description: string | null;
-  created_at: string;
-}
-
-export interface ServiceCategory {
-  id: string;
-  name: string;
-  description: string | null;
-  is_active: boolean;
-  created_at: string;
-}
-
-export interface MaintenanceRecord {
-  id: string;
-  vehicle_id: string;
-  user_id: string;
-  service_category: string;
+  user_id: string; // FK to profiles.id
+  vehicle_id?: string;
+  service_type: string;
+  service_category?: string;
   service_date: string;
-  cost: number;
-  status: MaintenanceStatus;
   notes: string | null;
-  odometer_km: number | null;
+  odometer?: number | null;
+  cost?: number;
+  status?: string;
   created_at: string;
+  user?: Profile;
   vehicle?: Vehicle;
+}
+
+// Alias for backwards-compatibility in components
+export type MaintenanceRecord = ServiceRecord;
+
+export interface FuelLog {
+  id: string;
+  user_id: string; // FK to profiles.id
+  vehicle_id?: string;
+  fuel_type: string | null;
+  liters: number | null;
+  price_per_unit: number | null;
+  odometer: number | null;
+  notes: string | null;
+  created_at: string;
   user?: Profile;
 }
 
+export interface AppContent {
+  id: string;
+  content_type: 'privacy_policy' | 'terms_conditions' | 'about_us' | string;
+  title: string;
+  content: string;
+  is_active: boolean;
+  version: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// Admin-specific telemetry types for tables to be created in Phase 2
 export interface Plan {
   id: string;
   name: string;
@@ -84,7 +89,7 @@ export interface Subscription {
   id: string;
   user_id: string;
   plan_id: string;
-  status: SubscriptionStatus;
+  status: string;
   start_date: string;
   expiry_date: string;
   created_at: string;
@@ -99,7 +104,7 @@ export interface Transaction {
   amount: number;
   currency: string;
   payment_method: string;
-  status: PaymentStatus;
+  status: string;
   reference_id: string | null;
   created_at: string;
   user?: Profile;
@@ -116,15 +121,6 @@ export interface NotificationItem {
   created_at: string;
 }
 
-export interface AppContent {
-  id: string;
-  slug: 'privacy-policy' | 'terms-conditions' | 'about-us';
-  title: string;
-  content: string;
-  updated_by: string | null;
-  updated_at: string;
-}
-
 export interface AuditLog {
   id: string;
   admin_id: string | null;
@@ -135,11 +131,4 @@ export interface AuditLog {
   details: Record<string, unknown>;
   ip_address: string | null;
   created_at: string;
-}
-
-export interface AppSettings {
-  key: string;
-  value: Record<string, unknown>;
-  description: string | null;
-  updated_at: string;
 }

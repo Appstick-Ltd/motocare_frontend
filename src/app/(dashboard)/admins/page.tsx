@@ -1,7 +1,7 @@
 import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { requireSuperAdminSession } from "@/lib/auth/session";
-import { Profile } from "@/types/database.types";
+import { Profile, UserRole } from "@/types/database.types";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { formatDate } from "@/lib/utils";
@@ -38,7 +38,7 @@ export default async function AdminsPage() {
 
       <UserTableClient
         initialUsers={(adminProfiles as Profile[]) || []}
-        currentAdminRole={session.profile.role}
+        currentAdminRole={session.profile.role as UserRole}
       />
     </div>
   );
