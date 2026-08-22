@@ -11,6 +11,8 @@ export interface Profile {
   phone: string | null;
   role: UserRole;
   status?: UserStatus;
+  subscription_plan?: string | null;
+  is_pro?: boolean;
   created_at: string;
   updated_at?: string;
 }
@@ -73,6 +75,18 @@ export interface AppContent {
 }
 
 // Admin-specific telemetry types for tables to be created in Phase 2
+export interface SubscriptionPricing {
+  id: string;
+  currency_code: string;
+  currency_symbol: string;
+  free_price: number;
+  standard_price: number;
+  premium_price: number;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface Plan {
   id: string;
   name: string;

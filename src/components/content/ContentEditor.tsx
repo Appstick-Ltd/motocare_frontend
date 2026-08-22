@@ -29,7 +29,6 @@ import {
   Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
-
 interface ContentEditorProps {
   contentType: "privacy_policy" | "terms_conditions" | "about_us";
   defaultTitle: string;
@@ -37,8 +36,29 @@ interface ContentEditorProps {
 }
 
 export function ContentEditor({ contentType, defaultTitle, defaultContent }: ContentEditorProps) {
+  // Clean & unescape HTML if wrapped in <h1>&lt;...</h1> or HTML entities
+  const cleanAndUnescapeHtml = (input: string): string => {
+    if (!input) return "";
+    let clean = input;
+    if (clean.includes("&lt;") || clean.includes("&gt;")) {
+      clean = clean
+        .replace(/<h1>&lt;/gi, "&lt;")
+        .replace(/&gt;<\/h1>/gi, "&gt;")
+        .replace(/<p>&lt;/gi, "&lt;")
+        .replace(/&gt;<\/p>/gi, "&gt;")
+        .replace(/<h1><br><\/h1>/gi, "");
+
+      if (typeof window !== "undefined") {
+        const textarea = document.createElement("textarea");
+        textarea.innerHTML = clean;
+        clean = textarea.value;
+      }
+    }
+    return clean;
+  };
+
   const [title, setTitle] = useState(defaultTitle);
-  const [htmlContent, setHtmlContent] = useState(defaultContent);
+  const [htmlContent, setHtmlContent] = useState(() => cleanAndUnescapeHtml(defaultContent));
   const [isCodeView, setIsCodeView] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
@@ -53,11 +73,28 @@ export function ContentEditor({ contentType, defaultTitle, defaultContent }: Con
   // Sync initial content to contentEditable DOM on mount or change
   useEffect(() => {
     if (editorRef.current && !isCodeView) {
-      if (editorRef.current.innerHTML !== htmlContent) {
-        editorRef.current.innerHTML = htmlContent || "<p>Type document content here...</p>";
+      const cleaned = cleanAndUnescapeHtml(htmlContent);
+      if (editorRef.current.innerHTML !== cleaned) {
+        editorRef.current.innerHTML = cleaned || "<p>Type document content here...</p>";
       }
     }
   }, [htmlContent, isCodeView]);
+
+  // Intercept paste event to handle raw HTML code properly
+  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    if (isCodeView) return;
+    const pastedText = e.clipboardData.getData("text/plain");
+
+    // If pasted content contains HTML tags (e.g. <div, <p, <h1, <!DOCTYPE)
+    if (pastedText && /<[a-z!][\s\S]*>/i.test(pastedText.trim())) {
+      e.preventDefault();
+      const cleanHtml = cleanAndUnescapeHtml(pastedText.trim());
+      document.execCommand("insertHTML", false, cleanHtml);
+      if (editorRef.current) {
+        setHtmlContent(editorRef.current.innerHTML);
+      }
+    }
+  };
 
   // Execute Rich Text Command
   const execCmd = (command: string, value: string | undefined = undefined) => {
@@ -109,7 +146,8 @@ export function ContentEditor({ contentType, defaultTitle, defaultContent }: Con
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
-    const finalContent = isCodeView ? htmlContent : (editorRef.current?.innerHTML || htmlContent);
+    let rawContent = isCodeView ? htmlContent : (editorRef.current?.innerHTML || htmlContent);
+    const finalContent = cleanAndUnescapeHtml(rawContent);
 
     try {
       await updateAppContentAction({
@@ -134,20 +172,57 @@ export function ContentEditor({ contentType, defaultTitle, defaultContent }: Con
     }
   };
 
+  // Helper to fix and unescape HTML if uploaded as raw text/escaped HTML tags
+  const handleFixEscapedHtml = () => {
+    let current = isCodeView ? htmlContent : (editorRef.current?.innerHTML || htmlContent);
+    const decoded = cleanAndUnescapeHtml(current);
+
+    setHtmlContent(decoded);
+    if (editorRef.current) {
+      editorRef.current.innerHTML = decoded;
+    }
+    toast.success("Escaped HTML code unescaped and formatted successfully!");
+  };
+
+
   return (
     <Card className="max-w-5xl shadow-xl border-border/80">
       <CardHeader className="pb-3 border-b">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <CardTitle className="text-base flex items-center gap-2">
-              <FileText className="h-4 w-4 text-blue-500" /> Managing HTML Content: {defaultTitle}
+              <FileText className="h-4 w-4 text-orange-500" /> Managing HTML Content: {defaultTitle}
             </CardTitle>
             <CardDescription className="text-xs mt-0.5">
-              Full WYSIWYG HTML Editor. Insert images, tables, links, text formatting & alignments.
+              Full WYSIWYG HTML Editor. Switch to <strong>HTML Source View</strong> to paste raw HTML code.
             </CardDescription>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <a
+              href={
+                targetType === "privacy_policy"
+                  ? "/privacy-policy"
+                  : targetType === "terms_conditions"
+                  ? "/terms-condition"
+                  : "/about-us"
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
+            >
+              <Eye className="h-3.5 w-3.5" /> View Live Page
+            </a>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleFixEscapedHtml}
+              className="h-8 text-xs gap-1.5 border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-900 dark:text-orange-400 dark:hover:bg-orange-955"
+              title="Fix & Unescape HTML code if it displays as &lt;h1&gt; text"
+            >
+              <Sparkles className="h-3.5 w-3.5" /> Fix Escaped HTML
+            </Button>
             <Button
               type="button"
               variant={isCodeView ? "default" : "outline"}
@@ -242,7 +317,7 @@ export function ContentEditor({ contentType, defaultTitle, defaultContent }: Con
               <div className="h-5 w-px bg-border my-auto mx-1" />
 
               {/* Media & Tables */}
-              <Button type="button" variant="secondary" size="sm" className="h-8 px-2.5 gap-1.5 text-xs font-semibold text-blue-500" title="Insert Image" onClick={handleInsertImage}>
+              <Button type="button" variant="secondary" size="sm" className="h-8 px-2.5 gap-1.5 text-xs font-semibold text-orange-600 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/40 dark:text-orange-400" title="Insert Image" onClick={handleInsertImage}>
                 <ImageIcon className="h-3.5 w-3.5" /> Insert Image
               </Button>
               <Button type="button" variant="outline" size="sm" className="h-8 px-2.5 gap-1.5 text-xs" title="Insert Link" onClick={handleInsertLink}>
@@ -266,13 +341,17 @@ export function ContentEditor({ contentType, defaultTitle, defaultContent }: Con
               ref={editorRef}
               contentEditable
               onInput={handleInput}
+              onPaste={handlePaste}
               suppressContentEditableWarning
-              className="min-h-[400px] max-h-[600px] overflow-y-auto rounded-b-lg border bg-card p-6 text-sm text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring leading-relaxed shadow-inner"
+              className="prose-editor html-content-view privacy-policy min-h-[400px] max-h-[600px] overflow-y-auto rounded-b-lg border bg-card p-6 text-sm text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring leading-relaxed shadow-inner"
             />
           ) : (
             /* HTML Source View */
             <div className="space-y-1.5">
-              <label className="text-[11px] font-mono text-muted-foreground">Raw HTML Source Code</label>
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-mono text-muted-foreground">Raw HTML Source Code</label>
+                <span className="text-[11px] text-orange-600 font-medium">Paste HTML code here directly</span>
+              </div>
               <textarea
                 value={htmlContent}
                 onChange={(e) => setHtmlContent(e.target.value)}
@@ -287,7 +366,7 @@ export function ContentEditor({ contentType, defaultTitle, defaultContent }: Con
             <span className="text-[11px] text-muted-foreground flex items-center gap-1.5">
               <CheckCircle2 className="h-4 w-4 text-emerald-500" /> HTML Content Sync Active
             </span>
-            <Button type="submit" disabled={isSaving} className="gap-2 px-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold">
+            <Button type="submit" disabled={isSaving} className="gap-2 px-6 gradient-button hover:opacity-95 text-white font-semibold border-none">
               <Save className="h-4 w-4" /> {isSaving ? "Saving..." : "Save & Publish Changes"}
             </Button>
           </div>

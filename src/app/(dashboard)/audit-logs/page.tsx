@@ -12,10 +12,18 @@ export default async function AuditLogsPage() {
   await requireAdminSession();
   const supabase = await createClient();
 
-  const { data: logs } = await supabase
-    .from("audit_logs")
-    .select("*")
-    .order("created_at", { ascending: false });
+  let logs: AuditLog[] = [];
+  try {
+    const { data, error } = await supabase
+      .from("audit_logs")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!error && data) {
+      logs = data as AuditLog[];
+    }
+  } catch (err) {
+    console.error("Error fetching audit logs:", err);
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">

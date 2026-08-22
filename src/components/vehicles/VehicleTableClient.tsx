@@ -29,7 +29,7 @@ export function VehicleTableClient({ initialVehicles }: VehicleTableClientProps)
 
         return (
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-500/15 to-blue-500/15 text-indigo-500 font-bold flex items-center justify-center border border-indigo-500/20 shadow-xs">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-orange-500/15 to-amber-500/15 text-orange-500 font-bold flex items-center justify-center border border-orange-500/20 shadow-xs">
               <Car className="h-5 w-5" />
             </div>
             <div>
@@ -42,7 +42,7 @@ export function VehicleTableClient({ initialVehicles }: VehicleTableClientProps)
                 </span>
                 {v.odometer && (
                   <span className="flex items-center gap-0.5 font-mono text-[10px]">
-                    <Gauge className="h-3 w-3 text-blue-500" /> {v.odometer.toLocaleString()} km
+                    <Gauge className="h-3 w-3 text-orange-500" /> {v.odometer.toLocaleString()} km
                   </span>
                 )}
               </span>

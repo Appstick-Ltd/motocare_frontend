@@ -2,6 +2,7 @@
 
 @layer base {
   :root {
+    /* Shopstick Inspired Color System: Primary Orange #FF5E13 & Deep Navy #1B2850 */
     --background: 215 28% 97%;
     --foreground: 222.2 84% 4.9%;
 
@@ -11,8 +12,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 224 76% 48%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 20 100% 54%; /* #FF5E13 */
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 215 20% 94%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -20,23 +21,23 @@
     --muted: 215 20% 94%;
     --muted-foreground: 215.4 16.3% 45%;
 
-    --accent: 215 20% 94%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 20 100% 96%; /* Warm orange tint */
+    --accent-foreground: 20 100% 40%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 90%;
     --input: 214.3 31.8% 90%;
-    --ring: 224 76% 48%;
+    --ring: 20 100% 54%;
 
     --radius: 0.85rem;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222.2 47.4% 12%;
     --sidebar-border: 214.3 31.8% 90%;
-    --sidebar-accent: 215 20% 94%;
-    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+    --sidebar-accent: 20 100% 97%;
+    --sidebar-accent-foreground: 20 100% 45%;
   }
 
   .dark {
@@ -49,8 +50,8 @@
     --popover: 222 47% 7%;
     --popover-foreground: 213 31% 94%;
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 20 100% 54%; /* #FF5E13 */
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 217.2 32.6% 14%;
     --secondary-foreground: 210 40% 98%;
@@ -66,7 +67,7 @@
 
     --border: 217.2 32.6% 14%;
     --input: 217.2 32.6% 14%;
-    --ring: 224.3 76.3% 48%;
+    --ring: 20 100% 54%;
 
     --sidebar-background: 224 71% 4%;
     --sidebar-foreground: 213 31% 94%;
@@ -142,15 +143,15 @@ body {
   background: hsl(var(--muted-foreground) / 0.4);
 }
 
-/* Gorgeous UI Enhancements */
+/* Shopstick Inspired Glass & Card Utilities */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .dark .glass-panel {
-  background: rgba(18, 24, 38, 0.75);
+  background: rgba(18, 24, 38, 0.8);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(30, 41, 59, 0.8);
 }
@@ -162,10 +163,214 @@ body {
 
 .gradient-card-border:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 24px -10px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 12px 24px -10px rgba(255, 94, 19, 0.18);
 }
 
-.glow-blue {
-  box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.3);
+.glow-orange {
+  box-shadow: 0 0 25px -5px rgba(255, 94, 19, 0.35);
 }
+
+.shopstick-container {
+  max-width: 1320px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+/* Shopstick Buttons & Effects */
+@keyframes shimmerButtonSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer-button {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, rgba(255, 94, 19, 0.12), rgba(255, 94, 19, 0.35), rgba(255, 94, 19, 0.12)), #fff6ee;
+  border: 1px solid rgba(255, 94, 19, 0.4);
+  box-shadow: 0 10px 25px -15px rgba(255, 94, 19, 0.85);
+}
+
+.shimmer-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 10%, rgba(255, 255, 255, 0.6), transparent 90%);
+  transform: translateX(-100%);
+  animation: shimmerButtonSweep 2.4s linear infinite;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.gradient-button {
+  border-radius: 8px;
+  background: linear-gradient(180deg, #FF5E13 0%, #FF8D1F 100%);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(255, 94, 19, 0.25);
+  transition: all 0.25s ease;
+}
+
+.gradient-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(255, 94, 19, 0.35);
+}
+
+.simple-button {
+  border-radius: 8px;
+  border: 1px solid #FF5E13;
+  background: #ffffff;
+  color: #FF5E13;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.simple-button:hover {
+  background: #fff6ee;
+  transform: translateY(-1px);
+}
+
+/* Rich Text / Privacy Policy / WYSIWYG Content Typography */
+.privacy-policy,
+.prose-editor,
+.html-content-view {
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  line-height: 1.75;
+  color: var(--color-foreground);
+}
+
+.privacy-policy h1,
+.prose-editor h1,
+.html-content-view h1 {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-top: 1.75rem;
+  margin-bottom: 1rem;
+  color: var(--color-foreground);
+  line-height: 1.25;
+}
+
+.privacy-policy h2,
+.prose-editor h2,
+.html-content-view h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin-top: 2rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-foreground);
+}
+
+.privacy-policy h3,
+.prose-editor h3,
+.html-content-view h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-top: 1.35rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-foreground);
+}
+
+.privacy-policy p,
+.prose-editor p,
+.html-content-view p {
+  margin-top: 0;
+  margin-bottom: 1.15rem;
+  color: var(--color-foreground);
+}
+
+.privacy-policy ul,
+.prose-editor ul,
+.html-content-view ul {
+  list-style-type: disc;
+  margin-top: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding-left: 1.6rem;
+}
+
+.privacy-policy ol,
+.prose-editor ol,
+.html-content-view ol {
+  list-style-type: decimal;
+  margin-top: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding-left: 1.6rem;
+}
+
+.privacy-policy li,
+.prose-editor li,
+.html-content-view li {
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.privacy-policy strong,
+.prose-editor strong,
+.html-content-view strong {
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
+.privacy-policy a,
+.prose-editor a,
+.html-content-view a {
+  color: #FF5E13;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.privacy-policy a:hover,
+.prose-editor a:hover,
+.html-content-view a:hover {
+  color: #e04e03;
+}
+
+.privacy-policy blockquote,
+.prose-editor blockquote,
+.html-content-view blockquote {
+  border-left: 4px solid #FF5E13;
+  background: rgba(255, 94, 19, 0.06);
+  padding: 0.85rem 1.25rem;
+  border-radius: 0 8px 8px 0;
+  margin: 1.35rem 0;
+  font-style: italic;
+}
+
+.privacy-policy table,
+.prose-editor table,
+.html-content-view table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.35rem 0;
+}
+
+.privacy-policy th,
+.privacy-policy td,
+.prose-editor th,
+.prose-editor td,
+.html-content-view th,
+.html-content-view td {
+  border: 1px solid var(--color-border);
+  padding: 0.65rem 0.9rem;
+}
+
+.privacy-policy th,
+.prose-editor th,
+.html-content-view th {
+  background: var(--color-muted);
+  font-weight: 600;
+}
+
+
 

@@ -61,28 +61,29 @@ export function DataTable<TData, TValue>({
       {/* Search & Action Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="relative w-full sm:w-80">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3.5 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder={searchPlaceholder}
             value={globalFilter ?? ""}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            className="pl-9"
+            className="pl-10 h-10 text-xs rounded-xl focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500"
           />
         </div>
-        <div className="text-xs text-muted-foreground self-end sm:self-auto">
-          Showing {table.getFilteredRowModel().rows.length} records
+        <div className="text-xs font-semibold text-muted-foreground self-end sm:self-auto flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-orange-500" />
+          <span>Showing {table.getFilteredRowModel().rows.length} total records</span>
         </div>
       </div>
 
       {/* Table Container */}
-      <div className="rounded-xl border bg-card overflow-hidden shadow-xs">
+      <div className="rounded-2xl border border-border/70 bg-card overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-muted/50 text-xs font-semibold text-muted-foreground border-b uppercase tracking-wider">
+            <thead className="bg-muted/60 text-[11px] font-extrabold text-muted-foreground/80 border-b uppercase tracking-wider">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <th key={header.id} className="px-6 py-3.5">
+                    <th key={header.id} className="px-6 py-4">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -94,13 +95,13 @@ export function DataTable<TData, TValue>({
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-border/60">
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, index) => (
                   <tr key={index}>
                     {columns.map((_, colIdx) => (
                       <td key={colIdx} className="px-6 py-4">
-                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-full rounded-md" />
                       </td>
                     ))}
                   </tr>
@@ -109,7 +110,7 @@ export function DataTable<TData, TValue>({
                 table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="hover:bg-muted/40 transition-colors"
+                    className="hover:bg-muted/50 transition-colors duration-150"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="px-6 py-4 align-middle">
@@ -125,11 +126,13 @@ export function DataTable<TData, TValue>({
                 <tr>
                   <td
                     colSpan={columns.length}
-                    className="h-44 text-center py-8 text-muted-foreground"
+                    className="h-48 text-center py-10 text-muted-foreground"
                   >
                     <div className="flex flex-col items-center justify-center gap-2">
-                      <Inbox className="h-8 w-8 text-muted-foreground/50" />
-                      <p>{emptyMessage}</p>
+                      <div className="p-3 rounded-2xl bg-muted/60 text-muted-foreground">
+                        <Inbox className="h-8 w-8" />
+                      </div>
+                      <p className="font-semibold text-xs mt-1">{emptyMessage}</p>
                     </div>
                   </td>
                 </tr>
@@ -139,10 +142,9 @@ export function DataTable<TData, TValue>({
         </div>
 
         {/* Pagination Bar */}
-        <div className="flex items-center justify-between px-6 py-3.5 border-t bg-muted/20 text-xs text-muted-foreground">
-          <div>
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount() || 1}
+        <div className="flex items-center justify-between px-6 py-4 border-t border-border/60 bg-muted/20 text-xs font-medium text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <span>Page <strong className="text-foreground">{table.getState().pagination.pageIndex + 1}</strong> of <strong className="text-foreground">{table.getPageCount() || 1}</strong></span>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -150,18 +152,18 @@ export function DataTable<TData, TValue>({
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="h-8 w-8 p-0"
+              className="h-8.5 px-3 rounded-lg text-xs"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4 mr-1" /> Previous
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="h-8 w-8 p-0"
+              className="h-8.5 px-3 rounded-lg text-xs"
             >
-              <ChevronRight className="h-4 w-4" />
+              Next <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
         </div>

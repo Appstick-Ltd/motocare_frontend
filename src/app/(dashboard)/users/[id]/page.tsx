@@ -22,16 +22,28 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
   const supabase = await createClient();
 
   const [
-    { data: user },
+    { data: rawUser },
     { data: vehicles },
     { data: serviceRecords },
     { data: fuelLogs },
   ] = await Promise.all([
-    supabase.from("profiles").select("*").eq("id", id).maybeSingle(),
+    supabase.from("profiles").select("*, subscriptions(*, plans(*))").eq("id", id).maybeSingle(),
     supabase.from("vehicles").select("*").eq("user_id", id),
     supabase.from("service_records").select("*").eq("user_id", id),
     supabase.from("fuel_logs").select("*").eq("user_id", id),
   ]);
+
+  const activeSub = Array.isArray((rawUser as any)?.subscriptions)
+    ? (rawUser as any).subscriptions.find((s: any) => s.status === "active" || s.status === "active_renewing") || (rawUser as any).subscriptions[0]
+    : (rawUser as any)?.subscriptions;
+
+  const planName = activeSub?.plans?.name || activeSub?.plan_name || (rawUser as any)?.subscription_plan || (rawUser as any)?.plan;
+
+  const user = rawUser ? {
+    ...(rawUser as any),
+    subscription_plan: planName ? String(planName) : "Free User",
+    is_pro: Boolean(planName && String(planName).toLowerCase() !== "free"),
+  } : null;
 
   if (!user) {
     // If profile table doesn't have row yet, build basic user representation
@@ -92,6 +104,18 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
               <div className="flex justify-between py-1.5 border-b">
                 <span className="text-muted-foreground">Account Status:</span>
                 <StatusBadge status={profile.status || "active"} />
+              </div>
+              <div className="flex justify-between py-1.5 border-b">
+                <span className="text-muted-foreground">Subscription Tier:</span>
+                {profile.is_pro || (profile.subscription_plan && profile.subscription_plan.toLowerCase() !== "free user" && profile.subscription_plan.toLowerCase() !== "free") ? (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-orange-600 dark:text-orange-400 border border-orange-500/30">
+                    Pro ({profile.subscription_plan || "Pro Plan"})
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20">
+                    Free User
+                  </span>
+                )}
               </div>
               <div className="flex justify-between py-1.5 border-b">
                 <span className="text-muted-foreground">Phone Number:</span>

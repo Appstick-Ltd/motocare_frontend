@@ -12,7 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
 import { updateUserStatusAction, updateUserRoleAction } from "@/app/(dashboard)/users/actions";
 import { toast } from "sonner";
-import { Eye, Shield, UserX, UserCheck, ShieldCheck, Database, Sparkles } from "lucide-react";
+import { Eye, Shield, UserX, UserCheck, ShieldCheck, Database, Sparkles, Crown, User } from "lucide-react";
 
 interface UserTableClientProps {
   initialUsers: Profile[];
@@ -70,7 +70,7 @@ export function UserTableClient({ initialUsers, currentAdminRole }: UserTableCli
         const u = row.original;
         return (
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-xs">
+            <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-orange-600 to-amber-500 text-white font-bold flex items-center justify-center text-xs shadow-xs">
               {(u.full_name || u.email).slice(0, 2).toUpperCase()}
             </div>
             <div>
@@ -85,6 +85,31 @@ export function UserTableClient({ initialUsers, currentAdminRole }: UserTableCli
       accessorKey: "role",
       header: "Role",
       cell: ({ row }) => <StatusBadge status={row.original.role} />,
+    },
+    {
+      accessorKey: "subscription_plan",
+      header: "Subscription Tier",
+      cell: ({ row }) => {
+        const u = row.original;
+        const plan = u.subscription_plan;
+        const isPro = u.is_pro || (plan && plan.toLowerCase() !== "free user" && plan.toLowerCase() !== "free");
+
+        if (isPro) {
+          return (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-orange-600 dark:text-orange-400 border border-orange-500/30 shadow-2xs">
+              <Crown className="h-3.5 w-3.5 text-orange-500 fill-orange-500 shrink-0" />
+              <span>Pro ({plan || "Pro Plan"})</span>
+            </span>
+          );
+        }
+
+        return (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20">
+            <User className="h-3.5 w-3.5 text-slate-500 shrink-0" />
+            <span>Free User</span>
+          </span>
+        );
+      },
     },
     {
       accessorKey: "status",

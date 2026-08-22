@@ -12,10 +12,18 @@ export default async function MaintenancePage() {
   await requireAdminSession();
   const supabase = await createClient();
 
-  const { data: records } = await supabase
-    .from("service_records")
-    .select("*, vehicle:vehicles(vehicle_type, odometer), user:profiles(full_name, email)")
-    .order("service_date", { ascending: false });
+  let records: ServiceRecord[] = [];
+  try {
+    const { data, error } = await supabase
+      .from("service_records")
+      .select("*, vehicle:vehicles(vehicle_type, odometer), user:profiles(full_name, email)")
+      .order("service_date", { ascending: false });
+    if (!error && data) {
+      records = data as ServiceRecord[];
+    }
+  } catch (err) {
+    console.error("Error fetching service records:", err);
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
