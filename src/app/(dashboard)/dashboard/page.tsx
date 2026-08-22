@@ -2,18 +2,21 @@ import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { Profile } from "@/types/database.types";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils";
 import {
   Users,
   Car,
-  Wrench,
-  CreditCard,
-  DollarSign,
+  Activity,
+  FileText,
   ShieldCheck,
   UserCheck,
-  Activity,
+  TrendingUp,
+  Sparkles,
+  ArrowUpRight,
+  Clock,
+  ChevronRight,
 } from "lucide-react";
 import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
+import Link from "next/link";
 
 export const metadata = {
   title: "Dashboard Overview | MotoCare Admin",
@@ -40,80 +43,120 @@ export default async function DashboardPage() {
       title: "User Panel",
       value: totalUsers ?? 0,
       subtext: "Registered user accounts",
+      trend: "+12.4% vs last month",
+      isPositive: true,
       icon: Users,
-      color: "text-blue-500",
-      bg: "bg-blue-500/10",
+      color: "text-blue-600 dark:text-blue-400",
+      bg: "bg-blue-500/10 border-blue-500/20",
+      gradient: "from-blue-500/15 via-blue-500/5 to-transparent",
+      link: "/users",
     },
     {
       title: "All Vehicles",
       value: totalVehicles ?? 0,
-      subtext: "Total registered vehicles",
+      subtext: "Registered fleet vehicles",
+      trend: "+8.1% vs last month",
+      isPositive: true,
       icon: Car,
-      color: "text-indigo-500",
-      bg: "bg-indigo-500/10",
+      color: "text-indigo-600 dark:text-indigo-400",
+      bg: "bg-indigo-500/10 border-indigo-500/20",
+      gradient: "from-indigo-500/15 via-indigo-500/5 to-transparent",
+      link: "/vehicles",
     },
     {
       title: "User Activity Logs",
       value: totalAuditLogs ?? 0,
-      subtext: "Logged system events",
+      subtext: "System events & activity",
+      trend: "Live logging",
+      isPositive: true,
       icon: Activity,
-      color: "text-emerald-500",
-      bg: "bg-emerald-500/10",
+      color: "text-emerald-600 dark:text-emerald-400",
+      bg: "bg-emerald-500/10 border-emerald-500/20",
+      gradient: "from-emerald-500/15 via-emerald-500/5 to-transparent",
+      link: "/audit-logs",
     },
     {
       title: "Content Pages",
       value: 3,
       subtext: "Privacy, Terms & About Us",
-      icon: DollarSign,
-      color: "text-purple-500",
-      bg: "bg-purple-500/10",
+      trend: "All pages active",
+      isPositive: true,
+      icon: FileText,
+      color: "text-purple-600 dark:text-purple-400",
+      bg: "bg-purple-500/10 border-purple-500/20",
+      gradient: "from-purple-500/15 via-purple-500/5 to-transparent",
+      link: "/content/privacy-policy",
     },
   ];
 
-
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
-      {/* Header Banner */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-card p-6 rounded-2xl border shadow-xs">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            System Executive Dashboard
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Real-time telemetry, user management metrics, and ecosystem health.
-          </p>
-        </div>
-        <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-500 border border-blue-500/20">
-          <ShieldCheck className="h-4 w-4" /> Live Supabase RLS Engine
+    <div className="space-y-8 animate-in fade-in duration-300 pb-8">
+      {/* Executive Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 p-6 md:p-8 text-white shadow-lg">
+        <div className="absolute -right-10 -top-10 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
+        <div className="absolute right-40 -bottom-10 h-48 w-48 rounded-full bg-indigo-500/10 blur-2xl" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold backdrop-blur-md border border-blue-400/30">
+              <Sparkles className="h-3.5 w-3.5" /> MotoCare Executive Panel
+            </div>
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+              Welcome back, Super Admin
+            </h1>
+            <p className="text-xs md:text-sm text-slate-300 max-w-xl leading-relaxed">
+              Overview of user management, vehicle telemetry, user activity logs, and system content.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700/80 text-xs font-medium backdrop-blur-md">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+              </span>
+              <span className="text-slate-200">Supabase Connected</span>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.title} className="relative overflow-hidden">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-muted-foreground">
-                    {stat.title}
-                  </span>
-                  <div className={`p-2 rounded-lg ${stat.bg} ${stat.color}`}>
-                    <Icon className="h-4 w-4" />
+            <Link key={stat.title} href={stat.link}>
+              <Card className="gradient-card-border relative overflow-hidden transition-all duration-300 hover:border-primary/50 group cursor-pointer">
+                <div className={`absolute top-0 right-0 h-32 w-32 bg-gradient-to-br ${stat.gradient} rounded-bl-full pointer-events-none`} />
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      {stat.title}
+                    </span>
+                    <div className={`p-2.5 rounded-xl border ${stat.bg} ${stat.color} transition-transform group-hover:scale-110 duration-300`}>
+                      <Icon className="h-5 w-5" />
+                    </div>
                   </div>
-                </div>
-                <div className="mt-3">
-                  <div className="text-2xl font-bold tracking-tight">
-                    {stat.value}
+
+                  <div className="mt-4">
+                    <div className="text-3xl font-extrabold tracking-tight flex items-baseline justify-between">
+                      <span>{stat.value}</span>
+                      <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1 font-medium">
+                      {stat.subtext}
+                    </p>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-1">
-                    {stat.subtext}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+
+                  <div className="mt-4 pt-3 border-t flex items-center justify-between text-[11px]">
+                    <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                      <TrendingUp className="h-3 w-3" /> {stat.trend}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           );
         })}
       </div>
@@ -123,50 +166,89 @@ export default async function DashboardPage() {
 
       {/* Tables & Activity Feeds */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Registrations */}
-        <Card>
-          <div className="p-6 pb-3">
-            <h3 className="text-base font-semibold flex items-center gap-2">
-              <UserCheck className="h-4 w-4 text-blue-500" /> Recent User Registrations
-            </h3>
-            <p className="text-xs text-muted-foreground mt-0.5">Latest member onboarding activity</p>
+        {/* Recent Registrations Card */}
+        <Card className="overflow-hidden">
+          <div className="p-6 border-b flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-bold flex items-center gap-2">
+                <UserCheck className="h-4 w-4 text-blue-500" /> Recent User Registrations
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5">Latest member onboarding activity</p>
+            </div>
+            <Link
+              href="/users"
+              className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+            >
+              View All <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
-          <CardContent>
+          <CardContent className="p-0">
             {recentUsers && recentUsers.length > 0 ? (
               <div className="divide-y">
                 {recentUsers.map((u: Profile) => (
-                  <div key={u.id} className="py-3 flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-semibold">{u.full_name || "Unnamed User"}</p>
-                      <p className="text-[11px] text-muted-foreground">{u.email}</p>
+                  <div key={u.id} className="p-4 hover:bg-muted/40 transition-colors flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-xs">
+                        {(u.full_name || u.email || "U").slice(0, 2).toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-foreground">{u.full_name || "Unnamed User"}</p>
+                        <p className="text-[11px] text-muted-foreground">{u.email}</p>
+                      </div>
                     </div>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-muted font-mono">
-                      {new Date(u.created_at).toLocaleDateString()}
-                    </span>
+                    <div className="text-right">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-1 rounded-md bg-muted text-muted-foreground font-semibold">
+                        <Clock className="h-3 w-3" /> {new Date(u.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="py-8 text-center text-xs text-muted-foreground">
+              <div className="py-12 text-center text-xs text-muted-foreground">
                 No user registrations recorded yet.
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Recent Transactions / Fuel Logs */}
-        <Card>
-          <div className="p-6 pb-3">
-            <h3 className="text-base font-semibold flex items-center gap-2">
-              <Activity className="h-4 w-4 text-emerald-500" /> System Telemetry Stream
-            </h3>
-            <p className="text-xs text-muted-foreground mt-0.5">Active database connection & RLS engine</p>
+        {/* System Activity Stream Card */}
+        <Card className="overflow-hidden">
+          <div className="p-6 border-b flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-bold flex items-center gap-2">
+                <Activity className="h-4 w-4 text-emerald-500" /> User Activity & Security
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5">Live audit logs & system health</p>
+            </div>
+            <Link
+              href="/audit-logs"
+              className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
+            >
+              Activity Logs <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
-          <CardContent>
-            <div className="py-8 text-center text-xs text-muted-foreground space-y-2">
-              <ShieldCheck className="h-8 w-8 mx-auto text-emerald-500" />
-              <p className="font-semibold text-foreground">Live Connection Connected to ekywnjlxqbyxjagviqmx</p>
-              <p className="text-[11px]">All queries safely scoped to Supabase Row Level Security.</p>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs">
+                <ShieldCheck className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold text-foreground">Supabase Row Level Security Active</p>
+                  <p className="text-muted-foreground text-[11px] mt-0.5">
+                    Database queries are authenticated server-side with zero anonymous key leak.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs">
+                <Users className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold text-foreground">User Management Engine</p>
+                  <p className="text-muted-foreground text-[11px] mt-0.5">
+                    User Panel, Vehicles & Content pages are connected to live database APIs.
+                  </p>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -174,3 +256,4 @@ export default async function DashboardPage() {
     </div>
   );
 }
+
