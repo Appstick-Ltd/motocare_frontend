@@ -103,51 +103,12 @@ export default async function SubscriptionPlansPage() {
           Subscription Plans & Multi-Currency Pricing
         </h1>
         <p className="text-xs text-muted-foreground mt-1 font-medium">
-          Manage currency-wise pricing tiers (Free, Standard, Premium) and plan entitlements connected live to Supabase.
+          Manage currency-wise pricing tiers (Free, Standard, Premium) connected live to Supabase.
         </p>
       </div>
 
       {/* Main Multi-Currency Pricing Manager connected to Supabase */}
       <CurrencyPricingManagerClient initialPricings={dbPricings} />
-
-      {/* Subscription Tier Overview Cards */}
-      <div className="space-y-4">
-        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-          <ShieldCheck className="h-5 w-5 text-orange-500" /> Plan Entitlements & Features
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {plans.map((p) => (
-            <Card key={p.id} className="relative flex flex-col justify-between border border-border/70 hover:border-orange-500/50 transition-all duration-300 shadow-sm hover:shadow-md">
-              <div>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base font-bold text-foreground">{p.name}</CardTitle>
-                    <Badge variant="success" className="text-[10px] uppercase font-bold">{p.status}</Badge>
-                  </div>
-                  <CardDescription className="text-xs mt-1 font-medium">{p.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-2xl font-black text-orange-600 dark:text-orange-400">
-                    {formatCurrency(p.price)}
-                    <span className="text-xs text-muted-foreground font-normal"> / {p.billing_cycle}</span>
-                  </div>
-
-                  <div className="space-y-2 pt-3 border-t border-border/60 text-xs">
-                    <p className="font-extrabold text-muted-foreground uppercase text-[10px] tracking-wider">Plan Entitlements:</p>
-                    {p.features?.map((f: string, i: number) => (
-                      <div key={i} className="flex items-center gap-2 font-medium">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                        <span>{f}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

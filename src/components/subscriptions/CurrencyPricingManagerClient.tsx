@@ -277,13 +277,6 @@ export function CurrencyPricingManagerClient({ initialPricings }: CurrencyPricin
                 <List className="h-3.5 w-3.5" /> Table View
               </Button>
             </div>
-
-            <Button
-              onClick={openAddModal}
-              className="h-9 px-4 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs shadow-md gap-1.5"
-            >
-              <Plus className="h-4 w-4" /> Add Country / Currency
-            </Button>
           </div>
         </CardHeader>
 
