@@ -44,9 +44,10 @@ export function Header({
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search users, vehicles, maintenance records... (⌘K)"
+            placeholder="Search users, vehicles, user activity, content... (⌘K)"
             className="w-full h-9 rounded-lg border bg-muted/30 pl-9 pr-4 text-xs focus:outline-none focus:ring-1 focus:ring-ring transition-colors"
           />
+
         </div>
       </div>
 
