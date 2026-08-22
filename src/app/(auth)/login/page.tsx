@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Sparkles, ShieldCheck, Lock, Mail, AlertCircle, ArrowRight } from "lucide-react";
+import { ShieldCheck, Lock, Mail, AlertCircle, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
 export default function LoginPage() {
@@ -81,9 +82,10 @@ export default function LoginPage() {
 
       <Card className="w-full max-w-md border-slate-800 bg-slate-900/90 text-white shadow-2xl backdrop-blur-md">
         <CardHeader className="space-y-3 text-center pb-2">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white shadow-lg shadow-blue-500/25">
-            <Sparkles className="h-6 w-6" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 p-2 shadow-lg backdrop-blur-md border border-white/20">
+            <Image src="/logo.png" alt="MotoCare Logo" width={56} height={56} className="h-full w-full object-contain" />
           </div>
+
           <div>
             <CardTitle className="text-2xl font-bold tracking-tight text-white">
               MotoCare Super Admin

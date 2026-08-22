@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
@@ -24,6 +25,7 @@ import {
   X,
   Sparkles,
 } from "lucide-react";
+
 
 interface NavItem {
   title: string;
@@ -139,8 +141,8 @@ export function Sidebar({ className }: { className?: string }) {
     >
       {/* Brand Header */}
       <div className="flex items-center gap-3 px-6 py-5 border-b border-sidebar-border">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white shadow-md shadow-blue-500/20">
-          <Sparkles className="h-5 w-5" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted/40 p-1 shadow-sm shrink-0">
+          <Image src="/logo.png" alt="MotoCare Logo" width={40} height={40} className="h-full w-full object-contain" />
         </div>
         <div>
           <h1 className="font-bold text-base tracking-tight text-sidebar-foreground flex items-center gap-1.5">
@@ -149,6 +151,7 @@ export function Sidebar({ className }: { className?: string }) {
           <p className="text-xs text-sidebar-foreground/60">Super Admin Portal</p>
         </div>
       </div>
+
 
       {/* Navigation Links */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">

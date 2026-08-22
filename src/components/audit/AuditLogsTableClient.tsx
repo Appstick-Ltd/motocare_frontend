@@ -13,93 +13,11 @@ interface AuditLogsTableClientProps {
   initialLogs: AuditLog[];
 }
 
-const sampleActivities: AuditLog[] = [
-  {
-    id: "act-1",
-    admin_id: "u-super-1",
-    admin_email: "admin@motocare.app",
-    action: "USER_LOGIN",
-    resource: "Auth Session",
-    resource_id: "sess-9921",
-    details: {
-      user_name: "Super Admin",
-      ip: "103.22.14.5",
-      device: "MacBook Pro (Chrome 128)",
-      location: "Dhaka, Bangladesh",
-      status: "Success",
-    },
-    ip_address: "103.22.14.5",
-    created_at: new Date(Date.now() - 5 * 60 * 1000).toISOString(), // 5 mins ago
-  },
-  {
-    id: "act-2",
-    admin_id: "u-2",
-    admin_email: "tonmay.sen@motocare.com",
-    action: "USER_LOGIN",
-    resource: "Auth Session",
-    resource_id: "sess-9920",
-    details: {
-      user_name: "Tonmay Sen",
-      ip: "116.58.201.12",
-      device: "iPhone 15 Pro (Safari)",
-      location: "Khulna, Bangladesh",
-      status: "Success",
-    },
-    ip_address: "116.58.201.12",
-    created_at: new Date(Date.now() - 35 * 60 * 1000).toISOString(), // 35 mins ago
-  },
-  {
-    id: "act-3",
-    admin_id: "u-3",
-    admin_email: "karim.ahmed@example.com",
-    action: "USER_LOGIN",
-    resource: "Auth Session",
-    resource_id: "sess-9919",
-    details: {
-      user_name: "Karim Ahmed",
-      ip: "103.112.44.88",
-      device: "Windows 11 (Edge)",
-      location: "Chittagong, Bangladesh",
-      status: "Success",
-    },
-    ip_address: "103.112.44.88",
-    created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-  },
-  {
-    id: "act-4",
-    admin_id: "u-super-1",
-    admin_email: "admin@motocare.app",
-    action: "UPDATE_USER_STATUS",
-    resource: "profiles",
-    resource_id: "u-4",
-    details: {
-      target_user: "rahim.chowdhury@example.com",
-      previous_status: "active",
-      new_status: "suspended",
-    },
-    ip_address: "103.22.14.5",
-    created_at: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-  },
-  {
-    id: "act-5",
-    admin_id: "u-5",
-    admin_email: "samira.khan@example.com",
-    action: "USER_LOGOUT",
-    resource: "Auth Session",
-    resource_id: "sess-9915",
-    details: {
-      user_name: "Samira Khan",
-      device: "Android 14 (Chrome)",
-    },
-    ip_address: "103.22.14.99",
-    created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-  },
-];
-
 export function AuditLogsTableClient({ initialLogs }: AuditLogsTableClientProps) {
   const [activeTab, setActiveTab] = useState<"all" | "login" | "admin">("all");
-  const combinedLogs = initialLogs.length > 0 ? initialLogs : sampleActivities;
+  const combinedLogs = initialLogs;
   const [selectedDetails, setSelectedDetails] = useState<Record<string, unknown> | null>(null);
+
 
   const filteredLogs = combinedLogs.filter((log) => {
     if (activeTab === "login") return log.action.includes("LOGIN") || log.action.includes("LOGOUT");

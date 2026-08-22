@@ -19,57 +19,14 @@ interface UserTableClientProps {
   currentAdminRole: UserRole;
 }
 
-const sampleUsers: Profile[] = [
-  {
-    id: "u-1",
-    email: "tonmay.sen@motocare.com",
-    full_name: "Tonmay Sen",
-    phone: "+880 1711-223344",
-    role: "SUPER_ADMIN",
-    status: "active",
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "u-2",
-    email: "karim.ahmed@example.com",
-    full_name: "Karim Ahmed",
-    phone: "+880 1819-887766",
-    role: "USER",
-    status: "active",
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "u-3",
-    email: "samira.khan@example.com",
-    full_name: "Samira Khan",
-    phone: "+880 1611-998877",
-    role: "MODERATOR",
-    status: "active",
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "u-4",
-    email: "rahim.chowdhury@example.com",
-    full_name: "Rahim Chowdhury",
-    phone: "+880 1912-334455",
-    role: "USER",
-    status: "suspended",
-    created_at: new Date().toISOString(),
-  },
-];
-
 export function UserTableClient({ initialUsers, currentAdminRole }: UserTableClientProps) {
-  const [showSampleData, setShowSampleData] = useState<boolean>(initialUsers.length === 0);
-  const [users, setUsers] = useState<Profile[]>(
-    initialUsers.length > 0 ? initialUsers : sampleUsers
-  );
+  const [users, setUsers] = useState<Profile[]>(initialUsers);
   const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
   const [dialogType, setDialogType] = useState<"suspend" | "activate" | "role" | null>(null);
   const [newRole, setNewRole] = useState<UserRole>("USER");
 
-  const displayUsers = initialUsers.length > 0
-    ? users
-    : (showSampleData ? users : []);
+  const displayUsers = users;
+
 
   const handleStatusToggle = async () => {
     if (!selectedUser) return;
@@ -207,33 +164,22 @@ export function UserTableClient({ initialUsers, currentAdminRole }: UserTableCli
     <div className="space-y-4">
       {initialUsers.length === 0 && (
         <Card className="border-blue-500/20 bg-blue-500/5 dark:bg-blue-500/10">
-          <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-blue-500/15 text-blue-500">
-                <Database className="h-4 w-4" />
-              </div>
-              <div className="text-xs">
-                <p className="font-semibold text-foreground flex items-center gap-1.5">
-                  Live Supabase DB Status: <span className="text-blue-500 font-bold">0 Rows in `profiles` table</span>
-                </p>
-                <p className="text-muted-foreground mt-0.5">
-                  No registered profiles exist in database yet. Toggle sample user accounts to preview UI.
-                </p>
-              </div>
+          <CardContent className="p-4 flex items-center gap-3 text-xs">
+            <div className="p-2 rounded-lg bg-blue-500/15 text-blue-500">
+              <Database className="h-4 w-4" />
             </div>
-
-            <Button
-              variant={showSampleData ? "default" : "outline"}
-              size="sm"
-              onClick={() => setShowSampleData(!showSampleData)}
-              className="text-xs gap-1.5 shrink-0"
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              {showSampleData ? "Showing Sample Users" : "Load Sample Users Preview"}
-            </Button>
+            <div>
+              <p className="font-semibold text-foreground">
+                Live Supabase DB Status: <span className="text-blue-500 font-bold">0 Rows in `profiles` table</span>
+              </p>
+              <p className="text-muted-foreground mt-0.5">
+                No registered user profiles found in database. New user registrations will appear here in real-time.
+              </p>
+            </div>
           </CardContent>
         </Card>
       )}
+
 
       <DataTable columns={columns} data={displayUsers} searchPlaceholder="Search users by name, email..." />
 
