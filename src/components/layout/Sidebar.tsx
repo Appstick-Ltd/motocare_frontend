@@ -45,71 +45,43 @@ const navItems: { group: string; items: NavItem[] }[] = [
     ],
   },
   {
-    group: "Management",
+    group: "User Management",
     items: [
       {
-        title: "Users",
+        title: "User Panel",
         href: "/users",
         icon: Users,
         children: [
           { title: "All Users", href: "/users" },
           { title: "Active Users", href: "/users?status=active" },
-          { title: "Suspended", href: "/users?status=suspended" },
+          { title: "Suspended Users", href: "/users?status=suspended" },
         ],
       },
       {
-        title: "Vehicles",
+        title: "User Activity",
+        href: "/audit-logs",
+        icon: History,
+      },
+    ],
+  },
+  {
+    group: "Vehicle Management",
+    items: [
+      {
+        title: "All Vehicles",
         href: "/vehicles",
         icon: Car,
         children: [
-          { title: "All Vehicles", href: "/vehicles" },
+          { title: "Vehicles List", href: "/vehicles" },
           { title: "Vehicle Types", href: "/vehicles/types" },
           { title: "Brands & Models", href: "/vehicles/brands" },
         ],
       },
-      {
-        title: "Maintenance",
-        href: "/maintenance",
-        icon: Wrench,
-        children: [
-          { title: "Service Records", href: "/maintenance" },
-          { title: "Service Categories", href: "/maintenance/categories" },
-        ],
-      },
     ],
   },
   {
-    group: "Billing & Plans",
+    group: "Content Management",
     items: [
-      {
-        title: "Subscriptions",
-        href: "/subscriptions",
-        icon: CreditCard,
-        children: [
-          { title: "Subscribers", href: "/subscriptions" },
-          { title: "Plans Manager", href: "/subscriptions/plans" },
-        ],
-      },
-      {
-        title: "Payments",
-        href: "/payments",
-        icon: Receipt,
-      },
-    ],
-  },
-  {
-    group: "Engagement & Content",
-    items: [
-      {
-        title: "Notifications",
-        href: "/notifications",
-        icon: Bell,
-      },
-      {
-        title: "Reports",
-        href: "/reports",
-        icon: BarChart3,
-      },
       {
         title: "Content",
         href: "/content/privacy-policy",
@@ -120,20 +92,20 @@ const navItems: { group: string; items: NavItem[] }[] = [
           { title: "About Us", href: "/content/about" },
         ],
       },
+      {
+        title: "Notifications",
+        href: "/notifications",
+        icon: Bell,
+      },
     ],
   },
   {
-    group: "System & Governance",
+    group: "Settings & Access",
     items: [
       {
         title: "Admin Access",
         href: "/admins",
         icon: ShieldCheck,
-      },
-      {
-        title: "Audit Logs",
-        href: "/audit-logs",
-        icon: History,
       },
       {
         title: "App Settings",
@@ -144,15 +116,15 @@ const navItems: { group: string; items: NavItem[] }[] = [
   },
 ];
 
+
 export function Sidebar({ className }: { className?: string }) {
   const pathname = usePathname();
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({
-    Users: true,
-    Vehicles: true,
-    Maintenance: false,
-    Subscriptions: false,
+    "User Panel": true,
+    "All Vehicles": true,
     Content: false,
   });
+
 
   const toggleSubmenu = (title: string) => {
     setOpenSubmenus((prev) => ({ ...prev, [title]: !prev[title] }));

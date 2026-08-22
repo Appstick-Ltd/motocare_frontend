@@ -25,62 +25,51 @@ export default async function DashboardPage() {
   // Fetch real counts from Supabase database safely
   const [
     { count: totalUsers },
-    { count: activeUsers },
     { count: totalVehicles },
-    { count: totalMaintenance },
-    { count: totalFuelLogs },
+    { count: totalAuditLogs },
     { data: recentUsers },
   ] = await Promise.all([
     supabase.from("profiles").select("*", { count: "exact", head: true }),
-    supabase.from("profiles").select("*", { count: "exact", head: true }),
     supabase.from("vehicles").select("*", { count: "exact", head: true }),
-    supabase.from("service_records").select("*", { count: "exact", head: true }),
-    supabase.from("fuel_logs").select("*", { count: "exact", head: true }),
+    supabase.from("audit_logs").select("*", { count: "exact", head: true }),
     supabase.from("profiles").select("*").order("created_at", { ascending: false }).limit(5),
   ]);
 
   const statCards = [
     {
-      title: "Total Users",
+      title: "User Panel",
       value: totalUsers ?? 0,
-      subtext: `${activeUsers ?? 0} Registered profiles`,
+      subtext: "Registered user accounts",
       icon: Users,
       color: "text-blue-500",
       bg: "bg-blue-500/10",
     },
     {
-      title: "Registered Vehicles",
+      title: "All Vehicles",
       value: totalVehicles ?? 0,
-      subtext: "Tracked fleet vehicles",
+      subtext: "Total registered vehicles",
       icon: Car,
       color: "text-indigo-500",
       bg: "bg-indigo-500/10",
     },
     {
-      title: "Service Jobs Logged",
-      value: totalMaintenance ?? 0,
-      subtext: "Service records in DB",
-      icon: Wrench,
+      title: "User Activity Logs",
+      value: totalAuditLogs ?? 0,
+      subtext: "Logged system events",
+      icon: Activity,
       color: "text-emerald-500",
       bg: "bg-emerald-500/10",
     },
     {
-      title: "Fuel Logs Logged",
-      value: totalFuelLogs ?? 0,
-      subtext: "Fuel Refill Telemetry Entries",
-      icon: CreditCard,
-      color: "text-amber-500",
-      bg: "bg-amber-500/10",
-    },
-    {
       title: "Content Pages",
       value: 3,
-      subtext: "Privacy, Terms, About Us",
+      subtext: "Privacy, Terms & About Us",
       icon: DollarSign,
       color: "text-purple-500",
       bg: "bg-purple-500/10",
     },
   ];
+
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
@@ -100,7 +89,8 @@ export default async function DashboardPage() {
       </div>
 
       {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
