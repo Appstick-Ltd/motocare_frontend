@@ -143,8 +143,8 @@ export function Sidebar({ className }: { className?: string }) {
           <Sparkles className="h-5 w-5" />
         </div>
         <div>
-          <h1 className="font-bold text-base tracking-tight text-white flex items-center gap-1.5">
-            MotoCare <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 font-semibold uppercase">Admin</span>
+          <h1 className="font-bold text-base tracking-tight text-sidebar-foreground flex items-center gap-1.5">
+            MotoCare <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold uppercase">Admin</span>
           </h1>
           <p className="text-xs text-sidebar-foreground/60">Super Admin Portal</p>
         </div>
@@ -172,11 +172,11 @@ export function Sidebar({ className }: { className?: string }) {
                         onClick={() => toggleSubmenu(item.title)}
                         className={cn(
                           "w-full flex items-center justify-between px-3 py-2 text-xs font-medium rounded-lg transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                          isActive ? "text-white font-semibold" : "text-sidebar-foreground/80"
+                          isActive ? "text-sidebar-foreground font-semibold" : "text-sidebar-foreground/80"
                         )}
                       >
                         <div className="flex items-center gap-3">
-                          <Icon className="h-4 w-4 text-blue-400" />
+                          <Icon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                           <span>{item.title}</span>
                         </div>
                         {isOpen ? (
@@ -191,12 +191,12 @@ export function Sidebar({ className }: { className?: string }) {
                         className={cn(
                           "flex items-center justify-between px-3 py-2 text-xs font-medium rounded-lg transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                           isActive
-                            ? "bg-blue-600/15 text-blue-400 font-semibold border-l-2 border-blue-500"
+                            ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold border-l-2 border-blue-500"
                             : "text-sidebar-foreground/80"
                         )}
                       >
                         <div className="flex items-center gap-3">
-                          <Icon className="h-4 w-4 text-blue-400" />
+                          <Icon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                           <span>{item.title}</span>
                         </div>
                         {item.badge && (
@@ -217,9 +217,9 @@ export function Sidebar({ className }: { className?: string }) {
                               key={child.title}
                               href={child.href}
                               className={cn(
-                                "block px-2.5 py-1.5 text-[11px] font-medium rounded-md transition-colors hover:text-white",
+                                "block px-2.5 py-1.5 text-[11px] font-medium rounded-md transition-colors hover:text-sidebar-foreground",
                                 isChildActive
-                                  ? "text-blue-400 font-semibold bg-sidebar-accent/50"
+                                  ? "text-blue-600 dark:text-blue-400 font-semibold bg-blue-500/10"
                                   : "text-sidebar-foreground/60"
                               )}
                             >
@@ -240,13 +240,14 @@ export function Sidebar({ className }: { className?: string }) {
       {/* Footer / System Security Indicator */}
       <div className="p-4 border-t border-sidebar-border">
         <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-sidebar-accent/50 border border-sidebar-border/80">
-          <ShieldAlert className="h-4 w-4 text-emerald-400 shrink-0" />
+          <ShieldAlert className="h-4 w-4 text-emerald-500 shrink-0" />
           <div className="text-[11px]">
-            <p className="font-medium text-white">RLS Active</p>
+            <p className="font-medium text-sidebar-foreground">RLS Active</p>
             <p className="text-sidebar-foreground/60 text-[10px]">Session verified server-side</p>
           </div>
         </div>
       </div>
+
     </aside>
   );
 }
