@@ -108,36 +108,25 @@ export function VehicleTableClient({ initialVehicles }: VehicleTableClientProps)
 
   return (
     <div className="space-y-4">
-      {/* DB Telemetry State Switcher Banner */}
+      {/* DB Telemetry State Banner */}
       {initialVehicles.length === 0 && (
         <Card className="border-blue-500/20 bg-blue-500/5 dark:bg-blue-500/10">
-          <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-blue-500/15 text-blue-500">
-                <Database className="h-4 w-4" />
-              </div>
-              <div className="text-xs">
-                <p className="font-semibold text-foreground flex items-center gap-1.5">
-                  Live Supabase DB Status: <span className="text-blue-500 font-bold">0 Rows in `vehicles` table</span>
-                </p>
-                <p className="text-muted-foreground mt-0.5">
-                  Your live Supabase database currently has no vehicle records registered. Toggle sample fleet data to preview UI.
-                </p>
-              </div>
+          <CardContent className="p-4 flex items-center gap-3 text-xs">
+            <div className="p-2 rounded-lg bg-blue-500/15 text-blue-500">
+              <Database className="h-4 w-4" />
             </div>
-
-            <Button
-              variant={showSampleData ? "default" : "outline"}
-              size="sm"
-              onClick={() => setShowSampleData(!showSampleData)}
-              className="text-xs gap-1.5 shrink-0"
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              {showSampleData ? "Showing Sample Fleet" : "Load Sample Fleet Preview"}
-            </Button>
+            <div>
+              <p className="font-semibold text-foreground">
+                Live Supabase DB Status: <span className="text-blue-500 font-bold">0 Rows in `vehicles` table</span>
+              </p>
+              <p className="text-muted-foreground mt-0.5">
+                Your live Supabase database currently has no vehicle records registered. New registered vehicles will appear here in real-time.
+              </p>
+            </div>
           </CardContent>
         </Card>
       )}
+
 
       <DataTable
         columns={columns}
