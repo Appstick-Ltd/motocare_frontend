@@ -85,8 +85,8 @@ export function Header({
         {/* Admin Profile & Logout */}
         <div className="flex items-center gap-3 pl-1">
           <div className="flex items-center gap-2.5 p-1 rounded-xl hover:bg-muted/40 transition-colors cursor-pointer">
-            <div className="h-8.5 w-8.5 rounded-full bg-gradient-to-tr from-orange-600 via-amber-500 to-orange-500 flex items-center justify-center text-white font-extrabold text-xs shadow-sm ring-2 ring-orange-500/20">
-              {userName.slice(0, 2).toUpperCase()}
+            <div className="h-8.5 w-8.5 rounded-full bg-gradient-to-tr from-orange-600 via-amber-500 to-orange-500 flex items-center justify-center text-white font-extrabold text-xs shadow-sm ring-2 ring-orange-500/20" suppressHydrationWarning>
+              {userName ? userName.slice(0, 2).toUpperCase() : "SA"}
             </div>
             <div className="hidden lg:block text-left text-xs">
               <p className="font-bold text-foreground leading-none">{userName}</p>

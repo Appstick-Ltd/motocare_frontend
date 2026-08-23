@@ -60,12 +60,14 @@ export async function updateAppContentAction(data: ContentInput) {
     details: { content_type: parsed.contentType, title: parsed.title },
   });
 
-  const pathMap: Record<string, string> = {
-    privacy_policy: "/content/privacy-policy",
-    terms_conditions: "/content/terms",
-    about_us: "/content/about",
+  const pathMap: Record<string, string[]> = {
+    privacy_policy: ["/content/privacy-policy", "/privacy-policy"],
+    terms_conditions: ["/content/terms", "/terms-condition"],
+    about_us: ["/content/about", "/about-us"],
   };
 
-  revalidatePath(pathMap[parsed.contentType] || "/content");
+  const paths = pathMap[parsed.contentType] || ["/content"];
+  paths.forEach((p) => revalidatePath(p));
+
   return { success: true };
 }

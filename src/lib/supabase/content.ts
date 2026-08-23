@@ -23,6 +23,22 @@ export function cleanAndUnescapeHtml(html: string): string {
   cleaned = cleaned.replace(/^<h1>\s*&lt;html/i, "<html");
   cleaned = cleaned.replace(/^<h1>\s*&lt;/i, "<");
 
+  // Strip extension-injected attributes like bis_skin_checked="1"
+  cleaned = cleaned.replace(/\s*bis_skin_checked="[^"]*"/gi, "");
+
+  // If content looks like Markdown / plain text (no HTML tags like <p>, <h1>, <div>)
+  if (!/<[a-z1-6][\s\S]*>/i.test(cleaned)) {
+    cleaned = cleaned
+      .replace(/^### (.*$)/gim, "<h3>$1</h3>")
+      .replace(/^## (.*$)/gim, "<h2>$1</h2>")
+      .replace(/^# (.*$)/gim, "<h1>$1</h1>")
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      .replace(/\n\n/g, "</p><p>")
+      .replace(/\n/g, "<br/>");
+    cleaned = `<p>${cleaned}</p>`;
+  }
+
   return cleaned;
 }
 

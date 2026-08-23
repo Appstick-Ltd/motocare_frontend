@@ -7,8 +7,7 @@ export const metadata = {
   description: "Official MotoCare Privacy Policy and data protection terms.",
 };
 
-// Revalidate content on demand or every 60 seconds
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function PrivacyPolicyPage() {
   const contentData = await getAppContent("privacy_policy");
@@ -36,9 +35,9 @@ export default async function PrivacyPolicyPage() {
     : "August 2026";
 
   return (
-    <article className="space-y-6 animate-in fade-in duration-300">
+    <article className="space-y-6 animate-in fade-in duration-300" suppressHydrationWarning>
       {/* Page Header */}
-      <div className="border-b border-border/70 pb-6 space-y-2">
+      <div className="border-b border-border/70 pb-6 space-y-2" suppressHydrationWarning>
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 text-xs font-bold border border-orange-500/20 shadow-2xs">
           <ShieldCheck className="h-3.5 w-3.5" /> Official Privacy Policy
         </div>
@@ -59,6 +58,7 @@ export default async function PrivacyPolicyPage() {
       <div
         className="privacy-policy prose-editor html-content-view rounded-2xl border border-border/70 bg-card p-6 md:p-10 shadow-xs leading-relaxed"
         dangerouslySetInnerHTML={{ __html: cleanHtml }}
+        suppressHydrationWarning
       />
     </article>
   );

@@ -9,10 +9,10 @@ export default function PublicContentLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-sans selection:bg-orange-500 selection:text-white" suppressHydrationWarning>
       {/* Public Navbar */}
-      <header className="border-b border-border/70 bg-card/85 backdrop-blur-md sticky top-0 z-30 shadow-xs">
-        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+      <header className="border-b border-border/70 bg-card/85 backdrop-blur-md sticky top-0 z-30 shadow-xs" suppressHydrationWarning>
+        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between gap-4" suppressHydrationWarning>
           <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-orange-500/20 to-amber-500/20 p-1 border border-orange-500/30 flex items-center justify-center shadow-xs">
               <Image src="/logo.png" alt="MotoCare Logo" width={32} height={32} className="h-full w-full object-contain" />

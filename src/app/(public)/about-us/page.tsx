@@ -7,7 +7,7 @@ export const metadata = {
   description: "About MotoCare vehicle management platform.",
 };
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function AboutUsPage() {
   let contentData = await getAppContent("about_us");

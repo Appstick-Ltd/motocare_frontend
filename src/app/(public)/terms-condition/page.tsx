@@ -7,7 +7,7 @@ export const metadata = {
   description: "MotoCare Terms and Conditions of service.",
 };
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function TermsConditionPage() {
   // Query Supabase for terms_conditions or terms_condition

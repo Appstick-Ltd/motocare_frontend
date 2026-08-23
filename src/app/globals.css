@@ -239,15 +239,18 @@ body {
 /* Rich Text / Privacy Policy / WYSIWYG Content Typography */
 .privacy-policy,
 .prose-editor,
-.html-content-view {
+.html-content-view,
+.ProseMirror {
   font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
   line-height: 1.75;
   color: var(--color-foreground);
+  outline: none !important;
 }
 
 .privacy-policy h1,
 .prose-editor h1,
-.html-content-view h1 {
+.html-content-view h1,
+.ProseMirror h1 {
   font-size: 1.85rem;
   font-weight: 800;
   letter-spacing: -0.025em;
@@ -259,32 +262,36 @@ body {
 
 .privacy-policy h2,
 .prose-editor h2,
-.html-content-view h2 {
+.html-content-view h2,
+.ProseMirror h2 {
   font-size: 1.35rem;
   font-weight: 700;
   letter-spacing: -0.015em;
-  margin-top: 2rem;
-  margin-bottom: 0.85rem;
-  padding-bottom: 0.4rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.3rem;
   border-bottom: 1px solid var(--color-border);
   color: var(--color-foreground);
 }
 
 .privacy-policy h3,
 .prose-editor h3,
-.html-content-view h3 {
+.html-content-view h3,
+.ProseMirror h3 {
   font-size: 1.125rem;
   font-weight: 600;
-  margin-top: 1.35rem;
-  margin-bottom: 0.5rem;
+  margin-top: 1.1rem;
+  margin-bottom: 0.4rem;
   color: var(--color-foreground);
 }
 
 .privacy-policy p,
 .prose-editor p,
-.html-content-view p {
+.html-content-view p,
+.ProseMirror p {
   margin-top: 0;
-  margin-bottom: 1.15rem;
+  margin-bottom: 0.6rem;
+  line-height: 1.6;
   color: var(--color-foreground);
 }
 
