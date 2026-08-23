@@ -477,8 +477,8 @@ export function ContentEditor({ contentType, defaultTitle, defaultContent }: Con
           {!isCodeView && editor && (
             <div className="rounded-t-lg bg-muted/90 border border-b-0 p-2.5 flex flex-wrap items-center gap-1.5 text-xs shadow-xs">
               {/* Font Family Selector */}
-              <div className="flex items-center gap-1 bg-card px-2 py-1 rounded border border-border shadow-2xs">
-                <Type className="h-3.5 w-3.5 text-muted-foreground" title="Font Family" />
+              <div className="flex items-center gap-1 bg-card px-2 py-1 rounded border border-border shadow-2xs" title="Font Family">
+                <Type className="h-3.5 w-3.5 text-muted-foreground" />
                 <select
                   onChange={(e) => {
                     const font = e.target.value;
@@ -517,8 +517,8 @@ export function ContentEditor({ contentType, defaultTitle, defaultContent }: Con
               </div>
 
               {/* Line Spacing / Line Height Dropdown */}
-              <div className="flex items-center gap-1 bg-card px-2 py-1 rounded border border-border shadow-2xs">
-                <LineHeightIcon className="h-3.5 w-3.5 text-muted-foreground" title="Line Spacing" />
+              <div className="flex items-center gap-1 bg-card px-2 py-1 rounded border border-border shadow-2xs" title="Line Spacing">
+                <LineHeightIcon className="h-3.5 w-3.5 text-muted-foreground" />
                 <select
                   onChange={(e) => {
                     const height = e.target.value;
@@ -682,8 +682,8 @@ export function ContentEditor({ contentType, defaultTitle, defaultContent }: Con
               <div className="h-5 w-px bg-border my-auto mx-1" />
 
               {/* Interactive Color Picker */}
-              <div className="flex items-center gap-1 bg-card px-2 py-0.5 rounded border border-border shadow-2xs">
-                <Palette className="h-3.5 w-3.5 text-muted-foreground" title="Text Color" />
+              <div className="flex items-center gap-1 bg-card px-2 py-0.5 rounded border border-border shadow-2xs" title="Text Color">
+                <Palette className="h-3.5 w-3.5 text-muted-foreground" />
                 <input
                   type="color"
                   value={customColor}
@@ -715,8 +715,8 @@ export function ContentEditor({ contentType, defaultTitle, defaultContent }: Con
               </div>
 
               {/* Highlight Picker */}
-              <div className="flex items-center gap-1 bg-card px-2 py-0.5 rounded border border-border shadow-2xs">
-                <Highlighter className="h-3.5 w-3.5 text-muted-foreground" title="Highlight Color" />
+              <div className="flex items-center gap-1 bg-card px-2 py-0.5 rounded border border-border shadow-2xs" title="Highlight Color">
+                <Highlighter className="h-3.5 w-3.5 text-muted-foreground" />
                 <input
                   type="color"
                   value={customHighlight}

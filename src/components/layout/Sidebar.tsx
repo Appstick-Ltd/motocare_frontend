@@ -24,6 +24,7 @@ import {
   Menu,
   X,
   Sparkles,
+  Headphones,
 } from "lucide-react";
 
 
@@ -103,6 +104,11 @@ const navItems: { group: string; items: NavItem[] }[] = [
         title: "Notifications",
         href: "/notifications",
         icon: Bell,
+      },
+      {
+        title: "Help & Support",
+        href: "/support",
+        icon: Headphones,
       },
       {
         title: "Content Pages",

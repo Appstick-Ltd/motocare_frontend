@@ -12,12 +12,12 @@ export default async function DashboardLayout({
   const session = await requireAdminSession();
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground antialiased">
+    <div className="flex h-screen overflow-hidden bg-background text-foreground antialiased">
       {/* Sidebar Navigation */}
       <Sidebar />
 
       {/* Main Content Workspace */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         <Header
           userEmail={session.profile?.email}
           userName={session.profile?.full_name || "Super Admin"}

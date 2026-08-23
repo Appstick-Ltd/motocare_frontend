@@ -145,3 +145,15 @@ export interface AuditLog {
   ip_address: string | null;
   created_at: string;
 }
+
+export interface ContactMessage {
+  id: string;
+  user_id?: string | null;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  status: 'pending' | 'replied' | 'resolved' | string;
+  created_at: string;
+}
+
