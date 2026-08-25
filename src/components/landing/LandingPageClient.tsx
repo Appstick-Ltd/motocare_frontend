@@ -141,9 +141,9 @@ const steps = [
 ];
 
 const stats = [
-  { value: "15K+", label: "Active Users"     },
-  { value: "50K+", label: "Services Logged"  },
-  { value: "200+", label: "Partner Garages"  },
+  { value: "50K+", label: "Active Users"     },
+  { value: "200K+", label: "Services Logged" },
+  { value: "1K+",  label: "Partner Garages"  },
   { value: "4.8★", label: "App Rating"       },
 ];
 
@@ -207,7 +207,7 @@ export default function LandingPageClient({ isLoggedIn = false }: LandingPageCli
           style={{ background: `${ORANGE}12`, border: `1px solid ${ORANGE}28`, color: ORANGE }}
         >
           <Star className="w-3.5 h-3.5 fill-current" />
-          #1 Vehicle Management Platform in Bangladesh
+          #1 Vehicle Management Platform Worldwide
         </motion.div>
 
         {/* Headline */}
@@ -236,7 +236,7 @@ export default function LandingPageClient({ isLoggedIn = false }: LandingPageCli
           animate="visible"
           className="mt-5 text-center text-base md:text-lg max-w-xl leading-relaxed text-[#6B7280]"
         >
-          Track services, fuel, and expenses — get timely reminders for your bike or car. Built for vehicle owners across Bangladesh.
+          Track services, fuel, and expenses — get timely reminders for your bike or car. Built for vehicle owners around the world.
         </motion.p>
 
         {/* Buttons */}
@@ -458,7 +458,7 @@ export default function LandingPageClient({ isLoggedIn = false }: LandingPageCli
               ))}
             </div>
             <p className="text-lg md:text-xl leading-relaxed italic text-[#374151]">
-              &ldquo;MotoCare has completely changed how I manage my Yamaha R15. I never miss a service and I know exactly where every taka goes.&rdquo;
+              &ldquo;MotoCare has completely changed how I manage my Yamaha R15. I never miss a service and I know exactly where every penny goes.&rdquo;
             </p>
             <div className="mt-6 flex items-center justify-center gap-3">
               <div
@@ -469,7 +469,7 @@ export default function LandingPageClient({ isLoggedIn = false }: LandingPageCli
               </div>
               <div className="text-left">
                 <p className="font-semibold text-sm text-[#17244C]">Rafiq Ahmed</p>
-                <p className="text-xs text-[#9CA3AF]">Bike Owner, Dhaka</p>
+                <p className="text-xs" style={{ color: "#9CA3AF" }}>Bike Owner, London</p>
               </div>
             </div>
           </div>
@@ -489,7 +489,7 @@ export default function LandingPageClient({ isLoggedIn = false }: LandingPageCli
               <CheckCircle2 className="w-10 h-10 mx-auto mb-4 text-white/80" />
               <h2 className="text-3xl md:text-4xl font-extrabold">Start for Free Today</h2>
               <p className="mt-3 text-sm md:text-base max-w-md mx-auto text-white/80">
-                Join thousands of vehicle owners who trust MotoCare to keep their rides in perfect shape.
+                Join vehicle owners worldwide who trust MotoCare to keep their rides in perfect shape.
               </p>
               <Link
                 href="/login"
@@ -519,7 +519,7 @@ export default function LandingPageClient({ isLoggedIn = false }: LandingPageCli
           </div>
           <div className="flex items-center gap-1.5 text-sm text-[#9CA3AF]">
             <Phone className="w-3.5 h-3.5" />
-            <span>Support: +880 1700-000000</span>
+            <span>support@motocare.app</span>
           </div>
           <p className="text-xs text-[#D1D5DB]">© 2024 MotoCare. All rights reserved.</p>
         </div>

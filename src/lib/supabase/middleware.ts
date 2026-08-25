@@ -66,7 +66,6 @@ export async function updateSession(request: NextRequest) {
     const isAuthPage = pathname === "/login";
     const isUnauthorizedPage = pathname === "/unauthorized";
     const isDashboardRoute =
-      pathname === "/" ||
       pathname.startsWith("/dashboard") ||
       pathname.startsWith("/users") ||
       pathname.startsWith("/vehicles") ||
