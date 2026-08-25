@@ -505,23 +505,59 @@ export default function LandingPageClient({ isLoggedIn = false }: LandingPageCli
 
       {/* ── FOOTER ── */}
       <footer className="py-10 px-6" style={{ borderTop: "1px solid #F0F0F0" }}>
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: ORANGE }}
-            >
-              <Wrench className="w-4 h-4 text-white" />
+        <div className="max-w-6xl mx-auto space-y-6">
+          {/* Top row */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <div
+                className="w-7 h-7 rounded-lg flex items-center justify-center"
+                style={{ background: ORANGE }}
+              >
+                <Wrench className="w-4 h-4 text-white" />
+              </div>
+              <span className="font-bold text-sm text-[#17244C]">
+                Moto<span style={{ color: ORANGE }}>Care</span>
+              </span>
             </div>
-            <span className="font-bold text-sm text-[#17244C]">
-              Moto<span style={{ color: ORANGE }}>Care</span>
-            </span>
+
+            {/* Contact */}
+            <div className="flex items-center gap-1.5 text-sm text-[#9CA3AF]">
+              <Phone className="w-3.5 h-3.5" />
+              <span>support@motocare.app</span>
+            </div>
+
+            {/* Copyright */}
+            <p className="text-xs text-[#D1D5DB]">© 2024 MotoCare. All rights reserved.</p>
           </div>
-          <div className="flex items-center gap-1.5 text-sm text-[#9CA3AF]">
-            <Phone className="w-3.5 h-3.5" />
-            <span>support@motocare.app</span>
+
+          {/* Bottom attribution row */}
+          <div
+            className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-5 text-xs text-[#9CA3AF]"
+            style={{ borderTop: "1px solid #F0F0F0" }}
+          >
+            <span>A product of</span>
+            <a
+              href="https://shopstick.com.bd/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-[#17244C] hover:underline transition-colors"
+              style={{ color: "#EB8D00" }}
+            >
+              Shopstick
+            </a>
+            <span className="hidden sm:inline text-[#E5E7EB]">•</span>
+            <span>Powered by</span>
+            <a
+              href="https://appstick.com.bd/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold hover:underline transition-colors"
+              style={{ color: "#17244C" }}
+            >
+              Appstick Ltd
+            </a>
           </div>
-          <p className="text-xs text-[#D1D5DB]">© 2024 MotoCare. All rights reserved.</p>
         </div>
       </footer>
 

@@ -65,6 +65,7 @@ export async function updateSession(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
     const isAuthPage = pathname === "/login";
     const isUnauthorizedPage = pathname === "/unauthorized";
+    const isPublicPage = pathname === "/" || pathname === "/account-created";
     const isDashboardRoute =
       pathname.startsWith("/dashboard") ||
       pathname.startsWith("/users") ||
@@ -79,12 +80,13 @@ export async function updateSession(request: NextRequest) {
       pathname.startsWith("/audit-logs") ||
       pathname.startsWith("/settings");
 
-    // Allow static assets and auth callback routes
+    // Allow static assets, public pages, and auth callback routes
     if (
       pathname.startsWith("/_next") ||
       pathname.startsWith("/api") ||
       pathname.includes(".") ||
-      isUnauthorizedPage
+      isUnauthorizedPage ||
+      isPublicPage
     ) {
       return response;
     }
