@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MotoCare Super Admin Dashboard",
-  description: "Production-ready Web Administration Portal for MotoCare Ecosystem",
+  title: "MotoCare | Premier Vehicle Management, Motorbike & Car Maintenance Platform",
+  description: "Complete maintenance, repair, fuel tracking & emergency assistance for motorbikes and cars.",
   icons: {
     icon: "/logo.png",
     shortcut: "/logo.png",

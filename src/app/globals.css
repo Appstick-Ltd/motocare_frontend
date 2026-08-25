@@ -208,6 +208,100 @@ body {
   pointer-events: none;
 }
 
+/* Landing Page Custom Animations */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(0.5deg);
+  }
+}
+
+@keyframes floatReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(10px) rotate(-0.5deg);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes radarSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes radarPulseRing {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 5s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: floatReverse 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.animate-radar-spin {
+  animation: radarSpin 20s linear infinite;
+}
+
+.animate-radar-ring {
+  animation: radarPulseRing 3s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+/* MotoCare AppColors Theme Utilities */
+.glow-amber-md {
+  box-shadow: 0 0 25px -3px rgba(235, 141, 0, 0.35);
+}
+
+.glow-amber-lg {
+  box-shadow: 0 0 50px -5px rgba(235, 141, 0, 0.5);
+}
+
+.glow-malta-lg {
+  box-shadow: 0 0 50px -5px rgba(255, 94, 18, 0.5);
+}
+
+.glow-navy-lg {
+  box-shadow: 0 0 50px -5px rgba(23, 36, 76, 0.6);
+}
+
+.bg-tech-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(235, 141, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(235, 141, 0, 0.05) 1px, transparent 1px);
+}
+
 .gradient-button {
   border-radius: 8px;
   background: linear-gradient(180deg, #FF5E13 0%, #FF8D1F 100%);

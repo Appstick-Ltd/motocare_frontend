@@ -1,12 +1,9 @@
-import { redirect } from "next/navigation";
 import { getCurrentUserSession } from "@/lib/auth/session";
+import LandingPageClient from "@/components/landing/LandingPageClient";
 
 export default async function HomePage() {
   const session = await getCurrentUserSession();
+  const isLoggedIn = !!(session && session.profile);
 
-  if (session && (session.profile?.role === "SUPER_ADMIN" || session.profile?.role === "ADMIN" || session.profile?.role === "MODERATOR")) {
-    redirect("/dashboard");
-  } else {
-    redirect("/login");
-  }
+  return <LandingPageClient isLoggedIn={isLoggedIn} />;
 }
