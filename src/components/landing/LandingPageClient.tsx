@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useInView, Variants } from "framer-motion";
@@ -11,25 +11,18 @@ import {
   ShieldCheck,
   Smartphone,
   CheckCircle2,
-  MapPin,
   Clock,
   Sparkles,
   Shield,
   FileText,
   Info,
   Mail,
-  Zap,
-  Award,
-  PhoneCall,
   Activity,
   Bot,
   Car,
   TrendingUp,
   FileSpreadsheet,
-  AlertTriangle,
-  Layers,
   ArrowRight,
-  HelpCircle,
 } from "lucide-react";
 
 // ── App Store Badges (Pixel-Perfect Components) ──────────────────────────────
@@ -40,6 +33,7 @@ export function AppStoreButton({ className = "" }: { className?: string }) {
       href="#app-download"
       className={`inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-black/90 hover:bg-black text-white border border-white/20 hover:border-white/40 shadow-lg hover:shadow-xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 group ${className}`}
       aria-label="Download on the App Store"
+      suppressHydrationWarning
     >
       <svg
         className="w-7 h-7 fill-white shrink-0 group-hover:scale-105 transition-transform"
@@ -62,6 +56,7 @@ export function GooglePlayButton({ className = "" }: { className?: string }) {
       href="#app-download"
       className={`inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-black/90 hover:bg-black text-white border border-white/20 hover:border-white/40 shadow-lg hover:shadow-xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 group ${className}`}
       aria-label="Get it on Google Play"
+      suppressHydrationWarning
     >
       <svg
         className="w-6 h-6 shrink-0 group-hover:scale-105 transition-transform"
@@ -96,7 +91,7 @@ export function GooglePlayButton({ className = "" }: { className?: string }) {
 // ── Animation Variants ──────────────────────────────────────────────────────
 
 const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
@@ -105,7 +100,7 @@ const fadeUp: Variants = {
 };
 
 const fadeUpDelayed = (delay: number): Variants => ({
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
@@ -119,7 +114,7 @@ const stagger: Variants = {
 };
 
 const cardItem: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
@@ -139,7 +134,17 @@ function InView({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const visible = useInView(ref, { once: true, margin: "-60px" });
+  const visible = useInView(ref, { once: true, margin: "-50px" });
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       ref={ref}
@@ -161,7 +166,17 @@ function InViewStagger({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const visible = useInView(ref, { once: true, margin: "-60px" });
+  const visible = useInView(ref, { once: true, margin: "-50px" });
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       ref={ref}
@@ -202,7 +217,7 @@ const pipelineSteps = [
   {
     step: "04",
     title: "Predictive Health",
-    desc: "Calculates tire wear, component degradation & warns before breakdown occurs.",
+    desc: "Calculates component degradation & warns before breakdown occurs.",
     icon: TrendingUp,
     color: "#8B5CF6",
   },
@@ -291,10 +306,19 @@ const stats = [
 ];
 
 export default function LandingPageClient() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-[#070913] text-slate-100 font-sans selection:bg-orange-500 selection:text-white relative overflow-x-hidden" suppressHydrationWarning>
+    <div
+      className="min-h-screen bg-[#070913] text-slate-100 font-sans selection:bg-orange-500 selection:text-white relative overflow-x-hidden"
+      suppressHydrationWarning
+    >
       {/* ── Background Glow Effects ── */}
-      <div className="fixed inset-0 pointer-events-none z-0">
+      <div className="fixed inset-0 pointer-events-none z-0" suppressHydrationWarning>
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-gradient-to-b from-orange-500/15 via-amber-500/5 to-transparent rounded-full blur-3xl opacity-70" />
         <div className="absolute top-[35%] -left-40 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-3xl" />
         <div className="absolute top-[65%] -right-40 w-[500px] h-[500px] bg-orange-600/10 rounded-full blur-3xl" />
@@ -309,7 +333,7 @@ export default function LandingPageClient() {
       </div>
 
       {/* ── NAVBAR ── */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#070913]/85 backdrop-blur-xl border-b border-white/5">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#070913]/85 backdrop-blur-xl border-b border-white/5" suppressHydrationWarning>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
@@ -347,7 +371,7 @@ export default function LandingPageClient() {
               <Bot className="w-3.5 h-3.5" /> AI Assistant
             </a>
             <a href="#vehicles" className="hover:text-orange-400 transition-colors">
-              Bikes & Cars
+              Bikes &amp; Cars
             </a>
             <Link href="/about-us" className="hover:text-orange-400 transition-colors">
               About Us
@@ -368,65 +392,40 @@ export default function LandingPageClient() {
       </header>
 
       {/* ── HERO SECTION ── */}
-      <section className="relative pt-32 sm:pt-40 pb-20 sm:pb-28 px-4 sm:px-6 lg:px-8 z-10">
+      <section className="relative pt-32 sm:pt-40 pb-20 sm:pb-28 px-4 sm:px-6 lg:px-8 z-10" suppressHydrationWarning>
         <div className="max-w-5xl mx-auto text-center">
           {/* Top Pill Badge */}
-          <motion.div
-            variants={fadeUpDelayed(0.05)}
-            initial="hidden"
-            animate="visible"
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-orange-500/10 border border-orange-500/25 text-orange-400 mb-6 shadow-xs backdrop-blur-md"
-          >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-orange-500/10 border border-orange-500/25 text-orange-400 mb-6 shadow-xs backdrop-blur-md">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Complete Vehicle Management + Predictive AI Maintenance Assistant</span>
-          </motion.div>
+          </div>
 
           {/* Main Title */}
-          <motion.h1
-            variants={fadeUpDelayed(0.12)}
-            initial="hidden"
-            animate="visible"
-            className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.08] text-white"
-          >
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.08] text-white">
             Your Complete Vehicle Care. <br />
             <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">
               Driven by AI Intelligence.
             </span>
-          </motion.h1>
+          </h1>
 
           {/* Subtitle */}
-          <motion.p
-            variants={fadeUpDelayed(0.2)}
-            initial="hidden"
-            animate="visible"
-            className="mt-6 text-base sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal"
-          >
-            MotoCare is more than just a record keeper. From mileage & fuel tracking to smart service reminders, digital document vaults, and proactive AI diagnostics — it understands what your vehicle needs before breakdowns happen.
-          </motion.p>
+          <p className="mt-6 text-base sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal">
+            MotoCare is more than just a record keeper. From mileage &amp; fuel tracking to smart service reminders, digital document vaults, and proactive AI diagnostics — it understands what your vehicle needs before breakdowns happen.
+          </p>
 
           {/* ── APP STORE & GOOGLE PLAY BUTTONS (HERO) ── */}
-          <motion.div
-            variants={fadeUpDelayed(0.28)}
-            initial="hidden"
-            animate="visible"
-            className="mt-8 flex flex-wrap items-center justify-center gap-4"
-          >
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <AppStoreButton />
             <GooglePlayButton />
-          </motion.div>
+          </div>
 
           {/* Key Metric Pills */}
-          <motion.div
-            variants={fadeUpDelayed(0.34)}
-            initial="hidden"
-            animate="visible"
-            className="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm font-medium text-slate-300"
-          >
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm font-medium text-slate-300">
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Multi-Vehicle Garage
             </span>
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Date & Mileage Reminders
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Date &amp; Mileage Reminders
             </span>
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Fuel Economy (km/L)
@@ -434,15 +433,10 @@ export default function LandingPageClient() {
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Conversational AI Assistant
             </span>
-          </motion.div>
+          </div>
 
           {/* ── HERO SHOWCASE 100% REALISTIC PHOTOGRAPH ── */}
-          <motion.div
-            variants={fadeUpDelayed(0.4)}
-            initial="hidden"
-            animate="visible"
-            className="mt-12 sm:mt-16 relative rounded-3xl p-2 sm:p-3 bg-gradient-to-b from-white/15 to-white/5 border border-white/10 shadow-2xl shadow-orange-500/10 overflow-hidden"
-          >
+          <div className="mt-12 sm:mt-16 relative rounded-3xl p-2 sm:p-3 bg-gradient-to-b from-white/15 to-white/5 border border-white/10 shadow-2xl shadow-orange-500/10 overflow-hidden">
             <div className="relative rounded-2xl overflow-hidden aspect-[16/9] max-h-[520px]">
               <Image
                 src="/images/app-mobile-hand.jpg"
@@ -457,7 +451,7 @@ export default function LandingPageClient() {
               {/* Floating live badge */}
               <div className="absolute top-4 right-4 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-xs font-semibold flex items-center gap-2 text-white">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Live Telemetry & AI Analytics</span>
+                <span>Live Telemetry &amp; AI Analytics</span>
               </div>
 
               {/* Floating bottom feature pill */}
@@ -479,12 +473,12 @@ export default function LandingPageClient() {
                 </a>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* ── STATS COUNTER ── */}
-      <section className="py-8 px-4 sm:px-6 lg:px-8 border-y border-white/5 bg-white/[0.01]">
+      <section className="py-8 px-4 sm:px-6 lg:px-8 border-y border-white/5 bg-white/[0.01]" suppressHydrationWarning>
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           {stats.map((s, idx) => (
             <InView key={idx} variants={fadeUpDelayed(idx * 0.08)}>
@@ -498,7 +492,7 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── CORE DIFFERENTIATOR PIPELINE ARCHITECTURE ── */}
-      <section id="pipeline" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10">
+      <section id="pipeline" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10" suppressHydrationWarning>
         <div className="max-w-6xl mx-auto">
           <InView className="text-center max-w-3xl mx-auto mb-16">
             <span className="text-xs font-bold uppercase tracking-widest text-orange-400">
@@ -508,7 +502,7 @@ export default function LandingPageClient() {
               Beyond Simple Record Keeping
             </h2>
             <p className="text-slate-300 text-sm sm:text-base mt-3 leading-relaxed">
-              MotoCare doesn&apos;t just store your data — it proactively calculates maintenance degradation, triggers timely warnings, and gives AI-guided insights before problems turn into costly repairs.
+              MotoCare does not just store your data — it proactively calculates maintenance degradation, triggers timely warnings, and gives AI-guided insights before problems turn into costly repairs.
             </p>
           </InView>
 
@@ -543,7 +537,7 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── ALL CORE MODULES FEATURE GRID ── */}
-      <section id="modules" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10 bg-white/[0.01] border-y border-white/5">
+      <section id="modules" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10 bg-white/[0.01] border-y border-white/5" suppressHydrationWarning>
         <div className="max-w-7xl mx-auto">
           <InView className="text-center max-w-3xl mx-auto mb-16">
             <span className="text-xs font-bold uppercase tracking-widest text-orange-400">
@@ -589,7 +583,7 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── AI VEHICLE ASSISTANT SPOTLIGHT ── */}
-      <section id="ai-assistant" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10">
+      <section id="ai-assistant" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10" suppressHydrationWarning>
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-12 gap-10 items-center">
             {/* Left text column */}
@@ -600,7 +594,7 @@ export default function LandingPageClient() {
               </div>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
                 Meet MotoCare AI: <br />
-                Your 24/7 Virtual Mechanic & Advisor
+                Your 24/7 Virtual Mechanic &amp; Advisor
               </h2>
               <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
                 Got a question about your car or motorcycle? MotoCare AI analyzes your specific vehicle model, year, driving habits, and current mileage to deliver instant, personalized guidance.
@@ -610,15 +604,15 @@ export default function LandingPageClient() {
               <div className="space-y-3 pt-2">
                 <div className="p-3.5 rounded-xl bg-slate-900/80 border border-white/10 text-xs sm:text-sm text-slate-200 flex items-start gap-3">
                   <span className="text-orange-400 font-bold shrink-0">Q:</span>
-                  <span>&ldquo;When is my next engine oil & filter change due?&rdquo;</span>
+                  <span>When is my next engine oil &amp; filter change due?</span>
                 </div>
                 <div className="p-3.5 rounded-xl bg-slate-900/80 border border-white/10 text-xs sm:text-sm text-slate-200 flex items-start gap-3">
                   <span className="text-orange-400 font-bold shrink-0">Q:</span>
-                  <span>&ldquo;What does the yellow ABS or Check Engine warning light mean?&rdquo;</span>
+                  <span>What does the yellow ABS or Check Engine warning light mean?</span>
                 </div>
                 <div className="p-3.5 rounded-xl bg-slate-900/80 border border-white/10 text-xs sm:text-sm text-slate-200 flex items-start gap-3">
                   <span className="text-orange-400 font-bold shrink-0">Q:</span>
-                  <span>&ldquo;What critical parts should I inspect at 25,000 km?&rdquo;</span>
+                  <span>What critical parts should I inspect at 25,000 km?</span>
                 </div>
               </div>
 
@@ -643,7 +637,7 @@ export default function LandingPageClient() {
                   <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-black/80 backdrop-blur-md border border-white/15 text-xs text-slate-200 flex items-center justify-between">
                     <span className="font-semibold text-white flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-pink-400 animate-pulse" />
-                      MotoCare AI Health Score: 92/100
+                      <span>MotoCare AI Health Score: 92/100</span>
                     </span>
                     <span className="text-pink-400 font-bold">Optimal Condition</span>
                   </div>
@@ -655,14 +649,14 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── BIKES & CARS REALISTIC SHOWCASE ── */}
-      <section id="vehicles" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10 bg-white/[0.01] border-y border-white/5">
+      <section id="vehicles" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10 bg-white/[0.01] border-y border-white/5" suppressHydrationWarning>
         <div className="max-w-6xl mx-auto">
           <InView className="text-center max-w-2xl mx-auto mb-14">
             <span className="text-xs font-bold uppercase tracking-widest text-orange-400">
               Built for Every Ride
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">
-              Bikes, Scooters, Sedans, SUVs & Commercial
+              Bikes, Scooters, Sedans, SUVs &amp; Commercial
             </h2>
             <p className="text-slate-400 text-sm sm:text-base mt-3">
               Customized maintenance schedule formulas tailored for both motorbikes and multi-cylinder cars.
@@ -683,7 +677,7 @@ export default function LandingPageClient() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold bg-orange-500 text-white shadow-md">
-                      Motorbikes & Scooters
+                      <span>Motorbikes &amp; Scooters</span>
                     </div>
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">Motorbike Care Suite</h3>
@@ -711,10 +705,10 @@ export default function LandingPageClient() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white shadow-md">
-                      Sedans, SUVs & Fleets
+                      <span>Sedans, SUVs &amp; Fleets</span>
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-2">Car & Fleet Management</h3>
+                  <h3 className="text-xl font-bold text-white mb-2">Car &amp; Fleet Management</h3>
                   <p className="text-sm text-slate-300 leading-relaxed">
                     Comprehensive logbook for coolant flushes, transmission oils, battery diagnostics, wheel alignment, periodic AC service, and road fitness renewals.
                   </p>
@@ -730,7 +724,7 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── GET APP PROMO BANNER WITH STORE BADGES ── */}
-      <section id="app-download" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 relative z-10">
+      <section id="app-download" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 relative z-10" suppressHydrationWarning>
         <InView className="max-w-4xl mx-auto">
           <div className="relative rounded-3xl p-8 sm:p-14 overflow-hidden bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 shadow-2xl text-white">
             <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none" />
@@ -765,7 +759,7 @@ export default function LandingPageClient() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="border-t border-white/10 bg-[#05070d] relative z-10">
+      <footer className="border-t border-white/10 bg-[#05070d] relative z-10" suppressHydrationWarning>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             {/* Brand column */}
@@ -824,7 +818,7 @@ export default function LandingPageClient() {
                 </li>
                 <li>
                   <a href="#vehicles" className="hover:text-orange-400 transition-colors">
-                    Bikes & Cars
+                    Bikes &amp; Cars
                   </a>
                 </li>
                 <li>
@@ -838,7 +832,7 @@ export default function LandingPageClient() {
             {/* Legal & Compliance */}
             <div>
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 mb-4">
-                Legal & Privacy
+                Legal &amp; Privacy
               </h4>
               <ul className="space-y-2.5 text-xs text-slate-400">
                 <li>
@@ -854,7 +848,7 @@ export default function LandingPageClient() {
                     href="/terms-condition"
                     className="hover:text-orange-400 transition-colors flex items-center gap-1.5"
                   >
-                    <FileText className="w-3.5 h-3.5 text-amber-400" /> Terms & Conditions
+                    <FileText className="w-3.5 h-3.5 text-amber-400" /> Terms &amp; Conditions
                   </Link>
                 </li>
                 <li>

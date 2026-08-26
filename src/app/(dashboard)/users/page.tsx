@@ -49,17 +49,16 @@ export default async function UsersPage() {
     <div className="space-y-6 animate-in fade-in duration-200">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">User Directory</h1>
-          <p className="text-xs text-muted-foreground mt-1">
-            Manage MotoCare registered accounts, roles, access statuses, and permissions.
+          <h1 className="text-2xl font-extrabold tracking-tight text-white">
+            User Profiles Directory
+          </h1>
+          <p className="text-xs text-slate-400 mt-1">
+            Complete data overview of all registered user records from the Supabase <span className="font-mono text-orange-400">profiles</span> table.
           </p>
         </div>
       </div>
 
-      <UserTableClient
-        initialUsers={(profiles as Profile[]) || []}
-        currentAdminRole={session.profile.role as UserRole}
-      />
+      <UserTableClient initialUsers={(profiles as Profile[]) || []} />
     </div>
   );
 }

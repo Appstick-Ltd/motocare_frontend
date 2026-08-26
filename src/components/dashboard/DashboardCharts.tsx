@@ -63,68 +63,69 @@ export function DashboardCharts({
   return (
     <div className="space-y-6">
       {/* Main Analytics Section - Activity Over Time */}
-      <Card className="shadow-sm border-border/70 hover:shadow-md transition-shadow">
-        <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-border/60">
+      <div className="rounded-2xl border border-white/10 bg-slate-900/70 backdrop-blur-md overflow-hidden shadow-xl">
+        <div className="flex flex-row items-center justify-between p-6 border-b border-white/10 bg-white/[0.02]">
           <div>
-            <CardTitle className="text-base font-bold flex items-center gap-2">
-              <Activity className="h-4.5 w-4.5 text-orange-500" /> Live Platform Telemetry & Growth
-            </CardTitle>
-            <CardDescription className="text-xs mt-0.5 font-medium">
+            <h3 className="text-base font-bold flex items-center gap-2 text-white">
+              <Activity className="h-4.5 w-4.5 text-orange-400" /> Live Platform Telemetry &amp; Growth
+            </h3>
+            <p className="text-xs text-slate-400 mt-0.5 font-normal">
               Real-time user accounts and vehicle fleet data connected to Supabase PostgreSQL
-            </CardDescription>
+            </p>
           </div>
-          <div className="hidden sm:flex items-center gap-3 text-xs font-semibold">
-            <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-orange-500" />
-              <span>User Registrations</span>
+          <div className="hidden sm:flex items-center gap-4 text-xs font-semibold">
+            <div className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-orange-500 shadow-xs" />
+              <span className="text-slate-300">User Registrations</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
-              <span>Vehicle Fleet</span>
+            <div className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-amber-400 shadow-xs" />
+              <span className="text-slate-300">Vehicle Fleet</span>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="pt-6 h-80">
+        </div>
+        <div className="p-6 h-80">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={mainActivityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="userGrowthGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FF5E13" stopOpacity={0.35} />
+                  <stop offset="5%" stopColor="#FF5E13" stopOpacity={0.4} />
                   <stop offset="95%" stopColor="#FF5E13" stopOpacity={0.0} />
                 </linearGradient>
                 <linearGradient id="vehicleGrowthGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.25} />
+                  <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.3} />
                   <stop offset="95%" stopColor="#F59E0B" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-              <XAxis dataKey="month" stroke="#888888" fontSize={11} tickLine={false} />
-              <YAxis stroke="#888888" fontSize={11} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" opacity={0.07} />
+              <XAxis dataKey="month" stroke="#64748b" fontSize={11} tickLine={false} />
+              <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "hsl(var(--card))",
-                  borderColor: "hsl(var(--border))",
-                  borderRadius: "0.75rem",
+                  backgroundColor: "#0c101c",
+                  borderColor: "rgba(255,255,255,0.12)",
+                  borderRadius: "1rem",
                   fontSize: "12px",
-                  boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)",
+                  color: "#ffffff",
+                  boxShadow: "0 20px 25px -5px rgba(0,0,0,0.5)",
                 }}
               />
               <Area type="monotone" dataKey="users" stroke="#FF5E13" strokeWidth={3} fillOpacity={1} fill="url(#userGrowthGrad)" />
               <Area type="monotone" dataKey="vehicles" stroke="#F59E0B" strokeWidth={2.5} fillOpacity={1} fill="url(#vehicleGrowthGrad)" />
             </AreaChart>
           </ResponsiveContainer>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Secondary Analytics Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* User Account Status Donut */}
-        <Card className="shadow-sm border-border/70 hover:shadow-md transition-shadow">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-bold">Live Supabase User Breakdown</CardTitle>
-            <CardDescription className="text-xs">Active vs suspended vs pending profiles</CardDescription>
-          </CardHeader>
-          <CardContent className="h-64 flex flex-col items-center justify-center">
+        <div className="rounded-2xl border border-white/10 bg-slate-900/70 backdrop-blur-md p-6 shadow-xl flex flex-col justify-between">
+          <div>
+            <h4 className="text-sm font-bold text-white">Live Supabase User Breakdown</h4>
+            <p className="text-xs text-slate-400 mt-0.5">Active vs suspended vs pending profiles</p>
+          </div>
+          <div className="h-64 flex flex-col items-center justify-center">
             <ResponsiveContainer width="100%" height="70%">
               <PieChart>
                 <Pie
@@ -142,82 +143,83 @@ export function DashboardCharts({
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    borderColor: "hsl(var(--border))",
-                    borderRadius: "0.5rem",
+                    backgroundColor: "#0c101c",
+                    borderColor: "rgba(255,255,255,0.12)",
+                    borderRadius: "0.75rem",
                     fontSize: "12px",
+                    color: "#ffffff",
                   }}
                 />
               </PieChart>
             </ResponsiveContainer>
-            <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-muted-foreground mt-1">
+            <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-medium text-slate-300 mt-2">
               {userDistributionData.map((item) => (
-                <div key={item.name} className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                <div key={item.name} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[11px]">
+                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
                   <span>{item.name} ({item.value}%)</span>
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Active Reminders & Maintenance */}
-        <Card className="shadow-sm border-border/70 hover:shadow-md transition-shadow">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-bold flex items-center gap-2">
-              <BellRing className="h-4 w-4 text-orange-500" /> Database Metrics Summary
-            </CardTitle>
-            <CardDescription className="text-xs font-medium">Real-time record counts from Supabase</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4 pt-1">
+        <div className="rounded-2xl border border-white/10 bg-slate-900/70 backdrop-blur-md p-6 shadow-xl flex flex-col justify-between">
+          <div>
+            <h4 className="text-sm font-bold text-white flex items-center gap-2">
+              <BellRing className="h-4 w-4 text-orange-400" /> Database Metrics Summary
+            </h4>
+            <p className="text-xs text-slate-400 mt-0.5 font-normal">Real-time record counts from Supabase</p>
+          </div>
+          <div className="space-y-4 pt-4">
             {reminderProgressData.map((item) => (
-              <div key={item.label} className="space-y-1.5">
+              <div key={item.label} className="space-y-2">
                 <div className="flex items-center justify-between text-xs font-semibold">
-                  <span className="text-foreground">{item.label}</span>
-                  <span className="font-mono text-muted-foreground">{item.count} items</span>
+                  <span className="text-slate-200">{item.label}</span>
+                  <span className="font-mono text-orange-400 font-bold">{item.count} items</span>
                 </div>
-                <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden">
                   <div className={`h-full rounded-full ${item.color}`} style={{ width: `${item.percentage}%` }} />
                 </div>
               </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* System Health & Security */}
-        <Card className="shadow-sm border-border/70 hover:shadow-md transition-shadow md:col-span-2 lg:col-span-1">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-bold flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-emerald-500" /> System Integrity & Health
-            </CardTitle>
-            <CardDescription className="text-xs">Real-time infrastructure telemetry</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3.5 pt-1">
+        <div className="rounded-2xl border border-white/10 bg-slate-900/70 backdrop-blur-md p-6 shadow-xl flex flex-col justify-between md:col-span-2 lg:col-span-1">
+          <div>
+            <h4 className="text-sm font-bold text-white flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-emerald-400" /> System Integrity &amp; Health
+            </h4>
+            <p className="text-xs text-slate-400 mt-0.5">Real-time infrastructure telemetry</p>
+          </div>
+          <div className="space-y-3.5 pt-4">
             <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs">
               <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                <span className="font-semibold text-foreground">Supabase Database RLS</span>
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                <span className="font-semibold text-white">Supabase Database RLS</span>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 uppercase">Active</span>
+              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 uppercase border border-emerald-500/30">Active</span>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-xs">
               <div className="flex items-center gap-2.5">
-                <Wrench className="h-4 w-4 text-orange-500" />
-                <span className="font-semibold text-foreground">API Connection</span>
+                <Wrench className="h-4 w-4 text-orange-400" />
+                <span className="font-semibold text-white">API Connection</span>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-600 dark:text-orange-400 uppercase">Connected</span>
+              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-orange-500/20 text-orange-400 uppercase border border-orange-500/30">Connected</span>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs">
               <div className="flex items-center gap-2.5">
-                <TrendingUp className="h-4 w-4 text-blue-500" />
-                <span className="font-semibold text-foreground">Live Telemetry Mode</span>
+                <TrendingUp className="h-4 w-4 text-blue-400" />
+                <span className="font-semibold text-white">Live Telemetry Mode</span>
               </div>
-              <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-600 dark:text-blue-400">100% Genuine</span>
+              <span className="text-[10px] font-bold font-mono px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">100% Genuine</span>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );

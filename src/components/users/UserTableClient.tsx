@@ -1,112 +1,123 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
+import React from "react";
 import { type ColumnDef } from "@tanstack/react-table";
-import { Profile, UserRole, UserStatus } from "@/types/database.types";
+import { Profile, UserRole } from "@/types/database.types";
 import { DataTable } from "@/components/common/DataTable";
 import { StatusBadge } from "@/components/common/StatusBadge";
-import { ConfirmDialog } from "@/components/common/ConfirmDialog";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
-import { updateUserStatusAction, updateUserRoleAction } from "@/app/(dashboard)/users/actions";
-import { toast } from "sonner";
-import { Eye, Shield, UserX, UserCheck, ShieldCheck, Database, Sparkles, Crown, User } from "lucide-react";
+import {
+  Users,
+  Crown,
+  User as UserIcon,
+  Phone,
+  Calendar,
+  Fingerprint,
+  Sparkles,
+  ShieldCheck,
+} from "lucide-react";
 
 interface UserTableClientProps {
   initialUsers: Profile[];
-  currentAdminRole: UserRole;
+  currentAdminRole?: UserRole;
 }
 
-export function UserTableClient({ initialUsers, currentAdminRole }: UserTableClientProps) {
-  const [users, setUsers] = useState<Profile[]>(initialUsers);
-  const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
-  const [dialogType, setDialogType] = useState<"suspend" | "activate" | "role" | null>(null);
-  const [newRole, setNewRole] = useState<UserRole>("USER");
+export function UserTableClient({ initialUsers }: UserTableClientProps) {
+  const users = initialUsers;
 
-  const displayUsers = users;
-
-
-  const handleStatusToggle = async () => {
-    if (!selectedUser) return;
-    const targetStatus: UserStatus = selectedUser.status === "suspended" ? "active" : "suspended";
-    try {
-      await updateUserStatusAction(selectedUser.id, targetStatus);
-      toast.success(`User ${selectedUser.email} is now ${targetStatus}.`);
-      setUsers((prev) =>
-        prev.map((u) => (u.id === selectedUser.id ? { ...u, status: targetStatus } : u))
-      );
-    } catch (err: unknown) {
-      // Fallback local update for preview mode
-      setUsers((prev) =>
-        prev.map((u) => (u.id === selectedUser.id ? { ...u, status: targetStatus } : u))
-      );
-      toast.success(`Preview mode: User status updated to ${targetStatus}.`);
-    }
-  };
-
-  const handleRoleChange = async () => {
-    if (!selectedUser) return;
-    try {
-      await updateUserRoleAction(selectedUser.id, newRole);
-      toast.success(`Role updated to ${newRole} for ${selectedUser.email}.`);
-      setUsers((prev) =>
-        prev.map((u) => (u.id === selectedUser.id ? { ...u, role: newRole } : u))
-      );
-    } catch (err: unknown) {
-      setUsers((prev) =>
-        prev.map((u) => (u.id === selectedUser.id ? { ...u, role: newRole } : u))
-      );
-      toast.success(`Preview mode: Role updated to ${newRole}.`);
-    }
-  };
+  const totalUsers = users.length;
+  const activeUsers = users.filter((u) => u.status === "active" || !u.status).length;
+  const proUsers = users.filter(
+    (u) =>
+      u.is_pro ||
+      (u.subscription_plan &&
+        u.subscription_plan.toLowerCase() !== "free user" &&
+        u.subscription_plan.toLowerCase() !== "free")
+  ).length;
 
   const columns: ColumnDef<Profile, unknown>[] = [
     {
+      accessorKey: "id",
+      header: "User ID",
+      cell: ({ row }) => {
+        const id = row.original.id;
+        return (
+          <div className="flex items-center gap-1.5 font-mono text-[11px] text-slate-400">
+            <Fingerprint className="h-3.5 w-3.5 text-orange-400 shrink-0" />
+            <span title={id} className="cursor-help">
+              {id.length > 12 ? `${id.slice(0, 8)}...${id.slice(-4)}` : id}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "full_name",
-      header: "User Details",
+      header: "Full Name & Email",
       cell: ({ row }) => {
         const u = row.original;
+        const name = u.full_name || "Unnamed User";
+        const initials = (u.full_name || u.email || "U").slice(0, 2).toUpperCase();
+
         return (
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-orange-600 to-amber-500 text-white font-bold flex items-center justify-center text-xs shadow-xs">
-              {(u.full_name || u.email).slice(0, 2).toUpperCase()}
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-orange-600 via-amber-500 to-orange-500 text-white font-extrabold flex items-center justify-center text-xs shadow-md ring-1 ring-orange-500/30 shrink-0">
+              {initials}
             </div>
             <div>
-              <p className="font-semibold text-xs text-foreground">{u.full_name || "Unnamed User"}</p>
-              <p className="text-[11px] text-muted-foreground">{u.email}</p>
+              <p className="font-bold text-xs text-white">{name}</p>
+              <p className="text-[11px] text-slate-400">{u.email}</p>
             </div>
           </div>
         );
       },
     },
     {
+      accessorKey: "phone",
+      header: "Phone Number",
+      cell: ({ row }) => {
+        const phone = row.original.phone;
+        if (!phone) {
+          return <span className="text-slate-500 text-xs italic">Not provided</span>;
+        }
+        return (
+          <div className="flex items-center gap-1.5 text-xs text-slate-300 font-mono">
+            <Phone className="h-3 w-3 text-orange-400 shrink-0" />
+            <span>{phone}</span>
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "role",
-      header: "Role",
+      header: "Privilege Role",
       cell: ({ row }) => <StatusBadge status={row.original.role} />,
     },
     {
       accessorKey: "subscription_plan",
-      header: "Subscription Tier",
+      header: "Subscription Plan",
       cell: ({ row }) => {
         const u = row.original;
         const plan = u.subscription_plan;
-        const isPro = u.is_pro || (plan && plan.toLowerCase() !== "free user" && plan.toLowerCase() !== "free");
+        const isPro =
+          u.is_pro ||
+          (plan &&
+            plan.toLowerCase() !== "free user" &&
+            plan.toLowerCase() !== "free");
 
         if (isPro) {
           return (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-orange-600 dark:text-orange-400 border border-orange-500/30 shadow-2xs">
-              <Crown className="h-3.5 w-3.5 text-orange-500 fill-orange-500 shrink-0" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-orange-400 border border-orange-500/30 shadow-xs">
+              <Crown className="h-3 w-3 text-orange-400 fill-orange-400 shrink-0" />
               <span>Pro ({plan || "Pro Plan"})</span>
             </span>
           );
         }
 
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20">
-            <User className="h-3.5 w-3.5 text-slate-500 shrink-0" />
-            <span>Free User</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-white/5 text-slate-300 border border-white/10">
+            <UserIcon className="h-3 w-3 text-slate-400 shrink-0" />
+            <span>{plan || "Free User"}</span>
           </span>
         );
       },
@@ -119,153 +130,75 @@ export function UserTableClient({ initialUsers, currentAdminRole }: UserTableCli
     {
       accessorKey: "created_at",
       header: "Registered Date",
-      cell: ({ row }) => <span className="text-xs text-muted-foreground">{formatDate(row.original.created_at)}</span>,
+      cell: ({ row }) => (
+        <div className="flex items-center gap-1.5 text-xs text-slate-400">
+          <Calendar className="h-3 w-3 text-slate-500 shrink-0" />
+          <span>{formatDate(row.original.created_at)}</span>
+        </div>
+      ),
     },
     {
-      id: "actions",
-      header: "Actions",
+      accessorKey: "updated_at",
+      header: "Last Updated",
       cell: ({ row }) => {
-        const u = row.original;
-        const isSuperAdmin = currentAdminRole === "SUPER_ADMIN";
-
+        const updated = row.original.updated_at;
         return (
-          <div className="flex items-center gap-1.5">
-            <Link href={`/users/${u.id}`}>
-              <Button variant="ghost" size="icon" className="h-8 w-8" title="View Profile">
-                <Eye className="h-4 w-4 text-blue-500" />
-              </Button>
-            </Link>
-
-            {u.status === "active" ? (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-amber-500 hover:bg-amber-500/10"
-                title="Suspend User"
-                onClick={() => {
-                  setSelectedUser(u);
-                  setDialogType("suspend");
-                }}
-              >
-                <UserX className="h-4 w-4" />
-              </Button>
-            ) : (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-emerald-500 hover:bg-emerald-500/10"
-                title="Activate User"
-                onClick={() => {
-                  setSelectedUser(u);
-                  setDialogType("activate");
-                }}
-              >
-                <UserCheck className="h-4 w-4" />
-              </Button>
-            )}
-
-            {isSuperAdmin && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-purple-500 hover:bg-purple-500/10"
-                title="Change Privilege Role"
-                onClick={() => {
-                  setSelectedUser(u);
-                  setNewRole(u.role as UserRole);
-                  setDialogType("role");
-                }}
-              >
-                <Shield className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
+          <span className="text-xs text-slate-400">
+            {updated ? formatDate(updated) : "—"}
+          </span>
         );
       },
     },
   ];
 
   return (
-    <div className="space-y-4">
-      {initialUsers.length === 0 && (
-        <Card className="border-blue-500/20 bg-blue-500/5 dark:bg-blue-500/10">
-          <CardContent className="p-4 flex items-center gap-3 text-xs">
-            <div className="p-2 rounded-lg bg-blue-500/15 text-blue-500">
-              <Database className="h-4 w-4" />
-            </div>
-            <div>
-              <p className="font-semibold text-foreground">
-                Live Supabase DB Status: <span className="text-blue-500 font-bold">0 Rows in `profiles` table</span>
-              </p>
-              <p className="text-muted-foreground mt-0.5">
-                No registered user profiles found in database. New user registrations will appear here in real-time.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-
-      <DataTable columns={columns} data={displayUsers} searchPlaceholder="Search users by name, email..." />
-
-      {/* Confirmation Modal for Suspend/Activate */}
-      <ConfirmDialog
-        isOpen={dialogType === "suspend" || dialogType === "activate"}
-        onClose={() => setDialogType(null)}
-        onConfirm={handleStatusToggle}
-        title={dialogType === "suspend" ? "Suspend Account" : "Reactivate Account"}
-        description={`Are you sure you want to ${
-          dialogType === "suspend" ? "suspend" : "reactivate"
-        } access for ${selectedUser?.email}?`}
-        confirmText={dialogType === "suspend" ? "Suspend User" : "Activate User"}
-        isDestructive={dialogType === "suspend"}
-      />
-
-      {/* Role Change Modal */}
-      {dialogType === "role" && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
-          <div className="w-full max-w-md rounded-xl border bg-card p-6 shadow-2xl space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-full bg-purple-500/15 text-purple-500">
-                <ShieldCheck className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">Assign Admin Privilege</h3>
-                <p className="text-xs text-muted-foreground">User: {selectedUser.email}</p>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-semibold">Select Target Role:</label>
-              <select
-                value={newRole}
-                onChange={(e) => setNewRole(e.target.value as UserRole)}
-                className="w-full h-9 rounded-md border bg-transparent px-3 text-xs focus:ring-1 focus:ring-ring"
-              >
-                <option value="USER">USER (Standard Member)</option>
-                <option value="MODERATOR">MODERATOR (Moderation Staff)</option>
-                <option value="ADMIN">ADMIN (Full Admin Access)</option>
-                <option value="SUPER_ADMIN">SUPER_ADMIN (Owner / System Controller)</option>
-              </select>
-            </div>
-
-            <div className="flex justify-end gap-3 pt-4 border-t">
-              <Button variant="outline" size="sm" onClick={() => setDialogType(null)}>
-                Cancel
-              </Button>
-              <Button
-                size="sm"
-                onClick={async () => {
-                  await handleRoleChange();
-                  setDialogType(null);
-                }}
-              >
-                Save Privilege Role
-              </Button>
-            </div>
+    <div className="space-y-6">
+      {/* 3 Metric Overview Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="rounded-2xl p-5 bg-slate-900/70 border border-white/10 backdrop-blur-md shadow-xl flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Total Profiles
+            </span>
+            <p className="text-2xl font-extrabold text-white mt-1">{totalUsers}</p>
+          </div>
+          <div className="h-10 w-10 rounded-xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-400">
+            <Users className="h-5 w-5" />
           </div>
         </div>
-      )}
+
+        <div className="rounded-2xl p-5 bg-slate-900/70 border border-white/10 backdrop-blur-md shadow-xl flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Active Accounts
+            </span>
+            <p className="text-2xl font-extrabold text-emerald-400 mt-1">{activeUsers}</p>
+          </div>
+          <div className="h-10 w-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+        </div>
+
+        <div className="rounded-2xl p-5 bg-slate-900/70 border border-white/10 backdrop-blur-md shadow-xl flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Pro Members
+            </span>
+            <p className="text-2xl font-extrabold text-amber-400 mt-1">{proUsers}</p>
+          </div>
+          <div className="h-10 w-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <Sparkles className="h-5 w-5" />
+          </div>
+        </div>
+      </div>
+
+      {/* Profiles Database Table */}
+      <DataTable
+        columns={columns}
+        data={users}
+        searchPlaceholder="Search profiles by name, email, phone, user ID..."
+        emptyMessage="No profiles found in database."
+      />
     </div>
   );
 }

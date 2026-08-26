@@ -167,30 +167,38 @@ export function Sidebar({ className }: { className?: string }) {
   return (
     <aside
       className={cn(
-        "flex flex-col h-screen border-r bg-sidebar text-sidebar-foreground select-none shrink-0 transition-all duration-300 relative",
+        "flex flex-col h-screen border-r border-white/10 bg-[#05070d]/95 backdrop-blur-2xl text-slate-200 select-none shrink-0 transition-all duration-300 relative z-20 shadow-2xl",
         isCollapsed ? "w-20" : "w-64",
         className
       )}
     >
       {/* Brand Header */}
-      <div className="flex items-center gap-3.5 px-6 py-5 border-b border-sidebar-border/80">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-orange-500/20 to-amber-500/20 p-1.5 shadow-sm border border-orange-500/30 shrink-0">
-          <Image src="/logo.png" alt="MotoCare Logo" width={40} height={40} className="h-full w-full object-contain" />
+      <div className="flex items-center gap-3 px-5 py-5 border-b border-white/10">
+        <div className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 p-0.5 shadow-lg shadow-orange-500/20 shrink-0">
+          <div className="h-full w-full bg-[#0d1222] rounded-[14px] flex items-center justify-center p-1.5">
+            <Image
+              src="/logo.png"
+              alt="MotoCare Logo"
+              width={32}
+              height={32}
+              className="h-full w-full object-contain"
+            />
+          </div>
         </div>
         <div>
-          <h1 className="font-extrabold text-base tracking-tight text-sidebar-foreground flex items-center gap-1.5">
-            MotoCare <span className="text-[10px] px-2 py-0.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-extrabold uppercase shadow-2xs">Admin</span>
+          <h1 className="font-extrabold text-base tracking-tight text-white flex items-center gap-1.5">
+            Moto<span className="text-orange-500">Care</span>
+            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-extrabold uppercase shadow-sm">Admin</span>
           </h1>
-          <p className="text-[11px] font-medium text-sidebar-foreground/60">Fleet & User Management</p>
+          <p className="text-[10px] font-medium text-slate-400">Fleet &amp; Maintenance OS</p>
         </div>
       </div>
 
-
       {/* Navigation Links */}
-      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-6">
+      <div className="flex-1 overflow-y-auto px-3.5 py-5 space-y-6">
         {navItems.map((group) => (
           <div key={group.group} className="space-y-1.5">
-            <h2 className="px-3 text-[10px] font-extrabold text-sidebar-foreground/50 uppercase tracking-widest">
+            <h2 className="px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">
               {group.group}
             </h2>
 
@@ -207,38 +215,38 @@ export function Sidebar({ className }: { className?: string }) {
                       <button
                         onClick={() => toggleSubmenu(item.title)}
                         className={cn(
-                          "w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-semibold rounded-xl transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                          "w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-semibold rounded-xl transition-all duration-200",
                           isActive
-                            ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20 font-bold"
-                            : "text-sidebar-foreground/80"
+                            ? "bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 text-white shadow-lg shadow-orange-500/25 font-bold"
+                            : "text-slate-300 hover:bg-white/5 hover:text-white"
                         )}
                       >
                         <div className="flex items-center gap-3">
-                          <Icon className={cn("h-4 w-4 transition-transform group-hover:scale-110", isActive ? "text-white" : "text-orange-500 dark:text-orange-400")} />
+                          <Icon className={cn("h-4 w-4 transition-transform group-hover:scale-110", isActive ? "text-white" : "text-orange-400")} />
                           <span>{item.title}</span>
                         </div>
                         {isOpen ? (
-                          <ChevronDown className={cn("h-3.5 w-3.5", isActive ? "text-white/80" : "text-sidebar-foreground/50")} />
+                          <ChevronDown className={cn("h-3.5 w-3.5", isActive ? "text-white/80" : "text-slate-500")} />
                         ) : (
-                          <ChevronRight className={cn("h-3.5 w-3.5", isActive ? "text-white/80" : "text-sidebar-foreground/50")} />
+                          <ChevronRight className={cn("h-3.5 w-3.5", isActive ? "text-white/80" : "text-slate-500")} />
                         )}
                       </button>
                     ) : (
                       <Link
                         href={item.href || "#"}
                         className={cn(
-                          "flex items-center justify-between px-3.5 py-2.5 text-xs font-semibold rounded-xl transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                          "flex items-center justify-between px-3.5 py-2.5 text-xs font-semibold rounded-xl transition-all duration-200",
                           isActive
-                            ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20 font-bold"
-                            : "text-sidebar-foreground/80"
+                            ? "bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 text-white shadow-lg shadow-orange-500/25 font-bold"
+                            : "text-slate-300 hover:bg-white/5 hover:text-white"
                         )}
                       >
                         <div className="flex items-center gap-3">
-                          <Icon className={cn("h-4 w-4 transition-transform group-hover:scale-110", isActive ? "text-white" : "text-orange-500 dark:text-orange-400")} />
+                          <Icon className={cn("h-4 w-4 transition-transform group-hover:scale-110", isActive ? "text-white" : "text-orange-400")} />
                           <span>{item.title}</span>
                         </div>
                         {item.badge && (
-                          <span className={cn("px-2 py-0.5 text-[10px] rounded-full font-extrabold shadow-2xs", isActive ? "bg-white/20 text-white" : "bg-orange-500/10 text-orange-600 dark:text-orange-400")}>
+                          <span className={cn("px-2 py-0.5 text-[10px] rounded-full font-extrabold shadow-sm", isActive ? "bg-white/20 text-white" : "bg-orange-500/15 text-orange-400 border border-orange-500/30")}>
                             {item.badge}
                           </span>
                         )}
@@ -257,8 +265,8 @@ export function Sidebar({ className }: { className?: string }) {
                               className={cn(
                                 "block px-3 py-1.5 text-[11.5px] font-medium rounded-lg transition-all duration-150",
                                 isChildActive
-                                  ? "text-orange-600 dark:text-orange-400 font-extrabold bg-orange-500/10 border-l-2 border-orange-500"
-                                  : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+                                  ? "text-orange-400 font-extrabold bg-orange-500/10 border-l-2 border-orange-500"
+                                  : "text-slate-400 hover:text-white hover:bg-white/5"
                               )}
                             >
                               {child.title}
@@ -276,16 +284,15 @@ export function Sidebar({ className }: { className?: string }) {
       </div>
 
       {/* Footer / System Security Indicator */}
-      <div className="p-4 border-t border-sidebar-border">
-        <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-sidebar-accent/50 border border-sidebar-border/80">
-          <ShieldAlert className="h-4 w-4 text-emerald-500 shrink-0" />
+      <div className="p-3.5 border-t border-white/10 bg-black/20">
+        <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-900/80 border border-white/10">
+          <ShieldAlert className="h-4 w-4 text-emerald-400 shrink-0" />
           <div className="text-[11px]">
-            <p className="font-medium text-sidebar-foreground">RLS Active</p>
-            <p className="text-sidebar-foreground/60 text-[10px]">Session verified server-side</p>
+            <p className="font-bold text-white">RLS Protected</p>
+            <p className="text-slate-400 text-[10px]">Supabase TLS Server Session</p>
           </div>
         </div>
       </div>
-
     </aside>
   );
 }

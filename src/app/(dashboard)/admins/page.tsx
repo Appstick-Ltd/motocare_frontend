@@ -26,12 +26,14 @@ export default async function AdminsPage() {
     <div className="space-y-6 animate-in fade-in duration-200">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Administrative Privileges & Access Control</h1>
-          <p className="text-xs text-muted-foreground mt-1">
-            Restricted area: Manage Super Admin, Admin, and Moderator credentials.
+          <h1 className="text-2xl font-extrabold tracking-tight text-white">
+            Administrative Privileges &amp; Access Control
+          </h1>
+          <p className="text-xs text-slate-400 mt-1">
+            Restricted area: Read-only overview of Super Admin, Admin, and Moderator records from the database.
           </p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-500/10 text-purple-400 font-semibold text-xs border border-purple-500/20">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-400 font-semibold text-xs border border-purple-500/20 shadow-xs">
           <ShieldAlert className="h-4 w-4" /> Super Admin Access Verified
         </div>
       </div>

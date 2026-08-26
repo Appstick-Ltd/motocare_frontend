@@ -11,17 +11,17 @@ export function Breadcrumbs() {
 
   if (segments.length === 0 || pathname === "/dashboard") {
     return (
-      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
-        <Home className="h-3.5 w-3.5" />
-        <span>Dashboard Overview</span>
+      <div className="flex items-center gap-2 text-xs text-slate-400 mb-2">
+        <Home className="h-3.5 w-3.5 text-orange-400" />
+        <span className="font-semibold text-slate-300">Dashboard Overview</span>
       </div>
     );
   }
 
   return (
-    <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4 capitalize">
-      <Link href="/dashboard" className="flex items-center gap-1 hover:text-foreground transition-colors">
-        <Home className="h-3.5 w-3.5" />
+    <nav className="flex items-center gap-1.5 text-xs text-slate-400 mb-2 capitalize">
+      <Link href="/dashboard" className="flex items-center gap-1 hover:text-orange-400 transition-colors">
+        <Home className="h-3.5 w-3.5 text-orange-400" />
         <span>Dashboard</span>
       </Link>
       {segments.map((segment, index) => {
@@ -30,11 +30,11 @@ export function Breadcrumbs() {
 
         return (
           <React.Fragment key={href}>
-            <ChevronRight className="h-3 w-3 text-muted-foreground/60" />
+            <ChevronRight className="h-3 w-3 text-slate-600" />
             {isLast ? (
-              <span className="font-semibold text-foreground">{segment.replace("-", " ")}</span>
+              <span className="font-bold text-white bg-white/5 px-2 py-0.5 rounded-md border border-white/10">{segment.replace("-", " ")}</span>
             ) : (
-              <Link href={href} className="hover:text-foreground transition-colors">
+              <Link href={href} className="hover:text-orange-400 transition-colors">
                 {segment.replace("-", " ")}
               </Link>
             )}

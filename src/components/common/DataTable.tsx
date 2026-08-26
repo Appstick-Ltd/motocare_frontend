@@ -76,10 +76,10 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Table Container */}
-      <div className="rounded-2xl border border-border/70 bg-card overflow-hidden shadow-sm">
+      <div className="rounded-2xl border border-white/10 bg-slate-900/70 backdrop-blur-md overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-muted/60 text-[11px] font-extrabold text-muted-foreground/80 border-b uppercase tracking-wider">
+            <thead className="bg-black/30 text-[11px] font-extrabold text-slate-400 border-b border-white/10 uppercase tracking-wider">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
@@ -95,13 +95,13 @@ export function DataTable<TData, TValue>({
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-border/60">
+            <tbody className="divide-y divide-white/5">
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, index) => (
                   <tr key={index}>
                     {columns.map((_, colIdx) => (
                       <td key={colIdx} className="px-6 py-4">
-                        <Skeleton className="h-4 w-full rounded-md" />
+                        <Skeleton className="h-4 w-full rounded-md bg-white/5" />
                       </td>
                     ))}
                   </tr>
@@ -110,7 +110,7 @@ export function DataTable<TData, TValue>({
                 table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="hover:bg-muted/50 transition-colors duration-150"
+                    className="hover:bg-white/[0.03] transition-colors duration-150"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="px-6 py-4 align-middle">
@@ -126,10 +126,10 @@ export function DataTable<TData, TValue>({
                 <tr>
                   <td
                     colSpan={columns.length}
-                    className="h-48 text-center py-10 text-muted-foreground"
+                    className="h-48 text-center py-10 text-slate-400"
                   >
                     <div className="flex flex-col items-center justify-center gap-2">
-                      <div className="p-3 rounded-2xl bg-muted/60 text-muted-foreground">
+                      <div className="p-3 rounded-2xl bg-white/5 text-slate-400">
                         <Inbox className="h-8 w-8" />
                       </div>
                       <p className="font-semibold text-xs mt-1">{emptyMessage}</p>
@@ -142,9 +142,9 @@ export function DataTable<TData, TValue>({
         </div>
 
         {/* Pagination Bar */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-border/60 bg-muted/20 text-xs font-medium text-muted-foreground">
+        <div className="flex items-center justify-between px-6 py-4 border-t border-white/10 bg-black/20 text-xs font-medium text-slate-400">
           <div className="flex items-center gap-2">
-            <span>Page <strong className="text-foreground">{table.getState().pagination.pageIndex + 1}</strong> of <strong className="text-foreground">{table.getPageCount() || 1}</strong></span>
+            <span>Page <strong className="text-white">{table.getState().pagination.pageIndex + 1}</strong> of <strong className="text-white">{table.getPageCount() || 1}</strong></span>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -152,7 +152,7 @@ export function DataTable<TData, TValue>({
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="h-8.5 px-3 rounded-lg text-xs"
+              className="h-8.5 px-3 rounded-lg text-xs border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
             >
               <ChevronLeft className="h-4 w-4 mr-1" /> Previous
             </Button>
@@ -161,7 +161,7 @@ export function DataTable<TData, TValue>({
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="h-8.5 px-3 rounded-lg text-xs"
+              className="h-8.5 px-3 rounded-lg text-xs border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
             >
               Next <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
