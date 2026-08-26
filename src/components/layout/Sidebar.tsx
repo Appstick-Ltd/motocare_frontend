@@ -73,13 +73,8 @@ const navItems: { group: string; items: NavItem[] }[] = [
     ],
   },
   {
-    group: "Analytics & Communications",
+    group: "Communications & Content",
     items: [
-      {
-        title: "Reports & Analytics",
-        href: "/reports",
-        icon: BarChart3,
-      },
       {
         title: "Notifications",
         href: "/notifications",
@@ -99,11 +94,6 @@ const navItems: { group: string; items: NavItem[] }[] = [
           { title: "Terms & Conditions", href: "/content/terms" },
           { title: "About Us", href: "/content/about" },
         ],
-      },
-      {
-        title: "User Activity Logs",
-        href: "/audit-logs",
-        icon: History,
       },
     ],
   },

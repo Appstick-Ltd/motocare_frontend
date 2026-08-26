@@ -119,6 +119,20 @@ export interface Subscription {
   plan?: Plan;
 }
 
+export interface SubscriptionHistory {
+  id: number | string;
+  user_id: string;
+  plan_key: string;
+  plan_name: string;
+  purchase_token?: string | null;
+  product_id?: string | null;
+  payment_gateway?: string | null;
+  status?: string | null;
+  purchased_at: string;
+  expires_at?: string | null;
+  user?: Profile;
+}
+
 export interface Transaction {
   id: string;
   user_id: string;
