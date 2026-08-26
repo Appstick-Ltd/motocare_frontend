@@ -14,12 +14,14 @@ import {
   Phone,
   CheckCircle2,
   Receipt,
-  Layers,
+  DollarSign,
+  Globe,
   Key,
-  ShieldCheck,
+  TrendingUp,
   X,
   Copy,
   Check,
+  Zap,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -37,6 +39,27 @@ export function PaymentsTableClient({ initialHistory }: PaymentsTableClientProps
   const googlePlayPurchases = history.filter((h) =>
     (h.payment_gateway || "").toLowerCase().includes("google")
   ).length;
+
+  // Calculate gross revenue grouped by currency
+  const revenueByCurrency = history.reduce<Record<string, { total: number; symbol: string }>>((acc, item) => {
+    const curr = item.currency || "USD";
+    const symbol = item.currency_symbol || (curr === "BDT" ? "৳" : "$");
+    const amt = Number(item.amount || 0);
+
+    if (!acc[curr]) {
+      acc[curr] = { total: 0, symbol };
+    }
+    acc[curr].total += amt;
+    return acc;
+  }, {});
+
+  // Primary revenue display string (e.g. "৳ 2,580.00" or "$149.85")
+  const primaryCurrency = Object.keys(revenueByCurrency)[0] || "USD";
+  const primaryRevenueInfo = revenueByCurrency[primaryCurrency] || { total: 0, symbol: "$" };
+  const primaryRevenueDisplay = `${primaryRevenueInfo.symbol} ${primaryRevenueInfo.total.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -74,32 +97,57 @@ export function PaymentsTableClient({ initialHistory }: PaymentsTableClientProps
       },
     },
     {
+      accessorKey: "country",
+      header: "Country / Region",
+      cell: ({ row }) => {
+        const country = row.original.country || "Global / Android";
+        return (
+          <div className="flex items-center gap-1.5 text-xs text-slate-300">
+            <Globe className="h-3.5 w-3.5 text-blue-400 shrink-0" />
+            <span className="font-medium text-white">{country}</span>
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "plan_name",
       header: "Purchased Plan",
       cell: ({ row }) => {
         const h = row.original;
+        const isPremium = h.plan_key === "premium" || (h.plan_name && h.plan_name.toLowerCase().includes("premium"));
+
         return (
           <div className="space-y-1">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/10 text-orange-400 border border-orange-500/35 shadow-xs">
-              <Crown className="h-3.5 w-3.5 text-orange-400 fill-orange-400 shrink-0" />
-              <span>{h.plan_name || "Pro Membership"}</span>
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold shadow-xs ${
+              isPremium
+                ? "bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/10 text-orange-400 border border-orange-500/35"
+                : "bg-blue-500/15 text-blue-400 border border-blue-500/25"
+            }`}>
+              <Crown className="h-3.5 w-3.5 shrink-0" />
+              <span>{h.plan_name || (isPremium ? "Premium Plan (Annual)" : "Standard Plan (Monthly)")}</span>
             </span>
-            <p className="text-[10.5px] font-mono text-slate-400 pl-1">
-              Key: <span className="text-slate-300">{h.plan_key}</span>
+            <p className="text-[10px] font-mono text-slate-400 pl-1">
+              Key: <span className="text-slate-300 font-bold">{h.plan_key}</span>
             </p>
           </div>
         );
       },
     },
     {
-      accessorKey: "product_id",
-      header: "Product SKU & ID",
+      accessorKey: "amount",
+      header: "Amount Paid",
       cell: ({ row }) => {
-        const sku = row.original.product_id || "motocare_pro";
+        const h = row.original;
+        const formatted = h.formatted_price || `${h.currency_symbol || "$"}${Number(h.amount || 0).toFixed(2)}`;
+        const currency = h.currency || "USD";
+
         return (
-          <div className="font-mono text-xs">
-            <span className="px-2 py-1 rounded-lg bg-black/40 border border-white/10 text-slate-200 block truncate max-w-[170px]" title={sku}>
-              {sku}
+          <div className="space-y-0.5">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-500/15 text-emerald-400 font-extrabold text-xs border border-emerald-500/30">
+              <span>{formatted}</span>
+            </span>
+            <span className="text-[10px] text-slate-400 font-mono block pl-1">
+              Currency: {currency}
             </span>
           </div>
         );
@@ -112,10 +160,10 @@ export function PaymentsTableClient({ initialHistory }: PaymentsTableClientProps
         const gateway = row.original.payment_gateway || "Google Play Billing";
         return (
           <div className="flex items-center gap-1.5 text-xs text-slate-300">
-            <div className="h-6 w-6 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-orange-400 shrink-0">
+            <div className="h-6 w-6 rounded-lg bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-400 shrink-0">
               <CreditCard className="h-3.5 w-3.5" />
             </div>
-            <span className="font-medium text-white">{gateway}</span>
+            <span className="font-semibold text-white">{gateway}</span>
           </div>
         );
       },
@@ -142,7 +190,7 @@ export function PaymentsTableClient({ initialHistory }: PaymentsTableClientProps
         const exp = row.original.expires_at;
         return (
           <span className="text-xs font-medium text-amber-400 font-mono">
-            {exp ? formatDate(exp) : "Lifetime Access"}
+            {exp ? formatDate(exp) : "Lifetime"}
           </span>
         );
       },
@@ -155,7 +203,7 @@ export function PaymentsTableClient({ initialHistory }: PaymentsTableClientProps
         return (
           <button
             onClick={() => setSelectedItem(h)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-200 hover:text-white transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/25 text-xs font-bold text-orange-400 hover:text-orange-300 transition-colors"
           >
             <Receipt className="h-3.5 w-3.5 text-orange-400" />
             <span>Details</span>
@@ -167,38 +215,64 @@ export function PaymentsTableClient({ initialHistory }: PaymentsTableClientProps
 
   return (
     <div className="space-y-6">
-      {/* 3 Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* 4 Financial & Revenue Overview Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Total Gross Revenue */}
         <div className="rounded-2xl p-5 bg-slate-900/70 border border-white/10 backdrop-blur-md shadow-xl flex items-center justify-between">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Total Subscription Orders
+              Total Gross Revenue
+            </span>
+            <p className="text-2xl font-extrabold text-emerald-400 mt-1">
+              {primaryRevenueDisplay}
+            </p>
+            {Object.keys(revenueByCurrency).length > 1 && (
+              <p className="text-[10.5px] text-slate-400 mt-0.5">
+                Multi-currency: {Object.entries(revenueByCurrency).map(([k, v]) => `${v.symbol}${v.total.toFixed(0)} ${k}`).join(" • ")}
+              </p>
+            )}
+          </div>
+          <div className="h-10 w-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <DollarSign className="h-5 w-5" />
+          </div>
+        </div>
+
+        {/* Active Pro Subscriptions */}
+        <div className="rounded-2xl p-5 bg-slate-900/70 border border-white/10 backdrop-blur-md shadow-xl flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Active Subscriptions
+            </span>
+            <p className="text-2xl font-extrabold text-amber-400 mt-1">{activeSubs}</p>
+            <p className="text-[10.5px] text-amber-400/80 mt-0.5">Recurring active pro members</p>
+          </div>
+          <div className="h-10 w-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <Crown className="h-5 w-5" />
+          </div>
+        </div>
+
+        {/* Total Purchases Count */}
+        <div className="rounded-2xl p-5 bg-slate-900/70 border border-white/10 backdrop-blur-md shadow-xl flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Total In-App Orders
             </span>
             <p className="text-2xl font-extrabold text-white mt-1">{totalPurchases}</p>
+            <p className="text-[10.5px] text-slate-400 mt-0.5">Successful transactions logged</p>
           </div>
           <div className="h-10 w-10 rounded-xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-400">
             <ShoppingBag className="h-5 w-5" />
           </div>
         </div>
 
-        <div className="rounded-2xl p-5 bg-slate-900/70 border border-white/10 backdrop-blur-md shadow-xl flex items-center justify-between">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Active Subscriptions
-            </span>
-            <p className="text-2xl font-extrabold text-emerald-400 mt-1">{activeSubs}</p>
-          </div>
-          <div className="h-10 w-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-            <CheckCircle2 className="h-5 w-5" />
-          </div>
-        </div>
-
+        {/* Google Play Billing */}
         <div className="rounded-2xl p-5 bg-slate-900/70 border border-white/10 backdrop-blur-md shadow-xl flex items-center justify-between">
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Google Play In-App Orders
             </span>
             <p className="text-2xl font-extrabold text-blue-400 mt-1">{googlePlayPurchases}</p>
+            <p className="text-[10.5px] text-slate-400 mt-0.5">Verified Play Store purchases</p>
           </div>
           <div className="h-10 w-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
             <CreditCard className="h-5 w-5" />
@@ -210,11 +284,11 @@ export function PaymentsTableClient({ initialHistory }: PaymentsTableClientProps
       <DataTable
         columns={columns}
         data={history}
-        searchPlaceholder="Search by customer name, email, plan name or product ID..."
+        searchPlaceholder="Search by customer name, email, plan name, country or currency..."
         emptyMessage="No subscription purchase records found in subscription_history."
       />
 
-      {/* Purchase Receipt Modal */}
+      {/* Purchase Receipt & Transaction Metadata Modal */}
       {selectedItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in">
           <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-[#0c101c] p-6 sm:p-8 shadow-2xl space-y-6 text-slate-200 relative">
@@ -230,14 +304,14 @@ export function PaymentsTableClient({ initialHistory }: PaymentsTableClientProps
                 <Receipt className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">Purchase Order #{selectedItem.id}</h3>
-                <p className="text-xs text-slate-400">Google Play &amp; In-App Billing Record</p>
+                <h3 className="text-lg font-bold text-white">Purchase Invoice #{selectedItem.id}</h3>
+                <p className="text-xs text-slate-400">Google Play In-App Billing Transaction</p>
               </div>
             </div>
 
             <div className="space-y-3 text-xs">
               <div className="bg-black/30 p-3.5 rounded-2xl border border-white/5 space-y-1">
-                <span className="text-slate-500 text-[10.5px]">Subscriber</span>
+                <span className="text-slate-500 text-[10.5px]">Subscriber Details</span>
                 <p className="font-bold text-white text-sm">
                   {selectedItem.user?.full_name || "App Customer"} ({selectedItem.user?.email || "No email"})
                 </p>
@@ -252,12 +326,24 @@ export function PaymentsTableClient({ initialHistory }: PaymentsTableClientProps
                   <span className="font-bold text-orange-400">{selectedItem.plan_name}</span>
                 </div>
                 <div className="bg-black/30 p-3 rounded-2xl border border-white/5">
-                  <span className="text-slate-500 text-[10px] block">Plan Key</span>
-                  <span className="font-mono font-bold text-white">{selectedItem.plan_key}</span>
+                  <span className="text-slate-500 text-[10px] block">Amount Paid</span>
+                  <span className="font-bold text-emerald-400 text-sm">
+                    {selectedItem.formatted_price || `${selectedItem.currency_symbol || "$"}${selectedItem.amount}`}
+                  </span>
+                </div>
+                <div className="bg-black/30 p-3 rounded-2xl border border-white/5">
+                  <span className="text-slate-500 text-[10px] block">Country / Region</span>
+                  <span className="font-medium text-white">{selectedItem.country || "Global"}</span>
+                </div>
+                <div className="bg-black/30 p-3 rounded-2xl border border-white/5">
+                  <span className="text-slate-500 text-[10px] block">Currency</span>
+                  <span className="font-mono font-bold text-slate-200">{selectedItem.currency || "USD"}</span>
                 </div>
                 <div className="bg-black/30 p-3 rounded-2xl border border-white/5">
                   <span className="text-slate-500 text-[10px] block">Product ID / SKU</span>
-                  <span className="font-mono text-slate-300 text-[11px]">{selectedItem.product_id || "N/A"}</span>
+                  <span className="font-mono text-slate-300 text-[11px] truncate block" title={selectedItem.product_id || ""}>
+                    {selectedItem.product_id || "motocare_pro"}
+                  </span>
                 </div>
                 <div className="bg-black/30 p-3 rounded-2xl border border-white/5">
                   <span className="text-slate-500 text-[10px] block">Gateway</span>
@@ -283,7 +369,7 @@ export function PaymentsTableClient({ initialHistory }: PaymentsTableClientProps
                 <div className="bg-black/40 p-3 rounded-2xl border border-white/5 space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="text-slate-500 text-[10.5px] flex items-center gap-1">
-                      <Key className="h-3 w-3 text-orange-400" /> Purchase Token
+                      <Key className="h-3 w-3 text-orange-400" /> Google Play Purchase Token
                     </span>
                     <button
                       onClick={() => handleCopy(selectedItem.purchase_token!)}

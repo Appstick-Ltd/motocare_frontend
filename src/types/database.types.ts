@@ -12,6 +12,14 @@ export interface Profile {
   role: UserRole;
   status?: UserStatus;
   subscription_plan?: string | null;
+  subscription_status?: string | null;
+  subscription_expires_at?: string | null;
+  subscription_amount?: number | null;
+  subscription_currency?: string | null;
+  subscription_country?: string | null;
+  product_id?: string | null;
+  purchase_token?: string | null;
+  plan_type?: string | null;
   is_pro?: boolean;
   vehicles?: Vehicle[];
   vehicles_count?: number;
@@ -128,6 +136,11 @@ export interface SubscriptionHistory {
   product_id?: string | null;
   payment_gateway?: string | null;
   status?: string | null;
+  country?: string | null;
+  amount?: number | null;
+  currency?: string | null;
+  currency_symbol?: string | null;
+  formatted_price?: string | null;
   purchased_at: string;
   expires_at?: string | null;
   user?: Profile;
