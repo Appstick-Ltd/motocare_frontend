@@ -22,6 +22,14 @@ import {
   Award,
   PhoneCall,
   Activity,
+  Bot,
+  Car,
+  TrendingUp,
+  FileSpreadsheet,
+  AlertTriangle,
+  Layers,
+  ArrowRight,
+  HelpCircle,
 } from "lucide-react";
 
 // ── App Store Badges (Pixel-Perfect Components) ──────────────────────────────
@@ -167,50 +175,111 @@ function InViewStagger({
   );
 }
 
-// ── Data ────────────────────────────────────────────────────────────────────
+// ── Architecture Pipeline Flow ──────────────────────────────────────────────
 
-const features = [
+const pipelineSteps = [
   {
-    icon: Wrench,
-    title: "Service History & Logs",
-    desc: "Record every maintenance, parts replacement, and oil change with dates, odometer, and invoices.",
-    color: "#EB8D00",
-    tag: "Maintenance",
+    step: "01",
+    title: "Vehicle Data",
+    desc: "VIN, number plate, brand, engine specs, mileage & multi-vehicle garage profile.",
+    icon: Car,
+    color: "#3B82F6",
   },
   {
-    icon: Fuel,
-    title: "Fuel & Mileage Analytics",
-    desc: "Calculate precise fuel efficiency (km/L), track fuel spending trends, and optimize route economy.",
+    step: "02",
+    title: "Smart Tracking",
+    desc: "Log engine oil, fuel fill-ups, parts replacements, invoices & cost per km.",
+    icon: Activity,
+    color: "#10B981",
+  },
+  {
+    step: "03",
+    title: "Proactive Reminders",
+    desc: "Mileage & date triggers for oil due, fitness, tax permit, insurance & battery lifecycle.",
+    icon: Bell,
+    color: "#EB8D00",
+  },
+  {
+    step: "04",
+    title: "Predictive Health",
+    desc: "Calculates tire wear, component degradation & warns before breakdown occurs.",
+    icon: TrendingUp,
+    color: "#8B5CF6",
+  },
+  {
+    step: "05",
+    title: "AI Assistant",
+    desc: "Interactive conversational vehicle intelligence for maintenance questions & advice.",
+    icon: Bot,
+    color: "#EC4899",
+  },
+];
+
+// ── Core Modules Data ────────────────────────────────────────────────────────
+
+const allModules = [
+  {
+    icon: Car,
+    title: "Multiple Vehicle Management",
+    desc: "Add your family or commercial bikes, cars & fleets. Track brand, model, year, VIN/Chassis, number plates, engine details, and mileage separately.",
     color: "#3B82F6",
-    tag: "Economy",
+    tag: "Garage Profile",
+  },
+  {
+    icon: Wrench,
+    title: "Maintenance Management",
+    desc: "Engine oil, brake pads, tire replacement, battery health, air/fuel filters, coolant, and custom servicing intervals with workshop invoice storage.",
+    color: "#EB8D00",
+    tag: "Service Center",
   },
   {
     icon: Bell,
-    title: "Predictive Reminders",
-    desc: "Automated alert schedules for engine oil, coolant, battery checks, insurance renewal, and fitness certificates.",
+    title: "Smart Date & Mileage Reminders",
+    desc: "Automatic push alerts for upcoming service dues, engine oil expiration, fitness certificate, road tax renewal, insurance expiry, and battery checks.",
     color: "#10B981",
-    tag: "Alerts",
+    tag: "Proactive Alerts",
+  },
+  {
+    icon: Clock,
+    title: "Complete Service History",
+    desc: "Know exactly what was serviced, on which date, at what odometer reading, cost incurred, mechanic notes, and which workshop performed the work.",
+    color: "#F59E0B",
+    tag: "Digital Logbook",
+  },
+  {
+    icon: Fuel,
+    title: "Fuel Tracking & Mileage (km/L)",
+    desc: "Record fill-ups, liters, fuel price, total bill, and calculate real-time fuel efficiency (km per liter) with consumption trend charts.",
+    color: "#06B6D4",
+    tag: "Fuel Economy",
+  },
+  {
+    icon: FileSpreadsheet,
+    title: "Expense Breakdown & Cost per KM",
+    desc: "Categorized financial dashboards showing maintenance costs, fuel spend, repair bills, parts replacement, insurance fees, and monthly/yearly summaries.",
+    color: "#8B5CF6",
+    tag: "Financial Analytics",
   },
   {
     icon: ShieldCheck,
     title: "Digital Document Vault",
-    desc: "Store vehicle registration, driving license, insurance policies, and tax receipts safely with cloud backup.",
-    color: "#8B5CF6",
-    tag: "Security",
+    desc: "Store vehicle registration smart cards, insurance papers, tax receipts, driving license, and warranty cards safely with cloud backup.",
+    color: "#14B8A6",
+    tag: "Secure Vault",
   },
   {
-    icon: MapPin,
-    title: "Verified Service Hubs",
-    desc: "Find certified mechanics, trusted workshops, and 24/7 roadside emergency breakdown assistance nearby.",
+    icon: Bot,
+    title: "AI Maintenance Assistant",
+    desc: "Ask anything about your vehicle: 'When is my next service?', 'What does this dashboard warning mean?', 'What to inspect at 15,000 km?'.",
+    color: "#EC4899",
+    tag: "AI Intelligence",
+  },
+  {
+    icon: Activity,
+    title: "Vehicle Health Overview",
+    desc: "Instant vehicle health score, overdue maintenance indicators, tire condition rating, battery life status, and proactive risk mitigations.",
     color: "#EF4444",
-    tag: "Assistance",
-  },
-  {
-    icon: Clock,
-    title: "Expense Breakdown",
-    desc: "Categorized financial dashboards showing total cost of ownership, spare parts expenses, and service bills.",
-    color: "#F59E0B",
-    tag: "Reports",
+    tag: "Live Diagnostics",
   },
 ];
 
@@ -223,12 +292,12 @@ const stats = [
 
 export default function LandingPageClient() {
   return (
-    <div className="min-h-screen bg-[#070913] text-slate-100 font-sans selection:bg-orange-500 selection:text-white relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#070913] text-slate-100 font-sans selection:bg-orange-500 selection:text-white relative overflow-x-hidden" suppressHydrationWarning>
       {/* ── Background Glow Effects ── */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-gradient-to-b from-orange-500/15 via-amber-500/5 to-transparent rounded-full blur-3xl opacity-70" />
-        <div className="absolute top-[40%] -left-40 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 -right-40 w-[500px] h-[500px] bg-orange-600/10 rounded-full blur-3xl" />
+        <div className="absolute top-[35%] -left-40 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-3xl" />
+        <div className="absolute top-[65%] -right-40 w-[500px] h-[500px] bg-orange-600/10 rounded-full blur-3xl" />
         <div
           className="absolute inset-0 opacity-[0.03]"
           style={{
@@ -261,24 +330,24 @@ export default function LandingPageClient() {
                 Moto<span className="text-orange-500">Care</span>
               </span>
               <p className="text-[10px] text-slate-400 font-medium tracking-tight">
-                Smart Vehicle Care Platform
+                Vehicle Management & Maintenance Assistant
               </p>
             </div>
           </Link>
 
           {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-            <a href="#features" className="hover:text-orange-400 transition-colors">
+          <nav className="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-300">
+            <a href="#pipeline" className="hover:text-orange-400 transition-colors">
+              How It Works
+            </a>
+            <a href="#modules" className="hover:text-orange-400 transition-colors">
               Features
+            </a>
+            <a href="#ai-assistant" className="hover:text-orange-400 transition-colors flex items-center gap-1.5 text-orange-400 font-semibold">
+              <Bot className="w-3.5 h-3.5" /> AI Assistant
             </a>
             <a href="#vehicles" className="hover:text-orange-400 transition-colors">
               Bikes & Cars
-            </a>
-            <a href="#emergency" className="hover:text-orange-400 transition-colors">
-              Emergency SOS
-            </a>
-            <a href="#how-it-works" className="hover:text-orange-400 transition-colors">
-              How It Works
             </a>
             <Link href="/about-us" className="hover:text-orange-400 transition-colors">
               About Us
@@ -292,7 +361,7 @@ export default function LandingPageClient() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 shadow-md shadow-orange-500/20 transition-all duration-200"
             >
               <Smartphone className="w-4 h-4" />
-              <span>Download App</span>
+              <span>Get Free App</span>
             </a>
           </div>
         </div>
@@ -309,7 +378,7 @@ export default function LandingPageClient() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-orange-500/10 border border-orange-500/25 text-orange-400 mb-6 shadow-xs backdrop-blur-md"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Next-Gen Motorbike & Automobile Care Companion</span>
+            <span>Complete Vehicle Management + Predictive AI Maintenance Assistant</span>
           </motion.div>
 
           {/* Main Title */}
@@ -319,9 +388,9 @@ export default function LandingPageClient() {
             animate="visible"
             className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.08] text-white"
           >
-            Smarter Vehicle Maintenance. <br />
+            Your Complete Vehicle Care. <br />
             <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">
-              Zero Headaches.
+              Driven by AI Intelligence.
             </span>
           </motion.h1>
 
@@ -330,9 +399,9 @@ export default function LandingPageClient() {
             variants={fadeUpDelayed(0.2)}
             initial="hidden"
             animate="visible"
-            className="mt-6 text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed font-normal"
+            className="mt-6 text-base sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal"
           >
-            Effortlessly monitor oil changes, track precise fuel mileage, store crucial vehicle papers, and receive predictive maintenance alerts before breakdowns happen.
+            MotoCare is more than just a record keeper. From mileage & fuel tracking to smart service reminders, digital document vaults, and proactive AI diagnostics — it understands what your vehicle needs before breakdowns happen.
           </motion.p>
 
           {/* ── APP STORE & GOOGLE PLAY BUTTONS (HERO) ── */}
@@ -354,13 +423,16 @@ export default function LandingPageClient() {
             className="mt-8 flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm font-medium text-slate-300"
           >
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Complete Logbook
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Multi-Vehicle Garage
             </span>
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Fuel Economy Calculator
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Date & Mileage Reminders
             </span>
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Timely Push Reminders
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Fuel Economy (km/L)
+            </span>
+            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Conversational AI Assistant
             </span>
           </motion.div>
 
@@ -385,25 +457,25 @@ export default function LandingPageClient() {
               {/* Floating live badge */}
               <div className="absolute top-4 right-4 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-xs font-semibold flex items-center gap-2 text-white">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Live Telemetry & Logs</span>
+                <span>Live Telemetry & AI Analytics</span>
               </div>
 
               {/* Floating bottom feature pill */}
-              <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 flex flex-col sm:flex-row items-center justify-between gap-3 p-4 sm:p-5 rounded-2xl bg-slate-950/80 backdrop-blur-xl border border-white/10 text-left">
+              <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 flex flex-col sm:flex-row items-center justify-between gap-3 p-4 sm:p-5 rounded-2xl bg-slate-950/85 backdrop-blur-xl border border-white/10 text-left">
                 <div className="flex items-center gap-3.5">
                   <div className="h-11 w-11 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center shrink-0">
                     <Activity className="w-5 h-5 text-orange-400" />
                   </div>
                   <div>
-                    <h4 className="text-sm sm:text-base font-bold text-white">Full Service & Telemetry Companion</h4>
-                    <p className="text-xs text-slate-300">Instant diagnostics, fuel expense tracking, and verified service record archives</p>
+                    <h4 className="text-sm sm:text-base font-bold text-white">Continuous Lifecycle Management</h4>
+                    <p className="text-xs text-slate-300">Vehicle Data → Smart Tracking → Reminders → Predictive Analytics → AI Assistance</p>
                   </div>
                 </div>
                 <a
-                  href="#app-download"
+                  href="#pipeline"
                   className="px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 transition-colors shrink-0 shadow-md"
                 >
-                  Get Mobile App
+                  See Architecture Flow
                 </a>
               </div>
             </div>
@@ -425,15 +497,172 @@ export default function LandingPageClient() {
         </div>
       </section>
 
-      {/* ── VEHICLE TYPES SHOWCASE (100% REALISTIC PHOTOS) ── */}
-      <section id="vehicles" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10">
+      {/* ── CORE DIFFERENTIATOR PIPELINE ARCHITECTURE ── */}
+      <section id="pipeline" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-6xl mx-auto">
+          <InView className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-xs font-bold uppercase tracking-widest text-orange-400">
+              The MotoCare Differentiator
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">
+              Beyond Simple Record Keeping
+            </h2>
+            <p className="text-slate-300 text-sm sm:text-base mt-3 leading-relaxed">
+              MotoCare doesn&apos;t just store your data — it proactively calculates maintenance degradation, triggers timely warnings, and gives AI-guided insights before problems turn into costly repairs.
+            </p>
+          </InView>
+
+          {/* 5-Step Pipeline Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {pipelineSteps.map((item, idx) => (
+              <InView key={idx} variants={fadeUpDelayed(idx * 0.08)}>
+                <div className="relative rounded-2xl p-5 bg-slate-900/70 border border-white/10 hover:border-orange-500/40 transition-all duration-300 flex flex-col justify-between h-full group">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span
+                        className="text-xs font-mono font-extrabold px-2 py-0.5 rounded-md"
+                        style={{ background: `${item.color}20`, color: item.color }}
+                      >
+                        {item.step}
+                      </span>
+                      <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                    </div>
+                    <h3 className="text-base font-bold text-white mb-2">{item.title}</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+                  </div>
+                  {idx < pipelineSteps.length - 1 && (
+                    <div className="hidden lg:block absolute -right-3 top-1/2 -translate-y-1/2 z-20 text-slate-600">
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  )}
+                </div>
+              </InView>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── ALL CORE MODULES FEATURE GRID ── */}
+      <section id="modules" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10 bg-white/[0.01] border-y border-white/5">
+        <div className="max-w-7xl mx-auto">
+          <InView className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-xs font-bold uppercase tracking-widest text-orange-400">
+              Complete Feature Suite
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">
+              Engineered for Total Vehicle Peace of Mind
+            </h2>
+            <p className="text-slate-400 text-sm sm:text-base mt-3">
+              Comprehensive modules covering every aspect of vehicle ownership, maintenance, fuel economics, and legal compliance.
+            </p>
+          </InView>
+
+          <InViewStagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {allModules.map((m, idx) => (
+              <motion.div
+                key={idx}
+                variants={cardItem}
+                className="group relative rounded-2xl p-6 bg-slate-900/60 border border-white/10 hover:border-white/20 transition-all duration-300 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
+                      style={{
+                        background: `${m.color}15`,
+                        border: `1px solid ${m.color}30`,
+                      }}
+                    >
+                      <m.icon className="w-6 h-6" style={{ color: m.color }} />
+                    </div>
+                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-white/5 text-slate-300 border border-white/10">
+                      {m.tag}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2">{m.title}</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">{m.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </InViewStagger>
+        </div>
+      </section>
+
+      {/* ── AI VEHICLE ASSISTANT SPOTLIGHT ── */}
+      <section id="ai-assistant" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-10 items-center">
+            {/* Left text column */}
+            <div className="lg:col-span-6 space-y-6">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-pink-500/10 border border-pink-500/25 text-pink-400">
+                <Bot className="w-4 h-4" />
+                <span>Next-Gen Conversational Intelligence</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
+                Meet MotoCare AI: <br />
+                Your 24/7 Virtual Mechanic & Advisor
+              </h2>
+              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                Got a question about your car or motorcycle? MotoCare AI analyzes your specific vehicle model, year, driving habits, and current mileage to deliver instant, personalized guidance.
+              </p>
+
+              {/* Chat question examples */}
+              <div className="space-y-3 pt-2">
+                <div className="p-3.5 rounded-xl bg-slate-900/80 border border-white/10 text-xs sm:text-sm text-slate-200 flex items-start gap-3">
+                  <span className="text-orange-400 font-bold shrink-0">Q:</span>
+                  <span>&ldquo;When is my next engine oil & filter change due?&rdquo;</span>
+                </div>
+                <div className="p-3.5 rounded-xl bg-slate-900/80 border border-white/10 text-xs sm:text-sm text-slate-200 flex items-start gap-3">
+                  <span className="text-orange-400 font-bold shrink-0">Q:</span>
+                  <span>&ldquo;What does the yellow ABS or Check Engine warning light mean?&rdquo;</span>
+                </div>
+                <div className="p-3.5 rounded-xl bg-slate-900/80 border border-white/10 text-xs sm:text-sm text-slate-200 flex items-start gap-3">
+                  <span className="text-orange-400 font-bold shrink-0">Q:</span>
+                  <span>&ldquo;What critical parts should I inspect at 25,000 km?&rdquo;</span>
+                </div>
+              </div>
+
+              <div className="pt-4 flex items-center gap-4">
+                <AppStoreButton className="py-2 px-4" />
+                <GooglePlayButton className="py-2 px-4" />
+              </div>
+            </div>
+
+            {/* Right realistic AI Assistant Image */}
+            <div className="lg:col-span-6">
+              <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl p-2 bg-gradient-to-tr from-white/10 to-transparent">
+                <div className="relative rounded-2xl overflow-hidden aspect-[16/9] sm:aspect-[4/3] max-h-[460px]">
+                  <Image
+                    src="/images/ai-assistant-real.jpg"
+                    alt="MotoCare AI Vehicle Health Assistant Interface"
+                    width={800}
+                    height={600}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-black/80 backdrop-blur-md border border-white/15 text-xs text-slate-200 flex items-center justify-between">
+                    <span className="font-semibold text-white flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-pink-400 animate-pulse" />
+                      MotoCare AI Health Score: 92/100
+                    </span>
+                    <span className="text-pink-400 font-bold">Optimal Condition</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BIKES & CARS REALISTIC SHOWCASE ── */}
+      <section id="vehicles" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10 bg-white/[0.01] border-y border-white/5">
         <div className="max-w-6xl mx-auto">
           <InView className="text-center max-w-2xl mx-auto mb-14">
             <span className="text-xs font-bold uppercase tracking-widest text-orange-400">
               Built for Every Ride
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">
-              Bikes, Scooters, Sedans & SUVs
+              Bikes, Scooters, Sedans, SUVs & Commercial
             </h2>
             <p className="text-slate-400 text-sm sm:text-base mt-3">
               Customized maintenance schedule formulas tailored for both motorbikes and multi-cylinder cars.
@@ -500,168 +729,6 @@ export default function LandingPageClient() {
         </div>
       </section>
 
-      {/* ── 24/7 EMERGENCY & ROADSIDE REALISTIC SECTION ── */}
-      <section id="emergency" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10 bg-white/[0.01] border-y border-white/5">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-12 gap-8 items-center">
-            {/* Left text column */}
-            <div className="lg:col-span-5 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-red-500/10 border border-red-500/25 text-red-400">
-                <PhoneCall className="w-3.5 h-3.5" />
-                <span>24/7 Emergency Assistance</span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
-                Never Stranded on the Road Again
-              </h2>
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-                Connect with verified mechanics, towing recovery vans, battery jumpstarters, and puncture repair specialists with a single tap in the MotoCare app.
-              </p>
-
-              <div className="space-y-3 pt-2">
-                <div className="flex items-center gap-3 text-sm text-slate-200">
-                  <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                    ✓
-                  </div>
-                  <span>Instant GPS location sharing with nearest tow trucks</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm text-slate-200">
-                  <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                    ✓
-                  </div>
-                  <span>Transparent fixed repair pricing with zero surge fees</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm text-slate-200">
-                  <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                    ✓
-                  </div>
-                  <span>Verified workshops across national highways and cities</span>
-                </div>
-              </div>
-
-              <div className="pt-4 flex items-center gap-4">
-                <AppStoreButton className="py-2 px-4" />
-                <GooglePlayButton className="py-2 px-4" />
-              </div>
-            </div>
-
-            {/* Right realistic image column */}
-            <div className="lg:col-span-7">
-              <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl p-2 bg-gradient-to-tr from-white/10 to-transparent">
-                <div className="relative rounded-2xl overflow-hidden aspect-[16/9]">
-                  <Image
-                    src="/images/emergency-assistance-real.jpg"
-                    alt="Realistic Roadside Emergency Rescue Vehicle"
-                    width={800}
-                    height={480}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4 p-3 rounded-xl bg-black/70 backdrop-blur-md border border-white/10 text-xs text-slate-200 flex items-center justify-between">
-                    <span className="font-semibold text-white flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                      Highway & Citywide Breakdown Network
-                    </span>
-                    <span className="text-orange-400 font-bold">24/7 Live Support</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── CORE FEATURES ── */}
-      <section id="features" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          <InView className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs font-bold uppercase tracking-widest text-orange-400">
-              Powerful Capabilities
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">
-              Everything Your Vehicle Needs
-            </h2>
-            <p className="text-slate-400 text-sm sm:text-base mt-3">
-              Purpose-built tools to maximize engine longevity, improve fuel mileage, and preserve trade-in value.
-            </p>
-          </InView>
-
-          <InViewStagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((f, idx) => (
-              <motion.div
-                key={idx}
-                variants={cardItem}
-                className="group relative rounded-2xl p-6 bg-slate-900/60 border border-white/10 hover:border-white/20 transition-all duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-                      style={{
-                        background: `${f.color}15`,
-                        border: `1px solid ${f.color}30`,
-                      }}
-                    >
-                      <f.icon className="w-6 h-6" style={{ color: f.color }} />
-                    </div>
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/5 text-slate-400 border border-white/10">
-                      {f.tag}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-2">{f.title}</h3>
-                  <p className="text-sm text-slate-400 leading-relaxed">{f.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </InViewStagger>
-        </div>
-      </section>
-
-      {/* ── HOW IT WORKS ── */}
-      <section id="how-it-works" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative z-10 bg-white/[0.01] border-t border-white/5">
-        <div className="max-w-4xl mx-auto">
-          <InView className="text-center max-w-xl mx-auto mb-16">
-            <span className="text-xs font-bold uppercase tracking-widest text-orange-400">
-              Effortless Setup
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">
-              Ready in Under 60 Seconds
-            </h2>
-          </InView>
-
-          <div className="space-y-6">
-            {[
-              {
-                num: "01",
-                title: "Download MotoCare & Add Vehicle",
-                desc: "Choose your motorbike or car brand, model, year, and starting odometer reading.",
-              },
-              {
-                num: "02",
-                title: "Log Maintenance, Repairs & Fuel Invoices",
-                desc: "Quickly record workshop receipts, fuel volume, costs, and replaced components.",
-              },
-              {
-                num: "03",
-                title: "Enjoy Timely Reminders & Instant Peace of Mind",
-                desc: "MotoCare calculates ideal service schedules and notifies you before critical thresholds are reached.",
-              },
-            ].map((step, idx) => (
-              <InView key={idx} variants={fadeUpDelayed(idx * 0.1)}>
-                <div className="p-6 sm:p-8 rounded-2xl bg-slate-900/60 border border-white/10 flex items-start gap-6 hover:border-orange-500/30 transition-colors">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white font-extrabold flex items-center justify-center text-lg shadow-lg shadow-orange-500/20">
-                    {step.num}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white mb-1.5">{step.title}</h3>
-                    <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
-                  </div>
-                </div>
-              </InView>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── GET APP PROMO BANNER WITH STORE BADGES ── */}
       <section id="app-download" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 relative z-10">
         <InView className="max-w-4xl mx-auto">
@@ -673,7 +740,7 @@ export default function LandingPageClient() {
                 <span>Download MotoCare Mobile</span>
               </div>
               <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight">
-                Get the App on iOS & Android
+                Take Control of Your Ride Today
               </h2>
               <p className="mt-3 text-sm sm:text-base text-white/90 leading-relaxed">
                 Join thousands of motorcycle enthusiasts and car owners who maintain peak performance with MotoCare.
@@ -686,11 +753,11 @@ export default function LandingPageClient() {
               </div>
 
               <div className="mt-8 flex flex-wrap items-center gap-4 text-xs font-medium text-white/80">
-                <span>✓ Free Cloud Sync</span>
+                <span>✓ Multi-Vehicle Support</span>
                 <span>•</span>
-                <span>✓ Offline Support</span>
+                <span>✓ AI Assistant</span>
                 <span>•</span>
-                <span>✓ Instant Service Reminders</span>
+                <span>✓ Offline Cloud Sync</span>
               </div>
             </div>
           </div>
@@ -720,7 +787,7 @@ export default function LandingPageClient() {
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-slate-400 max-w-sm leading-relaxed">
-                The premier digital vehicle care and maintenance ecosystem for motorcycle riders and car owners worldwide.
+                The premier digital vehicle care and maintenance assistant ecosystem for motorcycle riders and car owners worldwide.
               </p>
               <div className="flex items-center gap-3 text-xs text-slate-400">
                 <Mail className="w-3.5 h-3.5 text-orange-400" />
@@ -741,23 +808,23 @@ export default function LandingPageClient() {
               </h4>
               <ul className="space-y-2.5 text-xs text-slate-400">
                 <li>
-                  <a href="#features" className="hover:text-orange-400 transition-colors">
-                    Features & Modules
+                  <a href="#pipeline" className="hover:text-orange-400 transition-colors">
+                    How It Works
+                  </a>
+                </li>
+                <li>
+                  <a href="#modules" className="hover:text-orange-400 transition-colors">
+                    All Modules
+                  </a>
+                </li>
+                <li>
+                  <a href="#ai-assistant" className="hover:text-orange-400 transition-colors">
+                    AI Vehicle Assistant
                   </a>
                 </li>
                 <li>
                   <a href="#vehicles" className="hover:text-orange-400 transition-colors">
-                    Bike & Car Care
-                  </a>
-                </li>
-                <li>
-                  <a href="#emergency" className="hover:text-orange-400 transition-colors">
-                    Emergency Roadside SOS
-                  </a>
-                </li>
-                <li>
-                  <a href="#how-it-works" className="hover:text-orange-400 transition-colors">
-                    How It Works
+                    Bikes & Cars
                   </a>
                 </li>
                 <li>
@@ -803,8 +870,8 @@ export default function LandingPageClient() {
           </div>
 
           {/* Bottom attribution bar */}
-          <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© {new Date().getFullYear()} MotoCare. All rights reserved.</p>
+          <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500" suppressHydrationWarning>
+            <p suppressHydrationWarning>© 2026 MotoCare. All rights reserved.</p>
             <div className="flex items-center gap-3">
               <span>A product of</span>
               <a
