@@ -108,13 +108,8 @@ const navItems: { group: string; items: NavItem[] }[] = [
     ],
   },
   {
-    group: "System & Access",
+    group: "System & Settings",
     items: [
-      {
-        title: "Admin Profile & Access",
-        href: "/admins",
-        icon: ShieldCheck,
-      },
       {
         title: "App Settings",
         href: "/settings",
