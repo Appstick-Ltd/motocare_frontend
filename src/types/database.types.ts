@@ -13,16 +13,25 @@ export interface Profile {
   status?: UserStatus;
   subscription_plan?: string | null;
   is_pro?: boolean;
+  vehicles?: Vehicle[];
+  vehicles_count?: number;
   created_at: string;
   updated_at?: string;
 }
 
 export interface Vehicle {
   id: string;
-  user_id: string; // FK to profiles.id
+  user_id: string; // FK to auth.users.id
   vehicle_type: string;
+  vehicle_model?: string;
+  vehicle_number?: string | null;
   odometer?: number | null;
+  odometer_unit?: string | null;
+  fuel_tank_capacity?: number | null;
+  avg_daily_distance?: number | null;
+  avg_daily_running_time?: number | null;
   created_at: string;
+  // Optional compatibility & legacy fields
   brand?: string;
   model?: string;
   year?: number;

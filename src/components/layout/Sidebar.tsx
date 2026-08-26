@@ -48,32 +48,12 @@ const navItems: { group: string; items: NavItem[] }[] = [
     ],
   },
   {
-    group: "User & Fleet",
+    group: "User Management",
     items: [
       {
         title: "Users / Customers",
         href: "/users",
         icon: Users,
-        children: [
-          { title: "All Users", href: "/users" },
-          { title: "Active Users", href: "/users?status=active" },
-          { title: "Suspended Users", href: "/users?status=suspended" },
-        ],
-      },
-      {
-        title: "Vehicles / Products",
-        href: "/vehicles",
-        icon: Car,
-        children: [
-          { title: "Vehicles List", href: "/vehicles" },
-          { title: "Vehicle Types", href: "/vehicles/types" },
-          { title: "Brands & Models", href: "/vehicles/brands" },
-        ],
-      },
-      {
-        title: "Reminders & Maintenance",
-        href: "/maintenance",
-        icon: Wrench,
       },
     ],
   },
