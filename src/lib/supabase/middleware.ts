@@ -63,9 +63,16 @@ export async function updateSession(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     const pathname = request.nextUrl.pathname;
-    const isAuthPage = pathname === "/login";
+    const isAuthPage = pathname === "/admin/login" || pathname === "/login";
     const isUnauthorizedPage = pathname === "/unauthorized";
-    const isPublicPage = pathname === "/" || pathname === "/account-created";
+    const isPublicPage =
+      pathname === "/" ||
+      pathname === "/account-created" ||
+      pathname.startsWith("/privacy-policy") ||
+      pathname.startsWith("/terms-condition") ||
+      pathname.startsWith("/terms") ||
+      pathname.startsWith("/about-us") ||
+      pathname.startsWith("/about");
     const isDashboardRoute =
       pathname.startsWith("/dashboard") ||
       pathname.startsWith("/users") ||
@@ -91,14 +98,14 @@ export async function updateSession(request: NextRequest) {
       return response;
     }
 
-    // 1. Unauthenticated users trying to access dashboard -> Redirect to /login
+    // 1. Unauthenticated users trying to access dashboard -> Redirect to /admin/login
     if (!user && isDashboardRoute) {
       const url = request.nextUrl.clone();
-      url.pathname = "/login";
+      url.pathname = "/admin/login";
       return NextResponse.redirect(url);
     }
 
-    // 2. Authenticated user visiting /login -> Check role & redirect appropriately
+    // 2. Authenticated user visiting /admin/login or /login -> Redirect to /dashboard
     if (user && isAuthPage) {
       const url = request.nextUrl.clone();
       url.pathname = "/dashboard";

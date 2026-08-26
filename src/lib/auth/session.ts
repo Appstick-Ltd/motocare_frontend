@@ -45,7 +45,7 @@ export async function requireAdminSession() {
   const session = await getCurrentUserSession();
 
   if (!session) {
-    redirect("/login");
+    redirect("/admin/login");
   }
 
   const role = session.profile?.role ? String(session.profile.role).toUpperCase() : "";

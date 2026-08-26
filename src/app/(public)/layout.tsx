@@ -49,10 +49,10 @@ export default function PublicContentLayout({
               <span className="hidden sm:inline">About Us</span>
             </Link>
             <Link
-              href="/dashboard"
-              className="ml-2 px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors text-xs font-bold flex items-center gap-1.5 shadow-2xs"
+              href="/"
+              className="ml-2 px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors text-xs font-bold flex items-center gap-1.5 shadow-xs"
             >
-              <ArrowLeft className="h-3.5 w-3.5" /> Dashboard
+              <ArrowLeft className="h-3.5 w-3.5" /> Home
             </Link>
           </nav>
         </div>

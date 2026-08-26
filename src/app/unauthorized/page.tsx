@@ -25,9 +25,9 @@ export default function UnauthorizedPage() {
         </div>
 
         <div className="pt-2 flex justify-center">
-          <Link href="/login">
+          <Link href="/admin/login">
             <Button variant="outline" className="border-slate-700 text-slate-200 hover:bg-slate-800 gap-2">
-              <ArrowLeft className="h-4 w-4" /> Return to Login
+              <ArrowLeft className="h-4 w-4" /> Return to Admin Login
             </Button>
           </Link>
         </div>
