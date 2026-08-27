@@ -64,21 +64,44 @@ export default function PublicContentLayout({
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border/60 bg-card py-6 text-center text-xs text-muted-foreground">
-        <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>© {new Date().getFullYear()} MotoCare. All rights reserved.</p>
-          <div className="flex items-center gap-4 text-xs font-medium">
-            <Link href="/privacy-policy" className="hover:text-orange-500 transition-colors">
-              Privacy Policy
-            </Link>
-            <span>•</span>
-            <Link href="/terms-condition" className="hover:text-orange-500 transition-colors">
-              Terms & Conditions
-            </Link>
-            <span>•</span>
-            <Link href="/about-us" className="hover:text-orange-500 transition-colors">
-              About Us
-            </Link>
+      <footer className="border-t border-border/60 bg-card py-8 text-xs text-muted-foreground">
+        <div className="max-w-4xl mx-auto px-4 space-y-6">
+          {/* Contact Bar */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pb-6 border-b border-border/50 text-left">
+            <a
+              href="mailto:motocare@appstick.com.bd"
+              className="flex items-center gap-2 hover:text-orange-500 transition-colors"
+            >
+              <span className="font-semibold text-foreground">Support:</span> motocare@appstick.com.bd
+            </a>
+            <a
+              href="https://wa.me/8801404049797"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 hover:text-emerald-500 transition-colors"
+            >
+              <span className="font-semibold text-foreground">WhatsApp:</span> +880 1404-049797
+            </a>
+            <div className="text-muted-foreground sm:text-right">
+              50, KDA Outer Bypass Rd, Khulna 9100
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <p>© {new Date().getFullYear()} MotoCare. A Product of Appstick Ltd.</p>
+            <div className="flex items-center gap-4 text-xs font-medium">
+              <Link href="/privacy-policy" className="hover:text-orange-500 transition-colors">
+                Privacy Policy
+              </Link>
+              <span>•</span>
+              <Link href="/terms-condition" className="hover:text-orange-500 transition-colors">
+                Terms & Conditions
+              </Link>
+              <span>•</span>
+              <Link href="/about-us" className="hover:text-orange-500 transition-colors">
+                About Us
+              </Link>
+            </div>
           </div>
         </div>
       </footer>

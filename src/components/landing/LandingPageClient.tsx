@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence, Variants } from "framer-motion";
+import Typewriter from "typewriter-effect";
 import {
   Calendar,
   ClipboardCheck,
@@ -32,6 +33,14 @@ import {
   Check,
   Clock,
   Fuel,
+  Phone,
+  MapPin,
+  MessageCircle,
+  Menu,
+  Gauge,
+  CreditCard,
+  Home,
+  User,
 } from "lucide-react";
 
 // ── Super-Fast, Butter-Smooth Animation Variants ────────────────────────────
@@ -332,22 +341,26 @@ export default function LandingPageClient() {
                 </div>
               </InView>
 
-              {/* Main Headline */}
+              {/* Main Headline with Full-Sentence Typewriter Effect */}
               <InView variants={fadeUpDelayedSnappy(0.05)}>
-                <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight leading-[1.12] text-white">
-                  Track Maintenance, <br />
-                  Fuel & Expenses <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400">
-                    in One Smart App.
+                <h1 className="text-4xl sm:text-5xl lg:text-[48px] font-extrabold tracking-tight leading-[1.18] text-white min-h-[110px] sm:min-h-[125px] flex items-center">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-white inline-block">
+                    <Typewriter
+                      options={{
+                        strings: [
+                          "Never Miss an Engine Oil Change or Service.",
+                          "Track Fuel, Mileage & Vehicle Expenses.",
+                          "Smart Digital Care for Your Bikes & Cars.",
+                          "Your All-in-One Digital Vehicle Assistant.",
+                        ],
+                        autoStart: true,
+                        loop: true,
+                        delay: 50,
+                        deleteSpeed: 25,
+                      }}
+                    />
                   </span>
                 </h1>
-              </InView>
-
-              {/* Subtitle */}
-              <InView variants={fadeUpDelayedSnappy(0.1)}>
-                <p className="text-base sm:text-lg text-slate-300 max-w-lg leading-relaxed font-normal">
-                  The ultimate digital garage for your motorcycle and car. Get timely service reminders, track mileage & fuel logs, and monitor all vehicle costs effortlessly.
-                </p>
               </InView>
 
               {/* Side-by-Side Official Google Play & App Store Badges */}
@@ -384,7 +397,7 @@ export default function LandingPageClient() {
               />
 
               <div className="relative z-10 flex items-center justify-center gap-3 sm:gap-6 py-2">
-                {/* ── PHONE 1 (Primary Foreground Phone - Live Animated 19.5:9 iPhone) ── */}
+                {/* ── PHONE 1 (Primary Foreground Phone - Real MotoCare App Home Screen) ── */}
                 <motion.div
                   initial={{ opacity: 0, y: 24, rotate: -2 }}
                   animate={{
@@ -397,194 +410,26 @@ export default function LandingPageClient() {
                     y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" },
                     rotate: { duration: 6, repeat: Infinity, ease: "easeInOut" },
                   }}
-                  className="relative z-20 w-[275px] sm:w-[305px] h-[560px] sm:h-[590px] rounded-[48px] p-2.5 sm:p-3 bg-neutral-900 border-[4px] border-slate-700/90 shadow-[0_35px_80px_-15px_rgba(0,0,0,0.95)] backdrop-blur-xl shrink-0 flex flex-col group cursor-default"
+                  className="relative z-20 w-[275px] sm:w-[305px] h-[580px] sm:h-[630px] rounded-[48px] p-2.5 sm:p-3 bg-slate-950 border-[4px] border-slate-600/90 shadow-[0_35px_90px_-15px_rgba(0,0,0,0.95),0_0_40px_rgba(255,255,255,0.12)] backdrop-blur-xl shrink-0 flex flex-col group cursor-default"
                 >
-                  {/* Dark UI Screen with 100% height */}
-                  <div className="rounded-[38px] bg-[#0A0D16] text-white p-3.5 border border-white/10 shadow-inner overflow-hidden text-left flex flex-col justify-between h-full relative">
-                    {/* Subtle Screen Ambient Reflection */}
-                    <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-orange-500/10 via-transparent to-transparent pointer-events-none rounded-tr-[38px]" />
+                  {/* Subtle Screen Backlight Glow */}
+                  <div className="absolute -inset-2 bg-gradient-to-tr from-white/20 via-orange-500/20 to-amber-400/20 rounded-[52px] blur-lg -z-10 opacity-70" />
 
-                    {/* Top Section */}
-                    <div>
-                      {/* Dynamic Island / Status Bar */}
-                      <div className="flex items-center justify-between text-[10px] text-slate-400 font-semibold pb-2">
-                        <span>9:31</span>
-                        {/* Dynamic Island with Live Indicator */}
-                        <div className="w-22 h-4.5 bg-black rounded-full mx-auto flex items-center justify-between px-2 shadow-inner border border-white/5">
-                          <div className="flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            <span className="text-[7.5px] text-emerald-400 font-mono font-bold leading-none">LIVE</span>
-                          </div>
-                          <div className="w-2 h-2 rounded-full bg-slate-800 border border-slate-700" />
-                        </div>
-                        <div className="flex items-center gap-1 text-[9px]">
-                          <span>5G</span>
-                          <span className="w-2.5 h-1.5 rounded-xs bg-white/80 inline-block" />
-                        </div>
-                      </div>
-
-                      {/* App Header: My Vehicles & Orange + Button */}
-                      <div className="flex items-center justify-between mt-1 mb-2.5">
-                        <div className="flex items-center gap-2">
-                          <div className="flex flex-col gap-0.5">
-                            <span className="w-3.5 h-0.5 bg-slate-300 rounded-full" />
-                            <span className="w-3.5 h-0.5 bg-slate-300 rounded-full" />
-                            <span className="w-2.5 h-0.5 bg-slate-300 rounded-full" />
-                          </div>
-                          <span className="text-xs font-black text-white">My Vehicles</span>
-                        </div>
-                        <motion.div
-                          whileHover={{ scale: 1.15, rotate: 90 }}
-                          whileTap={{ scale: 0.9 }}
-                          className="w-5 h-5 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold shadow-md shadow-orange-500/40 cursor-pointer"
-                        >
-                          +
-                        </motion.div>
-                      </div>
-
-                      {/* Vehicle Card: Yamaha R15 V4 */}
-                      <motion.div
-                        whileHover={{ y: -2 }}
-                        className="p-3 rounded-2xl bg-gradient-to-br from-white to-slate-100 text-slate-900 shadow-md flex items-center justify-between gap-2 mb-3 border border-white/60 relative overflow-hidden"
-                      >
-                        {/* Shimmer sweep */}
-                        <motion.div
-                          animate={{ x: ["-100%", "200%"] }}
-                          transition={{ duration: 3.5, repeat: Infinity, repeatDelay: 2, ease: "linear" }}
-                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12 pointer-events-none"
-                        />
-
-                        <div>
-                          <div className="flex items-center gap-1.5">
-                            <h4 className="text-xs font-black text-slate-900 leading-tight">Yamaha R15 V4</h4>
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[7.5px] bg-emerald-100 text-emerald-700 font-bold border border-emerald-200">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Ready
-                            </span>
-                          </div>
-                          <div className="mt-1.5 space-y-0.5 text-[9px] text-slate-600 font-semibold">
-                            <p className="flex items-center gap-1">
-                              📅 <span>2023 Edition</span>
-                            </p>
-                            <p className="flex items-center gap-1">
-                              ⏱️ <span className="font-bold text-slate-800">12,450 km</span>
-                            </p>
-                          </div>
-                        </div>
-                        <div className="w-20 h-13 relative rounded-lg overflow-hidden shrink-0 shadow-xs">
-                          <Image
-                            src="/images/yamaha-r15.jpg"
-                            alt="Yamaha R15"
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      </motion.div>
-
-                      {/* Upcoming Reminders Section */}
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between mb-1">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-[10px] font-bold text-slate-200">Upcoming Reminders</span>
-                            <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-ping" />
-                          </div>
-                          <span className="text-[9px] font-bold text-orange-400 hover:underline cursor-pointer">View All</span>
-                        </div>
-
-                        {/* Reminder 1: Engine Oil (Urgent / Animated) */}
-                        <motion.div
-                          whileHover={{ scale: 1.02, x: 2 }}
-                          animate={{ borderColor: ["rgba(249,115,22,0.3)", "rgba(249,115,22,0.8)", "rgba(249,115,22,0.3)"] }}
-                          transition={{ duration: 2.2, repeat: Infinity }}
-                          className="p-2.5 rounded-xl bg-white text-slate-900 shadow-sm flex items-center justify-between border-2 border-orange-500/40 relative overflow-hidden"
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <motion.div
-                              animate={{ scale: [1, 1.1, 1] }}
-                              transition={{ duration: 1.8, repeat: Infinity }}
-                              className="w-7 h-7 rounded-lg bg-orange-500 flex items-center justify-center shrink-0 shadow-sm shadow-orange-500/40 text-white"
-                            >
-                              <Fuel className="w-3.5 h-3.5" />
-                            </motion.div>
-                            <div>
-                              <p className="text-[10px] font-black text-slate-900 leading-none">Engine Oil Change</p>
-                              <p className="text-[8px] text-orange-600 font-bold mt-0.5 flex items-center gap-1">
-                                <span className="w-1 h-1 rounded-full bg-orange-500 inline-block" /> Due in 5 days
-                              </p>
-                            </div>
-                          </div>
-                          <span className="text-[8px] font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded-md">
-                            ⏱️ 12,500 km
-                          </span>
-                        </motion.div>
-
-                        {/* Reminder 2: Chain Cleaning */}
-                        <motion.div
-                          whileHover={{ scale: 1.02, x: 2 }}
-                          className="p-2.5 rounded-xl bg-white text-slate-900 shadow-sm flex items-center justify-between border border-slate-100"
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0 shadow-sm shadow-emerald-500/30 text-white">
-                              <Sparkles className="w-3.5 h-3.5" />
-                            </div>
-                            <div>
-                              <p className="text-[10px] font-black text-slate-900 leading-none">Chain Cleaning</p>
-                              <p className="text-[8px] text-slate-500 font-semibold mt-0.5">Due in 12 days</p>
-                            </div>
-                          </div>
-                          <span className="text-[8px] font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded-md">
-                            ⏱️ 12,800 km
-                          </span>
-                        </motion.div>
-
-                        {/* Reminder 3: General Service */}
-                        <motion.div
-                          whileHover={{ scale: 1.02, x: 2 }}
-                          className="p-2.5 rounded-xl bg-white text-slate-900 shadow-sm flex items-center justify-between border border-slate-100"
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center shrink-0 shadow-sm shadow-blue-600/30 text-white">
-                              <Wrench className="w-3.5 h-3.5" />
-                            </div>
-                            <div>
-                              <p className="text-[10px] font-black text-slate-900 leading-none">General Service</p>
-                              <p className="text-[8px] text-slate-500 font-semibold mt-0.5">Due in 18 days</p>
-                            </div>
-                          </div>
-                          <span className="text-[8px] font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded-md">
-                            ⏱️ 13,000 km
-                          </span>
-                        </motion.div>
-                      </div>
-                    </div>
-
-                    {/* Bottom Section: Navigation Bar & Home Indicator */}
-                    <div className="pt-2 border-t border-white/10 mt-2">
-                      <div className="flex items-center justify-between text-[8px] font-bold text-slate-400">
-                        <span className="text-orange-400 flex flex-col items-center relative">
-                          <Activity className="w-3.5 h-3.5 text-orange-400" />
-                          <span>Home</span>
-                          <span className="w-1 h-1 rounded-full bg-orange-400 mt-0.5" />
-                        </span>
-                        <span className="flex flex-col items-center hover:text-slate-200 cursor-pointer">
-                          <Bell className="w-3.5 h-3.5" /> Reminders
-                        </span>
-                        <span className="flex flex-col items-center hover:text-slate-200 cursor-pointer">
-                          <Wallet className="w-3.5 h-3.5" /> Expenses
-                        </span>
-                        <span className="flex flex-col items-center hover:text-slate-200 cursor-pointer">
-                          <FileText className="w-3.5 h-3.5" /> History
-                        </span>
-                        <span className="flex flex-col items-center hover:text-slate-200 cursor-pointer">
-                          <Users className="w-3.5 h-3.5" /> More
-                        </span>
-                      </div>
-                      {/* iPhone Home Bar */}
-                      <div className="w-24 h-1 bg-white/30 rounded-full mx-auto mt-2" />
-                    </div>
+                  <div className="rounded-[38px] overflow-hidden w-full h-full relative shadow-inner border border-white/25 bg-white">
+                    <Image
+                      src="/images/home.jpg"
+                      alt="MotoCare Home Screen"
+                      fill
+                      sizes="(max-width: 768px) 280px, 320px"
+                      className="object-cover object-top rounded-[38px] brightness-[1.18] contrast-[1.08] saturate-[1.08]"
+                      priority
+                    />
+                    {/* Glossy Glass Reflection Overlay */}
+                    <div className="absolute inset-0 rounded-[38px] ring-1 ring-inset ring-white/30 pointer-events-none" />
                   </div>
                 </motion.div>
 
-                {/* ── PHONE 2 (Secondary Phone - Live Expense Overview & Animated Chart) ── */}
+                {/* ── PHONE 2 (Secondary Phone - Real MotoCare Fuel & Mileage Screen) ── */}
                 <motion.div
                   initial={{ opacity: 0, y: 30, rotate: 3 }}
                   animate={{
@@ -597,151 +442,22 @@ export default function LandingPageClient() {
                     y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 },
                     rotate: { duration: 6.5, repeat: Infinity, ease: "easeInOut" },
                   }}
-                  className="hidden md:flex flex-col relative z-10 -ml-16 lg:-ml-12 w-[260px] sm:w-[285px] h-[530px] sm:h-[560px] rounded-[46px] p-2.5 sm:p-3 bg-neutral-950 border-[4px] border-slate-700/80 shadow-[0_25px_60px_-10px_rgba(0,0,0,0.9)] shrink-0 group cursor-default"
+                  className="hidden md:flex flex-col relative z-10 -ml-16 lg:-ml-12 w-[255px] sm:w-[285px] h-[550px] sm:h-[600px] rounded-[46px] p-2.5 sm:p-3 bg-slate-950 border-[4px] border-slate-600/80 shadow-[0_25px_70px_-10px_rgba(0,0,0,0.9),0_0_35px_rgba(255,255,255,0.1)] shrink-0 group cursor-default"
                 >
-                  <div className="rounded-[36px] bg-[#070913] text-white p-3.5 border border-white/10 shadow-inner overflow-hidden text-left flex flex-col justify-between h-full relative">
-                    {/* Subtle Reflection */}
-                    <div className="absolute top-0 right-0 w-36 h-36 bg-gradient-to-bl from-amber-500/10 via-transparent to-transparent pointer-events-none rounded-tr-[36px]" />
+                  {/* Subtle Screen Backlight Glow */}
+                  <div className="absolute -inset-2 bg-gradient-to-tr from-amber-500/20 via-orange-500/20 to-white/20 rounded-[50px] blur-lg -z-10 opacity-70" />
 
-                    {/* Top Section */}
-                    <div>
-                      {/* Status Bar */}
-                      <div className="flex items-center justify-between text-[9px] text-slate-400 font-semibold pb-2">
-                        <span>9:31</span>
-                        <div className="w-16 h-3.5 bg-black rounded-full mx-auto" />
-                        <span>100%</span>
-                      </div>
-
-                      {/* Expense Header */}
-                      <div className="flex items-center gap-1 text-xs font-bold text-white mb-2">
-                        <span className="text-slate-400">&lt;</span>
-                        <span>Expense Overview</span>
-                      </div>
-
-                      {/* This Month Total with Animated Trend */}
-                      <div className="mb-1 flex items-end justify-between">
-                        <div>
-                          <span className="text-[8px] text-slate-400 font-medium">This Month</span>
-                          <div className="text-xl font-black text-white tracking-tight">৳ 4,850</div>
-                        </div>
-                        <span className="inline-flex items-center gap-0.5 text-[8.5px] text-emerald-400 font-bold bg-emerald-500/15 border border-emerald-500/30 px-1.5 py-0.5 rounded-full">
-                          <TrendingUp className="w-2.5 h-2.5" /> +12%
-                        </span>
-                      </div>
-
-                      {/* Glowing Orange Line Graph with Animated Pulsing Data Points */}
-                      <div className="h-16 w-full relative my-1.5">
-                        <svg className="w-full h-full" viewBox="0 0 200 65" preserveAspectRatio="none">
-                          <defs>
-                            <linearGradient id="neonGrad" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="#FF5E13" stopOpacity="0.5" />
-                              <stop offset="100%" stopColor="#FF5E13" stopOpacity="0" />
-                            </linearGradient>
-                          </defs>
-                          <path
-                            d="M0,50 Q30,55 55,42 T110,25 T155,14 T200,32 L200,65 L0,65 Z"
-                            fill="url(#neonGrad)"
-                          />
-                          <path
-                            d="M0,50 Q30,55 55,42 T110,25 T155,14 T200,32"
-                            fill="none"
-                            stroke="#FF5E13"
-                            strokeWidth="2.5"
-                            strokeLinecap="round"
-                          />
-                          {/* Pulsing Target Point on May */}
-                          <circle cx="155" cy="14" r="7" fill="#FF5E13" opacity="0.3" className="animate-ping" />
-                          <circle cx="155" cy="14" r="3.5" fill="#FF5E13" className="shadow-lg shadow-orange-500" />
-                        </svg>
-                        <div className="flex justify-between text-[7px] text-slate-500 font-mono mt-0.5">
-                          <span>Jan</span>
-                          <span>Feb</span>
-                          <span>Mar</span>
-                          <span>Apr</span>
-                          <span className="text-orange-400 font-bold">May</span>
-                          <span>Jun</span>
-                        </div>
-                      </div>
-
-                      {/* Recent Expenses List with Hover Interactions */}
-                      <div className="mt-2 space-y-1.5">
-                        <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-[9px] font-bold text-slate-200">Recent Expenses</span>
-                          <span className="text-[8px] font-bold text-orange-400 hover:underline cursor-pointer">View All</span>
-                        </div>
-
-                        {/* Expense Item 1 */}
-                        <motion.div
-                          whileHover={{ scale: 1.02, x: 2 }}
-                          className="p-2 rounded-xl bg-white text-slate-900 flex items-center justify-between shadow-xs border border-slate-100"
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-md bg-red-100 text-red-600 flex items-center justify-center text-[9px] font-bold">
-                              🛢️
-                            </div>
-                            <div>
-                              <p className="text-[9px] font-bold leading-none">Engine Oil</p>
-                              <p className="text-[7px] text-slate-500 mt-0.5">20 May 2024</p>
-                            </div>
-                          </div>
-                          <span className="text-[9px] font-black text-slate-900">৳ 1,200</span>
-                        </motion.div>
-
-                        {/* Expense Item 2 */}
-                        <motion.div
-                          whileHover={{ scale: 1.02, x: 2 }}
-                          className="p-2 rounded-xl bg-white text-slate-900 flex items-center justify-between shadow-xs border border-slate-100"
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-md bg-amber-100 text-amber-600 flex items-center justify-center text-[9px] font-bold">
-                              ⚙️
-                            </div>
-                            <div>
-                              <p className="text-[9px] font-bold leading-none">Oil Filter</p>
-                              <p className="text-[7px] text-slate-500 mt-0.5">20 May 2024</p>
-                            </div>
-                          </div>
-                          <span className="text-[9px] font-black text-slate-900">৳ 450</span>
-                        </motion.div>
-
-                        {/* Expense Item 3 */}
-                        <motion.div
-                          whileHover={{ scale: 1.02, x: 2 }}
-                          className="p-2 rounded-xl bg-white text-slate-900 flex items-center justify-between shadow-xs border border-slate-100"
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-md bg-orange-100 text-orange-600 flex items-center justify-center text-[9px] font-bold">
-                              🔗
-                            </div>
-                            <div>
-                              <p className="text-[9px] font-bold leading-none">Chain Lube</p>
-                              <p className="text-[7px] text-slate-500 mt-0.5">18 May 2024</p>
-                            </div>
-                          </div>
-                          <span className="text-[9px] font-black text-slate-900">৳ 300</span>
-                        </motion.div>
-
-                        {/* Expense Item 4 */}
-                        <motion.div
-                          whileHover={{ scale: 1.02, x: 2 }}
-                          className="p-2 rounded-xl bg-white text-slate-900 flex items-center justify-between shadow-xs border border-slate-100"
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-md bg-blue-100 text-blue-600 flex items-center justify-center text-[9px] font-bold">
-                              🛠️
-                            </div>
-                            <div>
-                              <p className="text-[9px] font-bold leading-none">Service</p>
-                              <p className="text-[7px] text-slate-500 mt-0.5">15 May 2024</p>
-                            </div>
-                          </div>
-                          <span className="text-[9px] font-black text-slate-900">৳ 2,900</span>
-                        </motion.div>
-                      </div>
-                    </div>
-
-                    {/* Bottom Home Indicator */}
-                    <div className="w-24 h-1 bg-white/30 rounded-full mx-auto mt-2" />
+                  <div className="rounded-[36px] overflow-hidden w-full h-full relative shadow-inner border border-white/25 bg-white">
+                    <Image
+                      src="/images/fuel.jpg"
+                      alt="MotoCare Fuel Screen"
+                      fill
+                      sizes="(max-width: 768px) 260px, 290px"
+                      className="object-cover object-top rounded-[36px] brightness-[1.18] contrast-[1.08] saturate-[1.08]"
+                      priority
+                    />
+                    {/* Glossy Glass Reflection Overlay */}
+                    <div className="absolute inset-0 rounded-[36px] ring-1 ring-inset ring-white/30 pointer-events-none" />
                   </div>
                 </motion.div>
               </div>
@@ -1189,47 +905,64 @@ export default function LandingPageClient() {
               </ul>
             </div>
 
-            {/* Support Links */}
-            <div className="md:col-span-2 text-left">
+            {/* Support & Contact Column */}
+            <div className="md:col-span-3 text-left space-y-3.5">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 mb-4">
-                Support
+                Support &amp; Contact
               </h4>
-              <ul className="space-y-2.5 text-xs text-slate-400">
-                <li>
-                  <Link href="/about-us" className="hover:text-orange-400 transition-colors">
-                    Help Center
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about-us" className="hover:text-orange-400 transition-colors">
-                    Contact Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy-policy" className="hover:text-orange-400 transition-colors">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms-condition" className="hover:text-orange-400 transition-colors">
-                    Terms &amp; Conditions
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about-us" className="hover:text-orange-400 transition-colors">
-                    FAQ
-                  </Link>
-                </li>
-              </ul>
+              <div className="space-y-3 text-xs text-slate-400">
+                {/* Email */}
+                <a
+                  href="mailto:motocare@appstick.com.bd"
+                  className="flex items-start gap-2.5 hover:text-orange-400 transition-colors group"
+                >
+                  <div className="w-6 h-6 rounded-lg bg-orange-500/15 border border-orange-500/30 flex items-center justify-center shrink-0 group-hover:border-orange-500 transition-colors mt-0.5">
+                    <Mail className="w-3.5 h-3.5 text-orange-400" />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-slate-500 font-bold uppercase">Support Email</span>
+                    <span className="text-slate-300 group-hover:text-orange-400 font-medium">motocare@appstick.com.bd</span>
+                  </div>
+                </a>
+
+                {/* WhatsApp */}
+                <a
+                  href="https://wa.me/8801404049797"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-2.5 hover:text-emerald-400 transition-colors group"
+                >
+                  <div className="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0 group-hover:border-emerald-500 transition-colors mt-0.5">
+                    <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-slate-500 font-bold uppercase">WhatsApp Chat</span>
+                    <span className="text-slate-300 group-hover:text-emerald-400 font-medium">+880 1404-049797</span>
+                  </div>
+                </a>
+
+                {/* Address */}
+                <div className="flex items-start gap-2.5 text-slate-400 pt-1">
+                  <div className="w-6 h-6 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <MapPin className="w-3.5 h-3.5 text-orange-400" />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-slate-500 font-bold uppercase">Office Address</span>
+                    <span className="text-slate-300 text-xs leading-relaxed">
+                      50, KDA Outer Bypass Rd, Khulna 9100, Bangladesh
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Newsletter Column */}
-            <div className="md:col-span-4 text-left">
+            <div className="md:col-span-3 text-left">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 mb-4">
                 Newsletter
               </h4>
               <p className="text-xs text-slate-400 mb-3 leading-relaxed">
-                Subscribe to get updates and exclusive offers.
+                Subscribe to get updates, maintenance tips &amp; exclusive offers.
               </p>
               <form onSubmit={handleNewsletterSubmit} className="relative max-w-sm">
                 <input
@@ -1253,6 +986,16 @@ export default function LandingPageClient() {
                   <CheckCircle2 className="w-3.5 h-3.5" /> Thank you for subscribing!
                 </p>
               )}
+
+              <div className="pt-4 flex items-center gap-3 text-xs text-slate-400">
+                <Link href="/privacy-policy" className="hover:text-orange-400 transition-colors">
+                  Privacy Policy
+                </Link>
+                <span>•</span>
+                <Link href="/terms-condition" className="hover:text-orange-400 transition-colors">
+                  Terms of Service
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -1262,17 +1005,7 @@ export default function LandingPageClient() {
             suppressHydrationWarning
           >
             <p suppressHydrationWarning>© 2026 MotoCare. All rights reserved.</p>
-            <div className="flex items-center gap-3">
-              <span>A product of</span>
-              <a
-                href="https://shopstick.com.bd/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-slate-400 hover:text-orange-400 transition-colors"
-              >
-                Shopstick
-              </a>
-              <span>•</span>
+            <div className="flex items-center gap-1.5">
               <span>Powered by</span>
               <a
                 href="https://appstick.com.bd/"

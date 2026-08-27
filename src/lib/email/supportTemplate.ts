@@ -180,7 +180,14 @@ export function generateSupportReplyHtml({
 
     <div class="footer">
       <p><strong>MotoCare Fleet & Vehicle Management Ecosystem</strong></p>
-      <div class="appstick-brand">
+      <div class="appstick-brand" style="margin: 8px 0;">
+        Support: <a href="mailto:motocare@appstick.com.bd" style="color: #fb923c; text-decoration: none;">motocare@appstick.com.bd</a> | 
+        WhatsApp: <a href="https://wa.me/8801404049797" target="_blank" style="color: #4ade80; text-decoration: none;">+880 1404-049797</a>
+      </div>
+      <p style="font-size: 11px; color: #94a3b8; margin: 6px 0;">
+        50, KDA Outer Bypass Rd, Khulna 9100, Bangladesh
+      </p>
+      <div class="appstick-brand" style="margin-top: 10px;">
         A Product of <a href="https://appstick.com.bd" target="_blank" class="appstick-link">Appstick Ltd.</a>
       </div>
       <p style="margin-top: 12px; font-size: 11px; color: #64748b;">

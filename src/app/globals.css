@@ -2,7 +2,7 @@
 
 @layer base {
   :root {
-    /* Shopstick Inspired Color System: Primary Orange #FF5E13 & Deep Navy #1B2850 */
+    /* MotoCare Color System: Primary Orange #FF5E13 & Deep Navy #1B2850 */
     --background: 215 28% 97%;
     --foreground: 222.2 84% 4.9%;
 
@@ -143,7 +143,7 @@ body {
   background: hsl(var(--muted-foreground) / 0.4);
 }
 
-/* Shopstick Inspired Glass & Card Utilities */
+/* MotoCare Luxury Glass & Card Utilities */
 .glass-panel {
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(16px);
@@ -170,7 +170,7 @@ body {
   box-shadow: 0 0 25px -5px rgba(255, 94, 19, 0.35);
 }
 
-.shopstick-container {
+.motocare-container {
   max-width: 1320px;
   margin-left: auto;
   margin-right: auto;
@@ -178,7 +178,7 @@ body {
   padding-right: 0.75rem;
 }
 
-/* Shopstick Buttons & Effects */
+/* MotoCare Buttons & Effects */
 @keyframes shimmerButtonSweep {
   0% {
     transform: translateX(-100%);
@@ -471,6 +471,14 @@ body {
 .html-content-view th {
   background: var(--color-muted);
   font-weight: 600;
+}
+
+/* MotoCare Glowing Orange Typewriter Cursor */
+.Typewriter__cursor {
+  color: #FF5E13;
+  font-weight: 300;
+  text-shadow: 0 0 10px rgba(255, 94, 19, 0.6);
+  margin-left: 2px;
 }
 
 

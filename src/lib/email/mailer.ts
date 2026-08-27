@@ -19,7 +19,7 @@ export async function sendSupportReplyEmail(
   const smtpSecure = process.env.SMTP_SECURE === "true" || smtpPort === 465;
   const fromAddress =
     process.env.SMTP_FROM ||
-    `"MotoCare Support" <${smtpUser || "support@motocare.com"}>`;
+    `"MotoCare Support" <${smtpUser || "motocare@appstick.com.bd"}>`;
 
   const htmlContent = generateSupportReplyHtml(params);
 
