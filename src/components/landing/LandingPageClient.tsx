@@ -296,9 +296,8 @@ export default function LandingPageClient() {
               <a
                 key={item.id}
                 href={`#${item.id}`}
-                className={`relative py-1 transition-colors duration-150 hover:text-white ${
-                  activeNav === item.id ? "text-orange-500 font-semibold" : "text-slate-300"
-                }`}
+                className={`relative py-1 transition-colors duration-150 hover:text-white ${activeNav === item.id ? "text-orange-500 font-semibold" : "text-slate-300"
+                  }`}
               >
                 {item.label}
                 {activeNav === item.id && (
@@ -375,7 +374,7 @@ export default function LandingPageClient() {
               <InView variants={fadeUpDelayedSnappy(0.2)}>
                 <div className="pt-2 flex flex-wrap items-center gap-4 text-xs font-medium text-slate-400">
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Free Cloud Backup
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Cloud Backup
                   </span>
                   <span className="flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Instant Service Alerts
