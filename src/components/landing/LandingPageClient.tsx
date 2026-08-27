@@ -324,27 +324,29 @@ export default function LandingPageClient() {
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-6 items-center">
             {/* Left Column: Headline & Official Store Badges */}
             <div className="lg:col-span-5 space-y-6 text-left">
-              {/* Badge: YOUR RIDE, OUR CARE */}
+              {/* Badge */}
               <InView>
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-orange-400 border border-orange-500/40 bg-orange-500/10 shadow-sm backdrop-blur-md">
-                  YOUR RIDE, OUR CARE
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-orange-400 border border-orange-500/40 bg-orange-500/10 shadow-sm backdrop-blur-md">
+                  <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+                  <span>ALL-IN-ONE VEHICLE ASSISTANT</span>
                 </div>
               </InView>
 
               {/* Main Headline */}
               <InView variants={fadeUpDelayedSnappy(0.05)}>
-                <h1 className="text-4xl sm:text-6xl lg:text-[58px] font-extrabold tracking-tight leading-[1.08] text-white">
-                  Smart Care. <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-400 to-amber-500">
-                    Smooth Ride.
+                <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight leading-[1.12] text-white">
+                  Track Maintenance, <br />
+                  Fuel & Expenses <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400">
+                    in One Smart App.
                   </span>
                 </h1>
               </InView>
 
               {/* Subtitle */}
               <InView variants={fadeUpDelayedSnappy(0.1)}>
-                <p className="text-base sm:text-lg text-slate-300 max-w-md leading-relaxed font-normal">
-                  All-in-one vehicle management app to track maintenance, manage expenses, and keep your ride in perfect condition.
+                <p className="text-base sm:text-lg text-slate-300 max-w-lg leading-relaxed font-normal">
+                  The ultimate digital garage for your motorcycle and car. Get timely service reminders, track mileage & fuel logs, and monitor all vehicle costs effortlessly.
                 </p>
               </InView>
 
@@ -363,7 +365,7 @@ export default function LandingPageClient() {
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Free Cloud Backup
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Instant Alerts
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Instant Service Alerts
                   </span>
                   <span className="flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Multi-Vehicle Support
