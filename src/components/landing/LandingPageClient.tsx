@@ -410,22 +410,17 @@ export default function LandingPageClient() {
                     y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" },
                     rotate: { duration: 6, repeat: Infinity, ease: "easeInOut" },
                   }}
-                  className="relative z-20 w-[275px] sm:w-[305px] h-[580px] sm:h-[630px] rounded-[48px] p-2.5 sm:p-3 bg-slate-950 border-[4px] border-slate-600/90 shadow-[0_35px_90px_-15px_rgba(0,0,0,0.95),0_0_40px_rgba(255,255,255,0.12)] backdrop-blur-xl shrink-0 flex flex-col group cursor-default"
+                  className="relative z-20 w-[275px] sm:w-[305px] h-[580px] sm:h-[630px] rounded-[48px] p-2 sm:p-2.5 bg-neutral-900 border-[3.5px] border-neutral-700/80 shadow-[0_35px_80px_-15px_rgba(0,0,0,0.95)] backdrop-blur-xl shrink-0 flex flex-col group cursor-default"
                 >
-                  {/* Subtle Screen Backlight Glow */}
-                  <div className="absolute -inset-2 bg-gradient-to-tr from-white/20 via-orange-500/20 to-amber-400/20 rounded-[52px] blur-lg -z-10 opacity-70" />
-
-                  <div className="rounded-[38px] overflow-hidden w-full h-full relative shadow-inner border border-white/25 bg-white">
+                  <div className="rounded-[40px] overflow-hidden w-full h-full relative bg-black shadow-inner">
                     <Image
                       src="/images/home.jpg"
                       alt="MotoCare Home Screen"
                       fill
                       sizes="(max-width: 768px) 280px, 320px"
-                      className="object-cover object-top rounded-[38px] brightness-[1.18] contrast-[1.08] saturate-[1.08]"
+                      className="object-cover object-top rounded-[40px] brightness-[1.12] contrast-[1.05]"
                       priority
                     />
-                    {/* Glossy Glass Reflection Overlay */}
-                    <div className="absolute inset-0 rounded-[38px] ring-1 ring-inset ring-white/30 pointer-events-none" />
                   </div>
                 </motion.div>
 
@@ -442,22 +437,17 @@ export default function LandingPageClient() {
                     y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 },
                     rotate: { duration: 6.5, repeat: Infinity, ease: "easeInOut" },
                   }}
-                  className="hidden md:flex flex-col relative z-10 -ml-16 lg:-ml-12 w-[255px] sm:w-[285px] h-[550px] sm:h-[600px] rounded-[46px] p-2.5 sm:p-3 bg-slate-950 border-[4px] border-slate-600/80 shadow-[0_25px_70px_-10px_rgba(0,0,0,0.9),0_0_35px_rgba(255,255,255,0.1)] shrink-0 group cursor-default"
+                  className="hidden md:flex flex-col relative z-10 -ml-16 lg:-ml-12 w-[255px] sm:w-[285px] h-[550px] sm:h-[600px] rounded-[46px] p-2 sm:p-2.5 bg-neutral-950 border-[3.5px] border-neutral-700/70 shadow-[0_25px_60px_-10px_rgba(0,0,0,0.9)] shrink-0 group cursor-default"
                 >
-                  {/* Subtle Screen Backlight Glow */}
-                  <div className="absolute -inset-2 bg-gradient-to-tr from-amber-500/20 via-orange-500/20 to-white/20 rounded-[50px] blur-lg -z-10 opacity-70" />
-
-                  <div className="rounded-[36px] overflow-hidden w-full h-full relative shadow-inner border border-white/25 bg-white">
+                  <div className="rounded-[38px] overflow-hidden w-full h-full relative bg-black shadow-inner">
                     <Image
                       src="/images/fuel.jpg"
                       alt="MotoCare Fuel Screen"
                       fill
                       sizes="(max-width: 768px) 260px, 290px"
-                      className="object-cover object-top rounded-[36px] brightness-[1.18] contrast-[1.08] saturate-[1.08]"
+                      className="object-cover object-top rounded-[38px] brightness-[1.12] contrast-[1.05]"
                       priority
                     />
-                    {/* Glossy Glass Reflection Overlay */}
-                    <div className="absolute inset-0 rounded-[36px] ring-1 ring-inset ring-white/30 pointer-events-none" />
                   </div>
                 </motion.div>
               </div>
