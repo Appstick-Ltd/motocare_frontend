@@ -48,12 +48,17 @@ const navItems: { group: string; items: NavItem[] }[] = [
     ],
   },
   {
-    group: "User Management",
+    group: "User & Fleet Management",
     items: [
       {
         title: "Users / Customers",
         href: "/users",
         icon: Users,
+      },
+      {
+        title: "Vehicles / Fleet",
+        href: "/vehicles",
+        icon: Car,
       },
     ],
   },
