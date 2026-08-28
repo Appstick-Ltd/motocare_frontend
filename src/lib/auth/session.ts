@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { Profile, UserRole } from "@/types/database.types";
 import { redirect } from "next/navigation";
+import { ADMIN_AUTH_PATH } from "@/lib/auth/constants";
 
 export async function getCurrentUserSession() {
   const supabase = await createClient();
@@ -45,7 +46,7 @@ export async function requireAdminSession() {
   const session = await getCurrentUserSession();
 
   if (!session) {
-    redirect("/admin/login");
+    redirect(ADMIN_AUTH_PATH);
   }
 
   const role = session.profile?.role ? String(session.profile.role).toUpperCase() : "";

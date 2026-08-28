@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { ADMIN_AUTH_PATH } from "@/lib/auth/constants";
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({
@@ -63,7 +64,7 @@ export async function updateSession(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     const pathname = request.nextUrl.pathname;
-    const isAuthPage = pathname === "/admin/login" || pathname === "/login";
+    const isAuthPage = pathname === ADMIN_AUTH_PATH;
     const isUnauthorizedPage = pathname === "/unauthorized";
     const isPublicPage =
       pathname === "/" ||
@@ -98,14 +99,14 @@ export async function updateSession(request: NextRequest) {
       return response;
     }
 
-    // 1. Unauthenticated users trying to access dashboard -> Redirect to /admin/login
+    // 1. Unauthenticated users trying to access dashboard -> Redirect to ADMIN_AUTH_PATH
     if (!user && isDashboardRoute) {
       const url = request.nextUrl.clone();
-      url.pathname = "/admin/login";
+      url.pathname = ADMIN_AUTH_PATH;
       return NextResponse.redirect(url);
     }
 
-    // 2. Authenticated user visiting /admin/login or /login -> Redirect to /dashboard
+    // 2. Authenticated user visiting auth portal -> Redirect to /dashboard
     if (user && isAuthPage) {
       const url = request.nextUrl.clone();
       url.pathname = "/dashboard";

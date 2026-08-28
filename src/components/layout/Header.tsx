@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import { ADMIN_AUTH_PATH } from "@/lib/auth/constants";
 import {
   Sun,
   Moon,
@@ -33,7 +34,7 @@ export function Header({
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push("/admin/login");
+    router.push(ADMIN_AUTH_PATH);
   };
 
   return (

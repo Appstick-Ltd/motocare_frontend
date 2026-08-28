@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ShieldAlert, ArrowLeft } from "lucide-react";
+import { ADMIN_AUTH_PATH } from "@/lib/auth/constants";
 
 export default function UnauthorizedPage() {
   return (
@@ -25,7 +26,7 @@ export default function UnauthorizedPage() {
         </div>
 
         <div className="pt-2 flex justify-center">
-          <Link href="/admin/login">
+          <Link href={ADMIN_AUTH_PATH}>
             <Button variant="outline" className="border-slate-700 text-slate-200 hover:bg-slate-800 gap-2">
               <ArrowLeft className="h-4 w-4" /> Return to Admin Login
             </Button>
