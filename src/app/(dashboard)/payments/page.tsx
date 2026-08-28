@@ -1,7 +1,8 @@
 import React from "react";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdminSession } from "@/lib/auth/session";
-import { SubscriptionHistory, Profile } from "@/types/database.types";
+import { SubscriptionHistory, Profile, SubscriptionPricing } from "@/types/database.types";
 import { PaymentsTableClient } from "@/components/payments/PaymentsTableClient";
 
 export const metadata = {
@@ -11,94 +12,89 @@ export const metadata = {
 export default async function PaymentsPage() {
   await requireAdminSession();
   const supabase = await createClient();
+  const adminSupabase = createAdminClient();
 
   let historyItems: SubscriptionHistory[] = [];
 
   try {
-    // 1. Fetch subscription_history, profiles, and plans in parallel
-    const [historyRes, profilesRes, plansRes] = await Promise.all([
-      supabase.from("subscription_history").select("*").order("purchased_at", { ascending: false }),
-      supabase.from("profiles").select("*"),
-      supabase.from("plans").select("*"),
+    // 1. Fetch subscription_history, profiles, and subscription_pricing in parallel with adminSupabase (bypasses RLS)
+    const [historyRes, profilesRes, pricingRes] = await Promise.all([
+      adminSupabase.from("subscription_history").select("*").order("id", { ascending: false }),
+      adminSupabase.from("profiles").select("*"),
+      adminSupabase.from("subscription_pricing").select("*"),
     ]);
 
-    const rawHistory = historyRes.data || [];
+    let rawHistory = historyRes.data || [];
+
+    // Fallback: If adminSupabase returned empty, try standard client
+    if (rawHistory.length === 0) {
+      const { data } = await supabase.from("subscription_history").select("*").order("id", { ascending: false });
+      if (data && data.length > 0) {
+        rawHistory = data;
+      }
+    }
+
     const profiles = (profilesRes.data || []) as Profile[];
-    const plans = plansRes.data || [];
+    const pricings = (pricingRes.data || []) as SubscriptionPricing[];
+
+    // Default currency pricing lookup (BDT / USD)
+    const bdtPricing = pricings.find((p) => p.currency_code === "BDT");
+    const defaultPricing = bdtPricing || pricings.find((p) => p.currency_code === "USD") || pricings[0];
 
     if (rawHistory.length > 0) {
       historyItems = rawHistory.map((item: any) => {
         const userProfile = profiles.find((p) => p.id === item.user_id);
-        const matchedPlan = plans.find(
-          (pl) =>
-            pl.name?.toLowerCase() === item.plan_name?.toLowerCase() ||
-            pl.name?.toLowerCase().includes(item.plan_key?.toLowerCase())
-        );
+        const planKey = (item.plan_key || "").toLowerCase();
+        const isPremium = planKey === "premium" || (item.plan_name && item.plan_name.toLowerCase().includes("premium"));
+        const planName = item.plan_name || (isPremium ? "Premium Plan (Annual)" : "Standard Plan (Monthly)");
 
-        // Fallback default amount and price if not directly stored in older records
+        // Derive amount & currency if stored as null in Google Play webhook
         let amount = item.amount;
-        let currency = item.currency || "USD";
-        let symbol = item.currency_symbol || "$";
+        let currency = item.currency;
+        let symbol = item.currency_symbol;
         let formattedPrice = item.formatted_price;
 
         if (amount == null) {
-          if (matchedPlan && matchedPlan.price) {
-            amount = matchedPlan.price;
-          } else if (item.plan_key === "premium" || (item.product_id && item.product_id.includes("annual"))) {
-            amount = 9.99;
+          if (defaultPricing) {
+            amount = isPremium ? defaultPricing.premium_price : defaultPricing.standard_price;
+            currency = currency || defaultPricing.currency_code || "BDT";
+            symbol = symbol || defaultPricing.currency_symbol || "৳";
           } else {
-            amount = 0.99;
+            amount = isPremium ? 150 : 15;
+            currency = currency || "BDT";
+            symbol = symbol || "৳";
           }
+        } else {
+          currency = currency || (defaultPricing?.currency_code ?? "BDT");
+          symbol = symbol || (defaultPricing?.currency_symbol ?? "৳");
         }
 
         if (!formattedPrice) {
-          formattedPrice = `${symbol}${amount.toFixed(2)}`;
+          formattedPrice = `${symbol} ${Number(amount).toFixed(2)}`;
         }
 
         return {
-          ...item,
+          id: item.id,
+          user_id: item.user_id,
+          plan_key: item.plan_key || (isPremium ? "premium" : "standard"),
+          plan_name: planName,
+          purchase_token: item.purchase_token || null,
+          product_id: item.product_id || (isPremium ? "motocare_premium_annual" : "motocare_standard_monthly"),
+          payment_gateway: item.payment_gateway || "Google Play Billing",
+          status: item.status || "active",
           amount: Number(amount),
-          currency,
-          currency_symbol: symbol,
+          currency: currency || "BDT",
+          currency_symbol: symbol || "৳",
           formatted_price: formattedPrice,
           country: item.country || "Global / Android",
+          purchased_at: item.purchased_at || new Date().toISOString(),
+          expires_at: item.expires_at || null,
           user: userProfile,
         } as SubscriptionHistory;
       });
-    } else {
-      // Fallback: Check subscriptions table if history is empty
-      const { data: subsData } = await supabase
-        .from("subscriptions")
-        .select("*, plans(*)")
-        .order("created_at", { ascending: false });
-
-      if (subsData && subsData.length > 0) {
-        historyItems = subsData.map((s: any) => {
-          const userProfile = profiles.find((p) => p.id === s.user_id);
-          const planPrice = s.plans?.price || (s.plan_name?.toLowerCase().includes("premium") ? 9.99 : 0.99);
-          return {
-            id: s.id,
-            user_id: s.user_id,
-            plan_key: s.plans?.name ? s.plans.name.toLowerCase().replace(/\s+/g, "_") : "standard",
-            plan_name: s.plans?.name || s.plan_name || "Standard Plan (Monthly)",
-            purchase_token: s.purchase_token || null,
-            product_id: s.product_id || (s.plan_name?.toLowerCase().includes("premium") ? "motocare_premium_annual" : "motocare_standard_monthly"),
-            payment_gateway: s.payment_gateway || "Google Play Billing",
-            status: s.status || "active",
-            amount: Number(planPrice),
-            currency: "USD",
-            currency_symbol: "$",
-            formatted_price: `$${Number(planPrice).toFixed(2)}`,
-            country: "Global / Android",
-            purchased_at: s.start_date || s.created_at,
-            expires_at: s.expiry_date || null,
-            user: userProfile,
-          } as SubscriptionHistory;
-        });
-      }
     }
   } catch (err) {
-    console.error("Error fetching subscription history and revenue:", err);
+    console.error("Error fetching subscription_history in PaymentsPage:", err);
   }
 
   return (

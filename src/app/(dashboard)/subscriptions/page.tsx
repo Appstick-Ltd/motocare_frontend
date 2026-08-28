@@ -57,11 +57,42 @@ export default async function SubscriptionsPage() {
     ];
   }
 
-  // 2. Fetch active user subscriptions
-  const { data: subscriptions } = await supabase
-    .from("subscriptions")
-    .select("*, user:profiles(full_name, email), plan:plans(name, price, billing_cycle)")
-    .order("created_at", { ascending: false });
+  // 2. Fetch active user subscriptions from subscription_history and profiles
+  let subscriptionList: Subscription[] = [];
+  try {
+    const [historyRes, profilesRes] = await Promise.all([
+      adminSupabase.from("subscription_history").select("*").order("id", { ascending: false }),
+      adminSupabase.from("profiles").select("*"),
+    ]);
+
+    const historyData = historyRes.data || [];
+    const profiles = profilesRes.data || [];
+
+    if (historyData.length > 0) {
+      subscriptionList = historyData.map((s: any) => {
+        const u = profiles.find((p: any) => p.id === s.user_id);
+        const planKey = (s.plan_key || "").toLowerCase();
+        const isPremium = planKey === "premium" || (s.plan_name && s.plan_name.toLowerCase().includes("premium"));
+        return {
+          id: String(s.id),
+          user_id: s.user_id,
+          plan_id: s.product_id || (isPremium ? "premium" : "standard"),
+          status: s.status || "active",
+          created_at: s.purchased_at || new Date().toISOString(),
+          current_period_start: s.purchased_at || new Date().toISOString(),
+          current_period_end: s.expires_at || null,
+          user: u ? { full_name: u.full_name, email: u.email } : undefined,
+          plan: {
+            name: s.plan_name || (isPremium ? "Premium Plan (Annual)" : "Standard Plan (Monthly)"),
+            price: s.amount != null ? Number(s.amount) : (isPremium ? 150 : 15),
+            billing_cycle: isPremium ? "yearly" : "monthly",
+          },
+        } as unknown as Subscription;
+      });
+    }
+  } catch (err) {
+    console.error("Error fetching subscriptions in SubscriptionsPage:", err);
+  }
 
   return (
     <div className="space-y-10 animate-in fade-in duration-200 pb-10">
@@ -72,14 +103,14 @@ export default async function SubscriptionsPage() {
       <div className="space-y-4 pt-4 border-t border-border/70">
         <div>
           <h2 className="text-lg font-bold tracking-tight text-foreground">
-            Active Subscriptions & Member Accounts
+            Active Subscriptions &amp; Member Accounts
           </h2>
           <p className="text-xs text-muted-foreground mt-0.5">
             Monitor active user subscriptions, assigned plan tiers, and renewal statuses.
           </p>
         </div>
 
-        <SubscriptionTableClient initialSubscriptions={(subscriptions as Subscription[]) || []} />
+        <SubscriptionTableClient initialSubscriptions={subscriptionList} />
       </div>
     </div>
   );
