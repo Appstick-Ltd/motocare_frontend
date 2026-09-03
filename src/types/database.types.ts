@@ -9,8 +9,18 @@ export interface Profile {
   email: string;
   full_name: string | null;
   phone: string | null;
-  role: UserRole;
+  is_verified?: boolean | null;
+  address?: string | null;
+  gender?: string | null;
+  role: UserRole | string;
   status?: UserStatus;
+  fcm_token?: string | null;
+  plan_type?: string | null;
+  plan_name?: string | null;
+  plan_start_date?: string | null;
+  plan_expiration_date?: string | null;
+  currency_code?: string | null;
+  currency_symbol?: string | null;
   subscription_plan?: string | null;
   subscription_status?: string | null;
   subscription_expires_at?: string | null;
@@ -19,7 +29,6 @@ export interface Profile {
   subscription_country?: string | null;
   product_id?: string | null;
   purchase_token?: string | null;
-  plan_type?: string | null;
   is_pro?: boolean;
   vehicles?: Vehicle[];
   vehicles_count?: number;

@@ -70,8 +70,7 @@ const navItems: { group: string; items: NavItem[] }[] = [
         href: "/subscriptions/plans",
         icon: CreditCard,
         children: [
-          { title: "Multi-Currency Pricing", href: "/subscriptions/plans" },
-          { title: "Active Subscriptions", href: "/subscriptions" },
+          { title: "Subscription Pricing", href: "/subscriptions/plans" },
           { title: "Payment History", href: "/payments" },
         ],
       },

@@ -1,13 +1,11 @@
+"use client";
+
 import React from "react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import { requireAdminSession } from "@/lib/auth/session";
-import { Profile, Vehicle, ServiceRecord, FuelLog } from "@/types/database.types";
+import { Profile, Vehicle } from "@/types/database.types";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { formatDate } from "@/lib/utils";
 import {
-  ArrowLeft,
+  X,
   Crown,
   User as UserIcon,
   Car,
@@ -16,110 +14,42 @@ import {
   Fuel,
   Navigation,
   Clock,
-  Wrench,
-  Flame,
-  Phone,
-  Calendar,
   CheckCircle2,
   XCircle,
+  Phone,
+  Mail,
+  MapPin,
+  Calendar,
   CreditCard,
+  Tag,
+  DollarSign,
+  Globe,
+  Key,
+  ShieldCheck,
+  Layers,
 } from "lucide-react";
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = await params;
-  return {
-    title: `User Profile #${resolvedParams.id.slice(0, 8)} | MotoCare Admin`,
-  };
+interface UserDetailsModalProps {
+  user: Profile | null;
+  onClose: () => void;
 }
 
-export default async function UserDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireAdminSession();
-  const { id } = await params;
-  const supabase = await createClient();
+export function UserDetailsModal({ user, onClose }: UserDetailsModalProps) {
+  if (!user) return null;
 
-  const [
-    { data: rawUser },
-    { data: vehicles },
-    { data: subscriptions },
-    { data: plans },
-    { data: serviceRecords },
-    { data: fuelLogs },
-  ] = await Promise.all([
-    supabase.from("profiles").select("*").eq("id", id).maybeSingle(),
-    supabase.from("vehicles").select("*").eq("user_id", id).order("created_at", { ascending: false }),
-    supabase.from("subscriptions").select("*").eq("user_id", id),
-    supabase.from("plans").select("*"),
-    supabase.from("service_records").select("*").eq("user_id", id).order("created_at", { ascending: false }),
-    supabase.from("fuel_logs").select("*").eq("user_id", id).order("created_at", { ascending: false }),
-  ]);
+  const isPro =
+    user.is_pro ||
+    (user.plan_type && user.plan_type.toLowerCase() !== "free") ||
+    (user.subscription_plan &&
+      user.subscription_plan.toLowerCase() !== "free user" &&
+      user.subscription_plan.toLowerCase() !== "free plan" &&
+      user.subscription_plan.toLowerCase() !== "free");
 
-  if (!rawUser) {
-    const { data: authUser } = await supabase.auth.admin?.getUserById(id).catch(() => ({ data: null })) || { data: null };
-    if (!authUser) {
-      notFound();
-    }
-  }
+  const planName = user.plan_name || user.subscription_plan || (isPro ? "Pro Plan" : "Free Plan");
+  const planType = user.plan_type || (isPro ? "pro" : "free");
 
-  const userSub = Array.isArray(subscriptions)
-    ? subscriptions.find((s: any) => s.status === "active" || s.status === "active_renewing") || subscriptions[0]
-    : subscriptions;
-
-  const matchedPlan = userSub && plans ? plans.find((pl: any) => pl.id === userSub.plan_id) : null;
-  const rawPlanName = rawUser?.plan_name || matchedPlan?.name || userSub?.plan_name || rawUser?.subscription_plan || rawUser?.plan_type || "Free Plan";
-  const billingCycle = matchedPlan?.billing_cycle || userSub?.billing_cycle;
-
-  const isPro = Boolean(
-    rawUser?.is_pro ||
-    (rawUser?.plan_type && String(rawUser.plan_type).toLowerCase() !== "free") ||
-    (rawUser?.subscription_status === "active" && rawUser?.subscription_plan && String(rawUser.subscription_plan).toLowerCase() !== "free") ||
-    (rawPlanName &&
-      String(rawPlanName).toLowerCase() !== "free" &&
-      String(rawPlanName).toLowerCase() !== "free plan" &&
-      String(rawPlanName).toLowerCase() !== "free user" &&
-      String(rawPlanName).toLowerCase() !== "standard")
-  );
-
-  let formattedPlan = "Free Plan";
-  if (isPro) {
-    if (billingCycle) {
-      formattedPlan = `Pro • ${rawPlanName} (${billingCycle})`;
-    } else {
-      formattedPlan = rawPlanName.startsWith("Pro") ? rawPlanName : `Pro • ${rawPlanName}`;
-    }
-  }
-
-  const planStartDate = rawUser?.plan_start_date || userSub?.start_date || (isPro ? rawUser?.created_at : null);
-  const planExpirationDate = rawUser?.plan_expiration_date || rawUser?.subscription_expires_at || userSub?.end_date || userSub?.expires_at || null;
-  const subStatus = rawUser?.subscription_status || userSub?.status || (isPro ? "active" : "inactive");
-
-  const profile: Profile = {
-    ...(rawUser || {}),
-    id,
-    email: rawUser?.email || "user@motocare.app",
-    full_name: rawUser?.full_name || null,
-    phone: rawUser?.phone || null,
-    is_verified: rawUser?.is_verified ?? false,
-    address: rawUser?.address || null,
-    gender: rawUser?.gender || null,
-    role: rawUser?.role || "user",
-    status: rawUser?.status || "active",
-    plan_name: isPro ? rawPlanName : "Free Plan",
-    plan_type: rawUser?.plan_type || (isPro ? "pro" : "free"),
-    plan_start_date: planStartDate,
-    plan_expiration_date: planExpirationDate,
-    subscription_plan: formattedPlan,
-    subscription_status: subStatus,
-    is_pro: isPro,
-    vehicles: (vehicles || []) as Vehicle[],
-    vehicles_count: (vehicles || []).length,
-    created_at: rawUser?.created_at || new Date().toISOString(),
-  };
-
-  const userVehicles = (vehicles || []) as Vehicle[];
-  const isVerified = Boolean(profile.is_verified);
-
-  const currencyCode = profile.subscription_currency || profile.currency_code || "USD";
-  let currencySymbol = profile.currency_symbol;
+  const currencyCode = user.subscription_currency || user.currency_code || "USD";
+  let currencySymbol = user.currency_symbol;
   if (!currencySymbol || currencySymbol === "Bs." || currencyCode === "USD") {
     if (currencyCode === "USD") currencySymbol = "$";
     else if (currencyCode === "BDT") currencySymbol = "৳";
@@ -130,128 +60,123 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
   }
 
   const priceDisplay =
-    profile.subscription_amount != null
-      ? `${currencySymbol}${profile.subscription_amount} ${currencyCode}`
+    user.subscription_amount != null
+      ? `${currencySymbol}${user.subscription_amount} ${currencyCode}`
       : null;
 
-  return (
-    <div className="space-y-6 animate-in fade-in duration-300 pb-10">
-      {/* Top Bar Navigation */}
-      <div className="flex items-center gap-4">
-        <Link
-          href="/users"
-          className="h-10 w-10 rounded-2xl border border-white/10 bg-slate-900/80 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors backdrop-blur-md shadow-md"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-white">
-            {profile.full_name || profile.email}
-          </h1>
-          <p className="text-xs text-slate-400 font-mono mt-0.5">User ID: {profile.id}</p>
-        </div>
-      </div>
+  const isVerified = Boolean(user.is_verified);
+  const vehicles = user.vehicles || [];
 
-      {/* Main Profile Card */}
-      <div className="rounded-3xl border border-white/10 bg-[#0b0f19] p-6 sm:p-8 shadow-2xl space-y-6 text-slate-200">
-        {/* Header Overview */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-in fade-in">
+      <div className="w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-3xl border border-white/10 bg-[#0b0f19] p-6 sm:p-8 shadow-2xl space-y-6 text-slate-200 relative">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/5"
+          aria-label="Close modal"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        {/* 1. Header: User Profile Overview */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6 pr-10">
           <div className="flex items-center gap-4">
             <div className="h-16 w-16 rounded-2xl bg-gradient-to-tr from-orange-600 via-amber-500 to-orange-500 flex items-center justify-center text-white font-extrabold text-xl shadow-lg ring-2 ring-orange-500/30 shrink-0">
-              {(profile.full_name || profile.email || "U").slice(0, 2).toUpperCase()}
+              {(user.full_name || user.email || "U").slice(0, 2).toUpperCase()}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-extrabold text-white">
-                  {profile.full_name || "Unnamed User"}
-                </h2>
+                <h3 className="text-xl font-extrabold text-white">
+                  {user.full_name || "Unnamed User"}
+                </h3>
                 {isVerified ? (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Verified
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                    <CheckCircle2 className="w-3 h-3" /> Verified
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-500/15 text-slate-400 border border-slate-500/20">
-                    <XCircle className="w-3.5 h-3.5" /> Unverified
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-500/15 text-slate-400 border border-slate-500/20">
+                    <XCircle className="w-3 h-3" /> Unverified
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-400 mt-0.5">{profile.email}</p>
+              <p className="text-xs text-slate-400 mt-0.5">{user.email}</p>
               <div className="flex flex-wrap items-center gap-2 mt-2">
-                <StatusBadge status={profile.role} />
-                <StatusBadge status={profile.status || "active"} />
+                <StatusBadge status={user.role || "user"} />
+                <StatusBadge status={user.status || "active"} />
                 {isPro ? (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-orange-400 border border-amber-500/30">
-                    <Crown className="w-3.5 h-3.5 fill-orange-400 text-orange-400" /> {profile.plan_name}
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                    <Crown className="w-3 h-3 text-orange-400 fill-orange-400" /> {planName}
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-medium bg-white/5 text-slate-300 border border-white/10">
-                    <UserIcon className="w-3.5 h-3.5 text-slate-400" /> Free User
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-white/5 text-slate-300 border border-white/10">
+                    <UserIcon className="w-3 h-3 text-slate-400" /> Free User
                   </span>
                 )}
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/15 text-blue-400 border border-blue-500/20">
-                  🚗 {userVehicles.length} Registered Vehicle{userVehicles.length === 1 ? "" : "s"}
+                <span className="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-blue-500/15 text-blue-400 border border-blue-500/20">
+                  🚗 {vehicles.length} Registered Vehicle{vehicles.length === 1 ? "" : "s"}
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Profile Info Attributes Grid */}
+        {/* 2. Personal & Account Information Grid */}
         <div className="space-y-2">
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
             <UserIcon className="w-3.5 h-3.5 text-orange-400" /> Personal &amp; Account Details
-          </h3>
+          </h4>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs bg-white/[0.02] p-4 rounded-2xl border border-white/5">
             <div>
               <span className="text-slate-500 text-[10px] block font-medium">Phone Number</span>
               <p className="font-bold text-white mt-0.5 font-mono">
-                {profile.phone || "Not provided"}
+                {user.phone || "Not provided"}
               </p>
             </div>
             <div>
               <span className="text-slate-500 text-[10px] block font-medium">Gender</span>
               <p className="font-bold text-white mt-0.5 capitalize">
-                {profile.gender || "Not specified"}
+                {user.gender || "Not specified"}
               </p>
             </div>
             <div>
               <span className="text-slate-500 text-[10px] block font-medium">Address / City</span>
-              <p className="font-bold text-white mt-0.5 truncate" title={profile.address || ""}>
-                {profile.address || "Not provided"}
+              <p className="font-bold text-white mt-0.5 truncate" title={user.address || ""}>
+                {user.address || "Not provided"}
               </p>
             </div>
             <div>
               <span className="text-slate-500 text-[10px] block font-medium">Verification Status</span>
               <p className={`font-bold mt-0.5 ${isVerified ? "text-emerald-400" : "text-slate-400"}`}>
-                {isVerified ? "✓ Verified Member" : "Unverified Account"}
+                {isVerified ? "✓ Verified Account" : "Unverified Account"}
               </p>
             </div>
             <div>
-              <span className="text-slate-500 text-[10px] block font-medium">Registered On</span>
+              <span className="text-slate-500 text-[10px] block font-medium">Registered Date</span>
               <p className="font-bold text-white mt-0.5">
-                {formatDate(profile.created_at)}
+                {formatDate(user.created_at)}
               </p>
             </div>
             <div>
               <span className="text-slate-500 text-[10px] block font-medium">Last Profile Update</span>
               <p className="font-bold text-white mt-0.5">
-                {profile.updated_at ? formatDate(profile.updated_at) : "N/A"}
+                {user.updated_at ? formatDate(user.updated_at) : "N/A"}
               </p>
             </div>
             <div className="col-span-2">
               <span className="text-slate-500 text-[10px] block font-medium">User Database UUID</span>
-              <p className="font-mono text-slate-400 text-[11px] truncate mt-0.5" title={profile.id}>
-                {profile.id}
+              <p className="font-mono text-slate-400 text-[11px] truncate mt-0.5" title={user.id}>
+                {user.id}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Plan & Subscription Card */}
+        {/* 3. Subscription & Plan Full Details Card */}
         <div className="space-y-2">
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
             <CreditCard className="w-3.5 h-3.5 text-orange-400" /> Plan &amp; Subscription Information
-          </h3>
+          </h4>
           <div className="rounded-2xl border border-orange-500/20 bg-gradient-to-br from-orange-500/5 via-slate-900/60 to-amber-500/5 p-4 sm:p-5 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
               <div className="flex items-center gap-3">
@@ -259,26 +184,26 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
                   <Crown className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-base font-extrabold text-white flex items-center gap-2">
-                    <span>{profile.plan_name}</span>
+                  <h5 className="text-base font-extrabold text-white flex items-center gap-2">
+                    <span>{planName}</span>
                     <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-md bg-white/10 text-slate-300 font-bold">
-                      {profile.plan_type}
+                      {planType}
                     </span>
-                  </h4>
+                  </h5>
                   <p className="text-xs text-slate-400">
-                    Status: <strong className="text-white capitalize">{profile.subscription_status || "inactive"}</strong>
+                    Status: <strong className="text-white capitalize">{user.subscription_status || "inactive"}</strong>
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-bold capitalize border ${
-                    profile.subscription_status === "active"
+                    user.subscription_status === "active"
                       ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
                       : "bg-slate-500/15 text-slate-300 border-white/10"
                   }`}
                 >
-                  ● {profile.subscription_status || "inactive"}
+                  ● {user.subscription_status || "inactive"}
                 </span>
                 {priceDisplay && (
                   <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 font-mono">
@@ -293,16 +218,16 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
               <div className="bg-black/30 p-3 rounded-xl border border-white/5">
                 <span className="text-slate-500 text-[10px] block font-medium">Purchase / Start Date</span>
                 <span className="font-bold text-white mt-0.5 block">
-                  {profile.plan_start_date ? formatDate(profile.plan_start_date) : (isPro ? formatDate(profile.created_at) : "N/A")}
+                  {user.plan_start_date ? formatDate(user.plan_start_date) : (isPro ? formatDate(user.created_at) : "N/A")}
                 </span>
               </div>
               <div className="bg-black/30 p-3 rounded-xl border border-white/5">
                 <span className="text-slate-500 text-[10px] block font-medium">Expiration Date</span>
                 <span className="font-bold text-orange-400 mt-0.5 block">
-                  {profile.plan_expiration_date
-                    ? formatDate(profile.plan_expiration_date)
-                    : profile.subscription_expires_at
-                    ? formatDate(profile.subscription_expires_at)
+                  {user.plan_expiration_date
+                    ? formatDate(user.plan_expiration_date)
+                    : user.subscription_expires_at
+                    ? formatDate(user.subscription_expires_at)
                     : (isPro ? "Lifetime / Ongoing" : "No Expiration (Free)")}
                 </span>
               </div>
@@ -315,22 +240,22 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
               <div className="bg-black/30 p-3 rounded-xl border border-white/5">
                 <span className="text-slate-500 text-[10px] block font-medium">Country / Currency</span>
                 <span className="font-bold text-slate-200 mt-0.5 block">
-                  {profile.subscription_country || "Global"} ({currencyCode})
+                  {user.subscription_country || "Global"} ({currencyCode})
                 </span>
               </div>
-              {profile.product_id && (
+              {user.product_id && (
                 <div className="bg-black/30 p-3 rounded-xl border border-white/5 col-span-2">
                   <span className="text-slate-500 text-[10px] block font-medium">Product ID</span>
-                  <span className="font-mono font-bold text-slate-300 mt-0.5 block truncate" title={profile.product_id}>
-                    {profile.product_id}
+                  <span className="font-mono font-bold text-slate-300 mt-0.5 block truncate" title={user.product_id}>
+                    {user.product_id}
                   </span>
                 </div>
               )}
-              {profile.purchase_token && (
+              {user.purchase_token && (
                 <div className="bg-black/30 p-3 rounded-xl border border-white/5 col-span-2">
                   <span className="text-slate-500 text-[10px] block font-medium">Purchase Token</span>
-                  <span className="font-mono text-slate-400 text-[11px] mt-0.5 block truncate" title={profile.purchase_token}>
-                    {profile.purchase_token.slice(0, 16)}...
+                  <span className="font-mono text-slate-400 text-[11px] mt-0.5 block truncate" title={user.purchase_token}>
+                    {user.purchase_token.slice(0, 16)}...
                   </span>
                 </div>
               )}
@@ -338,18 +263,18 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
           </div>
         </div>
 
-        {/* All Registered Vehicles from Schema */}
-        <div className="space-y-4 pt-2">
+        {/* 4. ── All Registered Vehicles from `public.vehicles` Table ── */}
+        <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
+            <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
               <Car className="h-4.5 w-4.5 text-orange-400" />
-              <span>Registered Vehicles &amp; Specifications ({userVehicles.length})</span>
-            </h3>
+              <span>Registered Vehicles &amp; Full Specifications ({vehicles.length})</span>
+            </h4>
           </div>
 
-          {userVehicles.length > 0 ? (
+          {vehicles && vehicles.length > 0 ? (
             <div className="space-y-4">
-              {userVehicles.map((v: Vehicle, idx: number) => {
+              {vehicles.map((v: Vehicle, idx: number) => {
                 const isBike =
                   (v.vehicle_type || "").toLowerCase().includes("bike") ||
                   (v.vehicle_type || "").toLowerCase().includes("motorcycle");
@@ -373,19 +298,19 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
                     key={v.id || idx}
                     className="rounded-3xl p-5 bg-slate-900/90 border border-white/10 hover:border-orange-500/40 transition-all space-y-4 shadow-xl"
                   >
-                    {/* Card Header */}
+                    {/* Vehicle Card Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-white/10">
                       <div className="flex items-center gap-3">
                         <div className="h-11 w-11 rounded-2xl bg-gradient-to-tr from-orange-500/20 to-amber-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400 shrink-0">
                           {isBike ? <Bike className="h-5 w-5" /> : <Car className="h-5 w-5" />}
                         </div>
                         <div>
-                          <h4 className="text-base font-extrabold text-white flex items-center gap-2">
+                          <h5 className="text-base font-extrabold text-white flex items-center gap-2">
                             <span>{model}</span>
                             <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-orange-500/15 text-orange-400 font-bold border border-orange-500/30">
                               #{idx + 1}
                             </span>
-                          </h4>
+                          </h5>
                           <p className="text-xs text-slate-400 capitalize">
                             Vehicle Type: <strong className="text-white">{type}</strong> • Model / Name:{" "}
                             <strong className="text-orange-400">{model}</strong>
@@ -399,8 +324,9 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
                       </div>
                     </div>
 
-                    {/* Attributes Grid */}
+                    {/* Complete vehicles Table Attributes Grid */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                      {/* 1. vehicle_type */}
                       <div className="bg-black/40 p-3 rounded-2xl border border-white/5">
                         <span className="text-slate-500 text-[10.5px] block font-medium">vehicle_type</span>
                         <span className="font-bold text-white capitalize flex items-center gap-1.5 mt-0.5">
@@ -413,6 +339,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
                         </span>
                       </div>
 
+                      {/* 2. vehicle_model / name */}
                       <div className="bg-black/40 p-3 rounded-2xl border border-white/5">
                         <span className="text-slate-500 text-[10.5px] block font-medium">vehicle_model (Name)</span>
                         <span className="font-bold text-white mt-0.5 block truncate" title={model}>
@@ -420,6 +347,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
                         </span>
                       </div>
 
+                      {/* 3. vehicle_number */}
                       <div className="bg-black/40 p-3 rounded-2xl border border-white/5">
                         <span className="text-slate-500 text-[10.5px] block font-medium">
                           vehicle_number (Plate)
@@ -429,6 +357,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
                         </span>
                       </div>
 
+                      {/* 4. odometer & odometer_unit */}
                       <div className="bg-black/40 p-3 rounded-2xl border border-white/5">
                         <span className="text-slate-500 text-[10.5px] block font-medium">
                           odometer (Reading)
@@ -439,6 +368,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
                         </span>
                       </div>
 
+                      {/* 5. fuel_tank_capacity */}
                       <div className="bg-black/40 p-3 rounded-2xl border border-white/5">
                         <span className="text-slate-500 text-[10.5px] block font-medium">
                           fuel_tank_capacity
@@ -449,6 +379,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
                         </span>
                       </div>
 
+                      {/* 6. avg_daily_distance */}
                       <div className="bg-black/40 p-3 rounded-2xl border border-white/5">
                         <span className="text-slate-500 text-[10.5px] block font-medium">
                           avg_daily_distance
@@ -459,6 +390,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
                         </span>
                       </div>
 
+                      {/* 7. avg_daily_running_time */}
                       <div className="bg-black/40 p-3 rounded-2xl border border-white/5">
                         <span className="text-slate-500 text-[10.5px] block font-medium">
                           avg_daily_running_time
@@ -469,6 +401,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
                         </span>
                       </div>
 
+                      {/* 8. created_at */}
                       <div className="bg-black/40 p-3 rounded-2xl border border-white/5">
                         <span className="text-slate-500 text-[10.5px] block font-medium">
                           created_at (Registered)
@@ -478,6 +411,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
                         </span>
                       </div>
 
+                      {/* 9. id */}
                       <div className="bg-black/40 p-3 rounded-2xl border border-white/5">
                         <span className="text-slate-500 text-[10.5px] block font-medium">
                           Vehicle ID (UUID)
@@ -505,83 +439,15 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
           )}
         </div>
 
-        {/* Maintenance History */}
-        {serviceRecords && serviceRecords.length > 0 && (
-          <div className="space-y-4 pt-4 border-t border-white/10">
-            <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
-              <Wrench className="h-4.5 w-4.5 text-emerald-400" />
-              <span>Service &amp; Maintenance History ({serviceRecords.length})</span>
-            </h3>
-            <div className="overflow-x-auto rounded-2xl border border-white/10 bg-black/40">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-white/5 text-[10px] uppercase font-bold text-slate-400 border-b border-white/10">
-                  <tr>
-                    <th className="py-3 px-4">Service Type</th>
-                    <th className="py-3 px-4">Date</th>
-                    <th className="py-3 px-4">Odometer</th>
-                    <th className="py-3 px-4">Notes</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {serviceRecords.map((s: ServiceRecord) => (
-                    <tr key={s.id} className="hover:bg-white/[0.02]">
-                      <td className="py-3 px-4 font-semibold text-white">
-                        {s.service_type || "General Service"}
-                      </td>
-                      <td className="py-3 px-4 text-slate-400">{formatDate(s.service_date)}</td>
-                      <td className="py-3 px-4 font-mono text-orange-400">
-                        {s.odometer != null ? `${s.odometer.toLocaleString()} km` : "N/A"}
-                      </td>
-                      <td className="py-3 px-4 text-slate-300">{s.notes || "—"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* Fuel Logs */}
-        {fuelLogs && fuelLogs.length > 0 && (
-          <div className="space-y-4 pt-4 border-t border-white/10">
-            <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
-              <Flame className="h-4.5 w-4.5 text-amber-400" />
-              <span>Fuel History Logs ({fuelLogs.length})</span>
-            </h3>
-            <div className="overflow-x-auto rounded-2xl border border-white/10 bg-black/40">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-white/5 text-[10px] uppercase font-bold text-slate-400 border-b border-white/10">
-                  <tr>
-                    <th className="py-3 px-4">Fuel Type</th>
-                    <th className="py-3 px-4">Liters</th>
-                    <th className="py-3 px-4">Price / Unit</th>
-                    <th className="py-3 px-4">Odometer</th>
-                    <th className="py-3 px-4">Logged Date</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {fuelLogs.map((f: FuelLog) => (
-                    <tr key={f.id} className="hover:bg-white/[0.02]">
-                      <td className="py-3 px-4 font-semibold text-white">
-                        {f.fuel_type || "Octane / Petrol"}
-                      </td>
-                      <td className="py-3 px-4 font-mono text-emerald-400">
-                        {f.liters ? `${f.liters} L` : "N/A"}
-                      </td>
-                      <td className="py-3 px-4 font-mono text-amber-400">
-                        {f.price_per_unit ? `৳${f.price_per_unit}` : "N/A"}
-                      </td>
-                      <td className="py-3 px-4 font-mono text-blue-400">
-                        {f.odometer ? `${f.odometer.toLocaleString()} km` : "N/A"}
-                      </td>
-                      <td className="py-3 px-4 text-slate-400">{formatDate(f.created_at)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+        {/* Modal Footer */}
+        <div className="flex justify-end pt-4 border-t border-white/10">
+          <button
+            onClick={onClose}
+            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-xs shadow-md hover:from-orange-600 hover:to-amber-600 transition-colors"
+          >
+            Close Details
+          </button>
+        </div>
       </div>
     </div>
   );

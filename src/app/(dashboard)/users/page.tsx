@@ -34,35 +34,71 @@ export default async function UsersPage() {
         (v) => v.user_id === p.id || (v as any).userId === p.id
       );
 
-      // Find user subscription
+      // Find user subscription fallback
       const userSub = allSubscriptions.find(
         (s) => s.user_id === p.id && (s.status === "active" || s.status === "active_renewing")
       ) || allSubscriptions.find((s) => s.user_id === p.id);
 
       const matchedPlan = userSub ? allPlans.find((pl) => pl.id === userSub.plan_id) : null;
-      const planName = matchedPlan?.name || userSub?.plan_name || p.subscription_plan || p.plan;
+      const rawPlanName =
+        p.plan_name ||
+        matchedPlan?.name ||
+        userSub?.plan_name ||
+        p.subscription_plan ||
+        p.plan_type ||
+        "Free Plan";
       const billingCycle = matchedPlan?.billing_cycle || userSub?.billing_cycle;
-      
+
+      const planKey = (p.plan_type || p.subscription_plan || p.plan_name || "").toLowerCase();
+      const planNameLower = String(rawPlanName).toLowerCase();
+      const subPlanLower = String(p.subscription_plan || "").toLowerCase();
+
+      const isExplicitlyFree =
+        planKey === "free" ||
+        planNameLower === "free plan" ||
+        planNameLower === "free" ||
+        planNameLower === "free user" ||
+        subPlanLower === "free" ||
+        subPlanLower === "free user" ||
+        p.plan_type === "free";
+
+      const hasPaidPlanName =
+        planNameLower.includes("standard") ||
+        planNameLower.includes("premium") ||
+        subPlanLower.includes("standard") ||
+        subPlanLower.includes("premium") ||
+        (matchedPlan && matchedPlan.name && !matchedPlan.name.toLowerCase().includes("free"));
+
       const isPro = Boolean(
-        p.is_pro ||
-        (planName &&
-          String(planName).toLowerCase() !== "free" &&
-          String(planName).toLowerCase() !== "free user" &&
-          String(planName).toLowerCase() !== "standard")
+        p.is_pro || (!isExplicitlyFree && hasPaidPlanName && (p.subscription_status === "active" || userSub?.status === "active")) || (hasPaidPlanName && !isExplicitlyFree)
       );
 
-      let formattedPlan = "Free";
+      let formattedPlan = "Free Plan";
       if (isPro) {
         if (billingCycle) {
-          formattedPlan = `Pro • ${planName || "Pro Member"} (${billingCycle})`;
+          formattedPlan = `Pro • ${rawPlanName} (${billingCycle})`;
         } else {
-          formattedPlan = `Pro • ${planName || "Pro Member"}`;
+          formattedPlan = rawPlanName.startsWith("Pro") ? rawPlanName : `Pro • ${rawPlanName}`;
         }
       }
 
+      const planStartDate = p.plan_start_date || userSub?.start_date || (isPro ? p.created_at : null);
+      const planExpirationDate =
+        p.plan_expiration_date ||
+        p.subscription_expires_at ||
+        userSub?.end_date ||
+        userSub?.expires_at ||
+        null;
+      const subStatus = p.subscription_status || userSub?.status || (isPro ? "active" : "inactive");
+
       return {
         ...p,
-        subscription_plan: formattedPlan,
+        plan_name: isPro ? rawPlanName : "Free Plan",
+        plan_type: isPro ? "pro" : "free",
+        plan_start_date: planStartDate,
+        plan_expiration_date: planExpirationDate,
+        subscription_plan: isPro ? formattedPlan : "Free Plan",
+        subscription_status: subStatus,
         is_pro: isPro,
         vehicles: userVehicles,
         vehicles_count: userVehicles.length,

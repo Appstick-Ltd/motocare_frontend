@@ -26,7 +26,7 @@ export default async function PaymentsPage() {
 
     let rawHistory = historyRes.data || [];
 
-    // Fallback: If adminSupabase returned empty, try standard client
+    // If adminSupabase returned empty, try standard client
     if (rawHistory.length === 0) {
       const { data } = await supabase.from("subscription_history").select("*").order("id", { ascending: false });
       if (data && data.length > 0) {

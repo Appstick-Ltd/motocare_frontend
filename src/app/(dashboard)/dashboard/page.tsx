@@ -20,6 +20,8 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
+import { RecentActivityTable } from "@/components/dashboard/RecentActivityTable";
+import { Vehicle } from "@/types/database.types";
 import Link from "next/link";
 
 export const metadata = {
@@ -40,16 +42,6 @@ async function safeCount(supabase: any, table: string, filterField?: string, fil
   }
 }
 
-async function safeList<T>(supabase: any, table: string, limit = 6): Promise<T[]> {
-  try {
-    const { data, error } = await supabase.from(table).select("*").order("created_at", { ascending: false }).limit(limit);
-    if (error) return [];
-    return (data as T[]) ?? [];
-  } catch {
-    return [];
-  }
-}
-
 export default async function DashboardPage() {
   const supabase = await createClient();
 
@@ -62,7 +54,10 @@ export default async function DashboardPage() {
     totalVehicles,
     totalReminders,
     totalAuditLogs,
-    recentUsers,
+    profilesRes,
+    vehiclesRes,
+    subscriptionsRes,
+    plansRes,
   ] = await Promise.all([
     safeCount(supabase, "profiles"),
     safeCount(supabase, "profiles", "status", "active"),
@@ -71,8 +66,80 @@ export default async function DashboardPage() {
     safeCount(supabase, "vehicles"),
     safeCount(supabase, "reminders"),
     safeCount(supabase, "audit_logs"),
-    safeList<Profile>(supabase, "profiles", 6),
+    supabase.from("profiles").select("*").order("created_at", { ascending: false }).limit(8),
+    supabase.from("vehicles").select("*").order("created_at", { ascending: false }),
+    supabase.from("subscriptions").select("*"),
+    supabase.from("plans").select("*"),
   ]);
+
+  const rawProfiles = profilesRes?.data || [];
+  const allVehicles = (vehiclesRes?.data || []) as Vehicle[];
+  const allSubscriptions = subscriptionsRes?.data || [];
+  const allPlans = plansRes?.data || [];
+
+  const recentUsers: Profile[] = rawProfiles.map((p: any) => {
+    const userVehicles = allVehicles.filter(
+      (v) => v.user_id === p.id || (v as any).userId === p.id
+    );
+    const userSub =
+      allSubscriptions.find(
+        (s) => s.user_id === p.id && (s.status === "active" || s.status === "active_renewing")
+      ) || allSubscriptions.find((s) => s.user_id === p.id);
+
+    const matchedPlan = userSub ? allPlans.find((pl) => pl.id === userSub.plan_id) : null;
+    const rawPlanName = p.plan_name || matchedPlan?.name || userSub?.plan_name || p.subscription_plan || p.plan_type || "Free Plan";
+    const billingCycle = matchedPlan?.billing_cycle || userSub?.billing_cycle;
+
+    const planKey = (p.plan_type || p.subscription_plan || p.plan_name || "").toLowerCase();
+    const planNameLower = String(rawPlanName).toLowerCase();
+    const subPlanLower = String(p.subscription_plan || "").toLowerCase();
+
+    const isExplicitlyFree =
+      planKey === "free" ||
+      planNameLower === "free plan" ||
+      planNameLower === "free" ||
+      planNameLower === "free user" ||
+      subPlanLower === "free" ||
+      subPlanLower === "free user" ||
+      p.plan_type === "free";
+
+    const hasPaidPlanName =
+      planNameLower.includes("standard") ||
+      planNameLower.includes("premium") ||
+      subPlanLower.includes("standard") ||
+      subPlanLower.includes("premium") ||
+      (matchedPlan && matchedPlan.name && !matchedPlan.name.toLowerCase().includes("free"));
+
+    const isPro = Boolean(
+      p.is_pro || (!isExplicitlyFree && hasPaidPlanName && (p.subscription_status === "active" || userSub?.status === "active")) || (hasPaidPlanName && !isExplicitlyFree)
+    );
+
+    let formattedPlan = "Free Plan";
+    if (isPro) {
+      if (billingCycle) {
+        formattedPlan = `Pro • ${rawPlanName} (${billingCycle})`;
+      } else {
+        formattedPlan = rawPlanName.startsWith("Pro") ? rawPlanName : `Pro • ${rawPlanName}`;
+      }
+    }
+
+    const planStartDate = p.plan_start_date || userSub?.start_date || (isPro ? p.created_at : null);
+    const planExpirationDate = p.plan_expiration_date || p.subscription_expires_at || userSub?.end_date || userSub?.expires_at || null;
+    const subStatus = p.subscription_status || userSub?.status || (isPro ? "active" : "inactive");
+
+    return {
+      ...p,
+      plan_name: isPro ? rawPlanName : "Free Plan",
+      plan_type: isPro ? "pro" : "free",
+      plan_start_date: planStartDate,
+      plan_expiration_date: planExpirationDate,
+      subscription_plan: isPro ? formattedPlan : "Free Plan",
+      subscription_status: subStatus,
+      is_pro: isPro,
+      vehicles: userVehicles,
+      vehicles_count: userVehicles.length,
+    } as Profile;
+  });
 
   const statCards = [
     {
@@ -212,81 +279,8 @@ export default async function DashboardPage() {
         totalVehiclesCount={totalVehicles ?? 0}
       />
 
-      {/* Recent Activity Table Section */}
-      <div className="rounded-2xl border border-white/10 bg-slate-900/70 backdrop-blur-md overflow-hidden shadow-xl">
-        <div className="p-6 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
-          <div>
-            <h3 className="text-base font-bold flex items-center gap-2 text-white">
-              <UserCheck className="h-4.5 w-4.5 text-orange-400" /> Recent User Activity &amp; Onboarding
-            </h3>
-            <p className="text-xs text-slate-400 mt-0.5 font-normal">Real-time user actions, registrations, and account status</p>
-          </div>
-          <Link
-            href="/users"
-            className="text-xs font-bold text-orange-400 hover:text-orange-300 flex items-center gap-1 transition-colors"
-          >
-            View All Users <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
-
-        <div>
-          {recentUsers && recentUsers.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-black/30 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider border-b border-white/10">
-                  <tr>
-                    <th className="px-6 py-3.5">User</th>
-                    <th className="px-6 py-3.5">Activity</th>
-                    <th className="px-6 py-3.5">Registered Date</th>
-                    <th className="px-6 py-3.5">Status</th>
-                    <th className="px-6 py-3.5 text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {recentUsers.map((u: Profile) => (
-                    <tr key={u.id} className="hover:bg-white/[0.03] transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="h-8.5 w-8.5 rounded-full bg-gradient-to-tr from-orange-600 via-amber-500 to-orange-500 flex items-center justify-center text-white font-extrabold text-xs shadow-sm ring-1 ring-orange-500/30">
-                            {(u.full_name || u.email || "U").slice(0, 2).toUpperCase()}
-                          </div>
-                          <div>
-                            <p className="font-bold text-xs text-white">{u.full_name || "Unnamed User"}</p>
-                            <p className="text-[11px] text-slate-400">{u.email}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="font-medium text-slate-200">
-                          Account Created &amp; Profile Setup
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 font-mono text-[11px] text-slate-400">
-                        {new Date(u.created_at).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4">
-                        <StatusBadge status={u.status || "active"} />
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <Link
-                          href={`/users/${u.id}`}
-                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-orange-400 hover:text-orange-300 hover:underline"
-                        >
-                          Details <ChevronRight className="h-3 w-3" />
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="py-12 text-center text-xs text-slate-400">
-              No user activity recorded yet.
-            </div>
-          )}
-        </div>
-      </div>
+      {/* Recent Activity Table Section with Interactive Full Details Modal */}
+      <RecentActivityTable recentUsers={recentUsers} />
     </div>
   );
 }
