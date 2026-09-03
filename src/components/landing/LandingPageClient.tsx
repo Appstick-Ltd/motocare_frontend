@@ -128,14 +128,17 @@ function InViewStagger({
 
 // ── Pixel-Perfect Official App Store & Google Play Badges ───────────────────
 
-export function GooglePlayButton({ className = "", onClick }: { className?: string; onClick?: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      type="button"
-      className={`inline-flex items-center gap-3.5 px-5 py-2.5 sm:py-3 rounded-2xl bg-black hover:bg-neutral-900 text-white border border-white/20 hover:border-orange-500/60 shadow-xl hover:shadow-orange-500/20 active:scale-[0.98] transition-all duration-150 group cursor-pointer ${className}`}
-      aria-label="Get it on Google Play"
-    >
+export function GooglePlayButton({
+  className = "",
+  onClick,
+  href = "https://play.google.com/store/apps/details?id=com.appstick.motocare.motocare",
+}: {
+  className?: string;
+  onClick?: () => void;
+  href?: string;
+}) {
+  const content = (
+    <>
       <svg
         className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 group-hover:scale-105 transition-transform duration-150"
         viewBox="0 0 512 512"
@@ -162,6 +165,34 @@ export function GooglePlayButton({ className = "", onClick }: { className?: stri
         <span className="text-[10px] text-slate-400 font-medium tracking-wider uppercase">GET IT ON</span>
         <span className="text-sm sm:text-base font-bold text-white tracking-tight mt-1">Google Play</span>
       </div>
+    </>
+  );
+
+  const classes = `inline-flex items-center gap-3.5 px-5 py-2.5 sm:py-3 rounded-2xl bg-black hover:bg-neutral-900 text-white border border-white/20 hover:border-orange-500/60 shadow-xl hover:shadow-orange-500/20 active:scale-[0.98] transition-all duration-150 group cursor-pointer ${className}`;
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={onClick}
+        className={classes}
+        aria-label="Get it on Google Play"
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <button
+      onClick={onClick}
+      type="button"
+      className={classes}
+      aria-label="Get it on Google Play"
+    >
+      {content}
     </button>
   );
 }
@@ -365,7 +396,7 @@ export default function LandingPageClient() {
               {/* Side-by-Side Official Google Play & App Store Badges */}
               <InView variants={fadeUpDelayedSnappy(0.15)}>
                 <div className="flex flex-wrap items-center gap-3.5 pt-2">
-                  <GooglePlayButton onClick={() => setIsDownloadModalOpen(true)} />
+                  <GooglePlayButton />
                   <AppStoreButton onClick={() => setIsDownloadModalOpen(true)} />
                 </div>
               </InView>
@@ -811,7 +842,7 @@ export default function LandingPageClient() {
 
                 {/* App Store & Google Play Badges */}
                 <div className="mt-8 flex flex-wrap items-center gap-4">
-                  <GooglePlayButton onClick={() => setIsDownloadModalOpen(true)} />
+                  <GooglePlayButton />
                   <AppStoreButton onClick={() => setIsDownloadModalOpen(true)} />
                 </div>
               </div>
@@ -1044,8 +1075,8 @@ export default function LandingPageClient() {
               </p>
 
               <div className="mt-6 flex flex-col gap-3">
-                <GooglePlayButton className="w-full justify-center py-3" onClick={() => alert("Redirecting to Google Play Store...")} />
-                <AppStoreButton className="w-full justify-center py-3" onClick={() => alert("Redirecting to Apple App Store...")} />
+                <GooglePlayButton className="w-full justify-center py-3" />
+                <AppStoreButton className="w-full justify-center py-3" onClick={() => alert("iOS app coming soon on Apple App Store!")} />
               </div>
 
               <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-center gap-2 text-[11px] text-slate-400">
