@@ -27,6 +27,10 @@ export interface Profile {
   subscription_amount?: number | null;
   subscription_currency?: string | null;
   subscription_country?: string | null;
+  base_amount?: number | null;
+  base_currency?: string | null;
+  paid_amount?: number | null;
+  paid_currency?: string | null;
   product_id?: string | null;
   purchase_token?: string | null;
   is_pro?: boolean;
@@ -149,6 +153,11 @@ export interface SubscriptionHistory {
   amount?: number | null;
   currency?: string | null;
   currency_symbol?: string | null;
+  paid_amount?: number | null;
+  paid_currency?: string | null;
+  paid_currency_symbol?: string | null;
+  base_amount?: number | null;
+  base_currency?: string | null;
   formatted_price?: string | null;
   purchased_at: string;
   expires_at?: string | null;

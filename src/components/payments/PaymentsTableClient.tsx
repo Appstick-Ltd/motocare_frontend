@@ -275,12 +275,14 @@ export function PaymentsTableClient({ initialHistory }: PaymentsTableClientProps
       },
     },
     {
-      accessorKey: "amount",
-      header: "Amount Paid",
+      accessorKey: "paid_amount",
+      header: "Amount Paid (Actual)",
       cell: ({ row }) => {
         const h = row.original;
-        const formatted = h.formatted_price || `${h.currency_symbol || "$"}${Number(h.amount || 0).toFixed(2)}`;
-        const currency = h.currency || "USD";
+        const paidCurr = h.paid_currency || h.currency || "BDT";
+        const paidSymbol = h.paid_currency_symbol || h.currency_symbol || (paidCurr === "BDT" ? "৳" : "$");
+        const paidAmount = h.paid_amount != null ? Number(h.paid_amount) : Number(h.amount || 0);
+        const formatted = h.formatted_price || `${paidSymbol}${paidAmount.toFixed(2)}`;
 
         return (
           <div className="space-y-0.5">
@@ -288,7 +290,33 @@ export function PaymentsTableClient({ initialHistory }: PaymentsTableClientProps
               <span>{formatted}</span>
             </span>
             <span className="text-[10px] text-slate-400 font-mono block pl-1">
-              Currency: {currency}
+              Paid in: <strong className="text-emerald-400">{paidCurr}</strong>
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "base_amount",
+      header: "Base Price (Catalog)",
+      cell: ({ row }) => {
+        const h = row.original;
+        if (h.base_amount == null) {
+          return <span className="text-slate-500 text-sm font-mono pl-3">—</span>;
+        }
+
+        const baseAmt = Number(h.base_amount);
+        const baseCurr = (h.base_currency || "USD").toUpperCase();
+        const baseSymbol =
+          baseCurr === "BDT" ? "৳" : baseCurr === "EUR" ? "€" : baseCurr === "GBP" ? "£" : "$";
+
+        return (
+          <div className="space-y-0.5">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-500/15 text-amber-400 font-extrabold text-xs border border-amber-500/30">
+              <span>{baseSymbol} {baseAmt.toFixed(2)}</span>
+            </span>
+            <span className="text-[10px] text-slate-400 font-mono block pl-1">
+              Base: <strong className="text-amber-300">{baseCurr}</strong>
             </span>
           </div>
         );
@@ -746,11 +774,21 @@ export function PaymentsTableClient({ initialHistory }: PaymentsTableClientProps
                   <span className="font-bold text-orange-400">{selectedItem.plan_name}</span>
                 </div>
                 <div className="bg-black/30 p-3 rounded-2xl border border-white/5">
-                  <span className="text-slate-500 text-[10px] block">Amount Paid</span>
+                  <span className="text-slate-500 text-[10px] block">Amount Paid (Actual)</span>
                   <span className="font-bold text-emerald-400 text-sm">
                     {selectedItem.formatted_price || `${selectedItem.currency_symbol || "$"}${selectedItem.amount}`}
                   </span>
                 </div>
+                {selectedItem.base_amount != null && (
+                  <div className="bg-black/30 p-3 rounded-2xl border border-white/5">
+                    <span className="text-slate-500 text-[10px] block">Base Plan Price (Catalog)</span>
+                    <span className="font-mono font-bold text-amber-400 text-xs">
+                      {((selectedItem.base_currency || selectedItem.currency || "BDT").toUpperCase() === "BDT" ? "৳" : "$")}{" "}
+                      {Number(selectedItem.base_amount).toFixed(2)}{" "}
+                      {(selectedItem.base_currency || selectedItem.currency || "BDT").toUpperCase()}
+                    </span>
+                  </div>
+                )}
                 <div className="bg-black/30 p-3 rounded-2xl border border-white/5">
                   <span className="text-slate-500 text-[10px] block">Country / Region</span>
                   <span className="font-medium text-white">{selectedItem.country || "Global"}</span>

@@ -48,10 +48,10 @@ export default async function PaymentsPage() {
         const isPremium = planKey === "premium" || (item.plan_name && item.plan_name.toLowerCase().includes("premium"));
         const planName = item.plan_name || (isPremium ? "Premium Plan (Annual)" : "Standard Plan (Monthly)");
 
-        // Derive amount & currency if stored as null in Google Play webhook
-        let amount = item.amount;
-        let currency = item.currency;
-        let symbol = item.currency_symbol;
+        // Derive amount & currency if stored as null or using paid_amount / paid_currency
+        let amount = item.paid_amount ?? item.amount;
+        let currency = item.paid_currency ?? item.currency;
+        let symbol = item.paid_currency_symbol ?? item.currency_symbol;
         let formattedPrice = item.formatted_price;
 
         if (amount == null) {
@@ -73,6 +73,9 @@ export default async function PaymentsPage() {
           formattedPrice = `${symbol} ${Number(amount).toFixed(2)}`;
         }
 
+        const baseAmount = item.base_amount != null ? Number(item.base_amount) : null;
+        const baseCurrency = item.base_currency || null;
+
         return {
           id: item.id,
           user_id: item.user_id,
@@ -85,6 +88,11 @@ export default async function PaymentsPage() {
           amount: Number(amount),
           currency: currency || "BDT",
           currency_symbol: symbol || "৳",
+          paid_amount: item.paid_amount != null ? Number(item.paid_amount) : Number(amount),
+          paid_currency: item.paid_currency || currency || "BDT",
+          paid_currency_symbol: item.paid_currency_symbol || symbol || "৳",
+          base_amount: baseAmount,
+          base_currency: baseCurrency,
           formatted_price: formattedPrice,
           country: item.country || "Global / Android",
           purchased_at: item.purchased_at || new Date().toISOString(),
