@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { type ColumnDef } from "@tanstack/react-table";
-import { Profile, Vehicle, UserRole } from "@/types/database.types";
+import { Profile, Vehicle, UserRole, UserStatus } from "@/types/database.types";
 import { DataTable } from "@/components/common/DataTable";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { formatDate } from "@/lib/utils";
@@ -23,6 +23,8 @@ import {
   Hash,
   Activity,
   Layers,
+  Globe,
+  DollarSign,
 } from "lucide-react";
 import { UserDetailsModal } from "./UserDetailsModal";
 
@@ -32,8 +34,21 @@ interface UserTableClientProps {
 }
 
 export function UserTableClient({ initialUsers }: UserTableClientProps) {
-  const users = initialUsers;
+  const [users, setUsers] = useState<Profile[]>(initialUsers);
   const [selectedUserForDetails, setSelectedUserForDetails] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    setUsers(initialUsers);
+  }, [initialUsers]);
+
+  const handleStatusUpdated = (userId: string, newStatus: string) => {
+    setUsers((prev) =>
+      prev.map((u) => (u.id === userId ? { ...u, status: newStatus as UserStatus } : u))
+    );
+    if (selectedUserForDetails && selectedUserForDetails.id === userId) {
+      setSelectedUserForDetails((prev) => (prev ? { ...prev, status: newStatus as UserStatus } : null));
+    }
+  };
 
   const totalUsers = users.length;
   const totalVehiclesCount = users.reduce((acc, u) => acc + (u.vehicles?.length || 0), 0);
@@ -58,6 +73,8 @@ export function UserTableClient({ initialUsers }: UserTableClientProps) {
         const name = u.full_name || "Unnamed User";
         const initials = (u.full_name || u.email || "U").slice(0, 2).toUpperCase();
         const isVerified = Boolean(u.is_verified);
+        const accountStatus = (u.status || "active").toLowerCase();
+        const isActive = accountStatus === "active";
 
         return (
           <div className="flex items-center gap-3">
@@ -65,7 +82,7 @@ export function UserTableClient({ initialUsers }: UserTableClientProps) {
               {initials}
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 flex-wrap">
                 <p className="font-bold text-xs text-white">{name}</p>
                 {isVerified ? (
                   <span className="text-[9.5px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
@@ -74,6 +91,18 @@ export function UserTableClient({ initialUsers }: UserTableClientProps) {
                 ) : (
                   <span className="text-[9.5px] px-1.5 py-0.2 rounded bg-slate-500/10 text-slate-400 font-normal">
                     Unverified
+                  </span>
+                )}
+                {/* Account Status Badge (Active / Deactivated) */}
+                {isActive ? (
+                  <span className="text-[9.5px] px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-400 font-bold border border-emerald-500/25 inline-flex items-center gap-1 shadow-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Active
+                  </span>
+                ) : (
+                  <span className="text-[9.5px] px-1.5 py-0.2 rounded bg-rose-500/15 text-rose-400 font-bold border border-rose-500/25 inline-flex items-center gap-1 capitalize shadow-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+                    {accountStatus === "deactivated" ? "Deactivated" : (accountStatus === "suspended" ? "Suspended" : accountStatus)}
                   </span>
                 )}
               </div>
@@ -151,6 +180,62 @@ export function UserTableClient({ initialUsers }: UserTableClientProps) {
                 </span>
               </div>
             </div>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "subscription_country",
+      header: "Country / Region",
+      cell: ({ row }) => {
+        const u = row.original;
+        const country = u.subscription_country || u.address;
+        if (!country) {
+          return (
+            <span className="text-slate-500 font-mono text-xs pl-2">—</span>
+          );
+        }
+
+        return (
+          <div className="flex items-center gap-2 text-xs">
+            <div className="h-7 w-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0">
+              <Globe className="h-3.5 w-3.5 text-blue-400" />
+            </div>
+            <div>
+              <span className="font-semibold text-white block">{country}</span>
+              {u.address && u.subscription_country && u.address !== u.subscription_country && (
+                <span className="text-[10px] text-slate-400 truncate block max-w-[130px]" title={u.address}>
+                  {u.address}
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "currency_code",
+      header: "Currency",
+      cell: ({ row }) => {
+        const u = row.original;
+        const code = (u.currency_code || u.subscription_currency || u.paid_currency || u.base_currency || "USD").toUpperCase();
+        let symbol = u.currency_symbol;
+        if (!symbol || symbol === "Bs.") {
+          if (code === "USD") symbol = "$";
+          else if (code === "BDT") symbol = "৳";
+          else if (code === "EUR") symbol = "€";
+          else if (code === "GBP") symbol = "£";
+          else if (code === "INR") symbol = "₹";
+          else if (code === "CAD" || code === "AUD") symbol = "$";
+          else symbol = "$";
+        }
+
+        return (
+          <div className="flex items-center">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-400 font-mono font-bold text-xs border border-emerald-500/25 shadow-xs">
+              <span>{code}</span>
+              <span className="text-emerald-300/70 font-sans text-[11px]">({symbol})</span>
+            </span>
           </div>
         );
       },
@@ -312,7 +397,7 @@ export function UserTableClient({ initialUsers }: UserTableClientProps) {
       <DataTable
         columns={columns}
         data={users}
-        searchPlaceholder="Search by user name, email, vehicle model, vehicle number..."
+        searchPlaceholder="Search by user name, email, country, currency, vehicle model, vehicle number..."
         emptyMessage="No profiles found in database."
       />
 
@@ -320,6 +405,7 @@ export function UserTableClient({ initialUsers }: UserTableClientProps) {
       <UserDetailsModal
         user={selectedUserForDetails}
         onClose={() => setSelectedUserForDetails(null)}
+        onStatusUpdated={handleStatusUpdated}
       />
     </div>
   );

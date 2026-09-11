@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Profile, Vehicle } from "@/types/database.types";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { formatDate } from "@/lib/utils";
+import { updateUserStatusAction } from "@/app/(dashboard)/users/actions";
+import { toast } from "sonner";
 import {
   X,
   Crown,
@@ -26,15 +28,48 @@ import {
   Globe,
   Key,
   ShieldCheck,
+  ShieldAlert,
+  Loader2,
   Layers,
 } from "lucide-react";
 
 interface UserDetailsModalProps {
   user: Profile | null;
   onClose: () => void;
+  onStatusUpdated?: (userId: string, newStatus: string) => void;
 }
 
-export function UserDetailsModal({ user, onClose }: UserDetailsModalProps) {
+export function UserDetailsModal({ user, onClose, onStatusUpdated }: UserDetailsModalProps) {
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState<string>(user?.status || "active");
+
+  useEffect(() => {
+    if (user?.status) {
+      setCurrentStatus(user.status);
+    } else {
+      setCurrentStatus("active");
+    }
+  }, [user]);
+
+  const handleStatusChange = async (newStatus: "active" | "deactivated") => {
+    if (!user) return;
+    try {
+      setIsUpdatingStatus(true);
+      await updateUserStatusAction(user.id, newStatus);
+      setCurrentStatus(newStatus);
+      toast.success(
+        newStatus === "active"
+          ? "User account successfully activated!"
+          : "User account successfully deactivated!"
+      );
+      onStatusUpdated?.(user.id, newStatus);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update account status");
+    } finally {
+      setIsUpdatingStatus(false);
+    }
+  };
+
   if (!user) return null;
 
   const isPro =
@@ -103,7 +138,7 @@ export function UserDetailsModal({ user, onClose }: UserDetailsModalProps) {
               <p className="text-xs text-slate-400 mt-0.5">{user.email}</p>
               <div className="flex flex-wrap items-center gap-2 mt-2">
                 <StatusBadge status={user.role || "user"} />
-                <StatusBadge status={user.status || "active"} />
+                <StatusBadge status={currentStatus} />
                 {isPro ? (
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
                     <Crown className="w-3 h-3 text-orange-400 fill-orange-400" /> {planName}
@@ -128,6 +163,23 @@ export function UserDetailsModal({ user, onClose }: UserDetailsModalProps) {
           </h4>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs bg-white/[0.02] p-4 rounded-2xl border border-white/5">
             <div>
+              <span className="text-slate-500 text-[10px] block font-medium">Account Status</span>
+              <p className={`font-bold mt-0.5 capitalize flex items-center gap-1.5 ${
+                currentStatus.toLowerCase() === "active" ? "text-emerald-400" : "text-rose-400"
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${
+                  currentStatus.toLowerCase() === "active" ? "bg-emerald-400" : "bg-rose-400"
+                }`} />
+                {currentStatus}
+              </p>
+            </div>
+            <div>
+              <span className="text-slate-500 text-[10px] block font-medium">Verification Status</span>
+              <p className={`font-bold mt-0.5 ${isVerified ? "text-emerald-400" : "text-slate-400"}`}>
+                {isVerified ? "✓ Verified Account" : "Unverified Account"}
+              </p>
+            </div>
+            <div>
               <span className="text-slate-500 text-[10px] block font-medium">Phone Number</span>
               <p className="font-bold text-white mt-0.5 font-mono">
                 {user.phone || "Not provided"}
@@ -146,12 +198,6 @@ export function UserDetailsModal({ user, onClose }: UserDetailsModalProps) {
               </p>
             </div>
             <div>
-              <span className="text-slate-500 text-[10px] block font-medium">Verification Status</span>
-              <p className={`font-bold mt-0.5 ${isVerified ? "text-emerald-400" : "text-slate-400"}`}>
-                {isVerified ? "✓ Verified Account" : "Unverified Account"}
-              </p>
-            </div>
-            <div>
               <span className="text-slate-500 text-[10px] block font-medium">Registered Date</span>
               <p className="font-bold text-white mt-0.5">
                 {formatDate(user.created_at)}
@@ -163,8 +209,8 @@ export function UserDetailsModal({ user, onClose }: UserDetailsModalProps) {
                 {user.updated_at ? formatDate(user.updated_at) : "N/A"}
               </p>
             </div>
-            <div className="col-span-2">
-              <span className="text-slate-500 text-[10px] block font-medium">User Database UUID</span>
+            <div>
+              <span className="text-slate-500 text-[10px] block font-medium">User UUID</span>
               <p className="font-mono text-slate-400 text-[11px] truncate mt-0.5" title={user.id}>
                 {user.id}
               </p>
@@ -440,10 +486,33 @@ export function UserDetailsModal({ user, onClose }: UserDetailsModalProps) {
         </div>
 
         {/* Modal Footer */}
-        <div className="flex justify-end pt-4 border-t border-white/10">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-white/10">
+          <div className="flex items-center gap-2">
+            {currentStatus.toLowerCase() === "active" ? (
+              <button
+                type="button"
+                disabled={isUpdatingStatus}
+                onClick={() => handleStatusChange("deactivated")}
+                className="px-4 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold transition-all disabled:opacity-50 inline-flex items-center gap-1.5 shadow-xs cursor-pointer"
+              >
+                {isUpdatingStatus ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShieldAlert className="w-3.5 h-3.5" />}
+                Deactivate Account
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled={isUpdatingStatus}
+                onClick={() => handleStatusChange("active")}
+                className="px-4 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold transition-all disabled:opacity-50 inline-flex items-center gap-1.5 shadow-xs cursor-pointer"
+              >
+                {isUpdatingStatus ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShieldCheck className="w-3.5 h-3.5" />}
+                Activate Account
+              </button>
+            )}
+          </div>
           <button
             onClick={onClose}
-            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-xs shadow-md hover:from-orange-600 hover:to-amber-600 transition-colors"
+            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-xs shadow-md hover:from-orange-600 hover:to-amber-600 transition-colors cursor-pointer"
           >
             Close Details
           </button>

@@ -2,7 +2,7 @@
 // Reflects discovered schema tables: profiles, vehicles, service_records, fuel_logs, app_content
 
 export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'MODERATOR' | 'USER';
-export type UserStatus = 'active' | 'suspended' | 'pending';
+export type UserStatus = 'active' | 'deactivated' | 'suspended' | 'pending';
 
 export interface Profile {
   id: string; // FK to auth.users.id

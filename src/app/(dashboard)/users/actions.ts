@@ -23,7 +23,7 @@ export async function updateUserStatusAction(userId: string, newStatus: UserStat
   await recordAuditLog({
     adminId: session.user.id,
     adminEmail: session.profile.email,
-    action: newStatus === "suspended" ? "USER_SUSPENDED" : "USER_ACTIVATED",
+    action: newStatus === "suspended" || newStatus === "deactivated" ? "USER_SUSPENDED" : "USER_ACTIVATED",
     resource: "users",
     resourceId: userId,
     details: { targetStatus: newStatus },

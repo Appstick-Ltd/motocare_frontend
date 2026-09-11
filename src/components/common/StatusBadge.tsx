@@ -25,6 +25,8 @@ export function StatusBadge({ status }: StatusBadgeProps) {
     case "cancelled":
     case "failed":
     case "expired":
+    case "deactivated":
+    case "inactive":
       return <Badge variant="destructive" className="capitalize">{status.replace("_", " ")}</Badge>;
     default:
       return <Badge variant="outline" className="capitalize">{status.replace("_", " ")}</Badge>;

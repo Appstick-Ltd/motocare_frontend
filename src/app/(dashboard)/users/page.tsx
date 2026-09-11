@@ -15,17 +15,19 @@ export default async function UsersPage() {
   let profiles: Profile[] = [];
   try {
     // Fetch all records safely without joining in query to avoid PostgREST relationship cache issues
-    const [profilesRes, vehiclesRes, subscriptionsRes, plansRes] = await Promise.all([
+    const [profilesRes, vehiclesRes, subscriptionsRes, plansRes, historyRes] = await Promise.all([
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("vehicles").select("*").order("created_at", { ascending: false }),
       supabase.from("subscriptions").select("*"),
       supabase.from("plans").select("*"),
+      supabase.from("subscription_history").select("*").order("id", { ascending: false }),
     ]);
 
     const rawProfiles = profilesRes.data || [];
     const allVehicles = (vehiclesRes.data || []) as Vehicle[];
     const allSubscriptions = subscriptionsRes.data || [];
     const allPlans = plansRes.data || [];
+    const allHistory = historyRes.data || [];
 
     // Map each profile with their corresponding vehicles and subscription tier
     profiles = rawProfiles.map((p: any) => {
@@ -33,6 +35,9 @@ export default async function UsersPage() {
       const userVehicles = allVehicles.filter(
         (v) => v.user_id === p.id || (v as any).userId === p.id
       );
+
+      // Find user purchase history fallback
+      const userHistory = allHistory.find((h: any) => h.user_id === p.id);
 
       // Find user subscription fallback
       const userSub = allSubscriptions.find(
@@ -91,8 +96,16 @@ export default async function UsersPage() {
         null;
       const subStatus = p.subscription_status || userSub?.status || (isPro ? "active" : "inactive");
 
+      const resolvedCountry = p.subscription_country || userHistory?.country || p.address || null;
+      const resolvedCurrency = p.subscription_currency || userHistory?.paid_currency || userHistory?.currency || p.currency_code || "USD";
+      const resolvedSymbol = p.currency_symbol || userHistory?.paid_currency_symbol || userHistory?.currency_symbol || (resolvedCurrency === "BDT" ? "৳" : "$");
+
       return {
         ...p,
+        status: p.status || "active",
+        subscription_country: resolvedCountry,
+        currency_code: resolvedCurrency,
+        currency_symbol: resolvedSymbol,
         plan_name: isPro ? rawPlanName : "Free Plan",
         plan_type: isPro ? "pro" : "free",
         plan_start_date: planStartDate,
