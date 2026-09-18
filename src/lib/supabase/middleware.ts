@@ -68,6 +68,7 @@ export async function updateSession(request: NextRequest) {
     const isUnauthorizedPage = pathname === "/unauthorized";
     const isPublicPage =
       pathname === "/" ||
+      pathname === "/app-ads.txt" ||
       pathname === "/account-created" ||
       pathname.startsWith("/privacy-policy") ||
       pathname.startsWith("/terms-condition") ||
