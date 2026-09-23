@@ -274,9 +274,9 @@ export default function LandingPageClient() {
     >
       {/* ── Ambient Background Lighting ── */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" suppressHydrationWarning>
-        <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-gradient-to-b from-orange-500/20 via-orange-600/5 to-transparent rounded-full blur-[140px] opacity-80" />
-        <div className="absolute top-[35%] -left-60 w-[550px] h-[550px] bg-orange-600/10 rounded-full blur-[160px]" />
-        <div className="absolute top-[60%] -right-60 w-[550px] h-[550px] bg-amber-500/10 rounded-full blur-[160px]" />
+        <span className="block absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-gradient-to-b from-orange-500/20 via-orange-600/5 to-transparent rounded-full blur-[140px] opacity-80" />
+        <span className="block absolute top-[35%] -left-60 w-[550px] h-[550px] bg-orange-600/10 rounded-full blur-[160px]" />
+        <span className="block absolute top-[60%] -right-60 w-[550px] h-[550px] bg-amber-500/10 rounded-full blur-[160px]" />
         <div
           className="absolute inset-0 opacity-[0.025]"
           style={{
@@ -335,6 +335,7 @@ export default function LandingPageClient() {
                 className={`relative py-1 transition-colors duration-150 hover:text-white ${activeNav === item.id ? "text-orange-500 font-semibold" : "text-slate-300"
                   }`}
               >
+                <span>{item.label}</span>
                 {activeNav === item.id && (
                   <motion.span
                     layoutId="activeNavIndicator"
