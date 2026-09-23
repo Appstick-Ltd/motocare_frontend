@@ -277,8 +277,9 @@ export default function LandingPageClient() {
         <span className="block absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-gradient-to-b from-orange-500/20 via-orange-600/5 to-transparent rounded-full blur-[140px] opacity-80" />
         <span className="block absolute top-[35%] -left-60 w-[550px] h-[550px] bg-orange-600/10 rounded-full blur-[160px]" />
         <span className="block absolute top-[60%] -right-60 w-[550px] h-[550px] bg-amber-500/10 rounded-full blur-[160px]" />
-        <div
-          className="absolute inset-0 opacity-[0.025]"
+        <span
+          className="block absolute inset-0 opacity-[0.025]"
+          suppressHydrationWarning
           style={{
             backgroundSize: "40px 40px",
             backgroundImage:
