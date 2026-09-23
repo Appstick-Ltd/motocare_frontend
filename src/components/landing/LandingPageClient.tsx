@@ -379,7 +379,7 @@ export default function LandingPageClient() {
               <InView>
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-orange-400 border border-orange-500/40 bg-orange-500/10 shadow-sm backdrop-blur-md">
                   <Sparkles className="w-3.5 h-3.5 text-orange-400" />
-                  <span>#1 FUEL, MILEAGE &amp; VEHICLE CARE APP IN BANGLADESH</span>
+                  <span>ALL-IN-ONE VEHICLE CARE &amp; MILEAGE TRACKER</span>
                 </div>
               </InView>
 
@@ -391,10 +391,10 @@ export default function LandingPageClient() {
                       <Typewriter
                         options={{
                           strings: [
-                            "Track Fuel, Mileage (km/L) & Cost per KM.",
+                            "Track Fuel, Mileage & Cost per Kilometer.",
                             "Never Miss an Engine Oil Change or Service.",
-                            "Renew BRTA Tax Token & Fitness on Time.",
-                            "Smart Digital Care for Bikes & Cars in BD.",
+                            "Keep Registration, Tax & Insurance on Track.",
+                            "Smart Digital Care for Bikes, Cars & Fleets.",
                           ],
                           autoStart: true,
                           loop: true,
@@ -403,12 +403,12 @@ export default function LandingPageClient() {
                         }}
                       />
                     ) : (
-                      <span>Track Fuel, Mileage (km/L) &amp; Cost per KM.</span>
+                      <span>Track Fuel, Mileage &amp; Cost per Kilometer.</span>
                     )}
                   </span>
                 </h1>
                 <p className="mt-3 text-sm sm:text-base text-slate-300 leading-relaxed max-w-lg">
-                  The ultimate vehicle telemetry logbook built for Bangladesh. Track petrol/octane fill-ups in BDT, monitor real-world mileage, set timely maintenance alerts, and prevent traffic fines.
+                  The smart digital logbook for motorcycle and car owners. Log fuel fill-ups, calculate accurate mileage, schedule automated service reminders, and manage maintenance costs effortlessly.
                 </p>
               </InView>
 
@@ -724,7 +724,7 @@ export default function LandingPageClient() {
 
               <InView variants={fadeUpDelayedSnappy(0.1)}>
                 <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-                  MotoCare records every single rupee spent, parts replaced, workshop invoices, and oil changes into a verifiable digital service booklet.
+                  MotoCare records every single expense, parts replaced, workshop invoices, and oil changes into a verifiable digital service booklet.
                 </p>
               </InView>
 
@@ -780,24 +780,24 @@ export default function LandingPageClient() {
           <InViewStagger className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                name: "Tanvir Hasan Rifat",
-                vehicle: "Yamaha FZ-S V3 · Mirpur, Dhaka",
+                name: "Alex Turner",
+                vehicle: "Yamaha MT-07 · Daily Commuter",
                 avatar: "/images/testimonials/tanvir-hasan.jpg",
-                text: "I commute daily from Mirpur to Motijheel. Tracking fuel tank-to-tank on MotoCare helped me uncover my exact cost per kilometer (৳3.15/km). The oil change reminder popped right when I hit 2,500 km. Essential app for every Dhaka biker!",
+                text: "Tracking fuel tank-to-tank helped me uncover my exact cost per kilometer. The service reminder popped up right when I hit my oil change interval. Essential app for any daily rider!",
                 rating: 5,
               },
               {
-                name: "Sabbir Hossain",
-                vehicle: "Toyota Allion & Suzuki Gixxer · Uttara",
+                name: "Marcus Vance",
+                vehicle: "Toyota RAV4 & Suzuki GSX",
                 avatar: "/images/testimonials/sabbir-hossain.jpg",
-                text: "Managing my family car and office motorcycle in one single dashboard is a lifesaver. The BRTA Tax Token expiration notification alerted me 15 days ahead and saved me from an unexpected fine on Airport Road!",
+                text: "Managing both my family car and daily motorcycle in one clean dashboard is a lifesaver. The renewal notifications and maintenance history keep everything organized without stress.",
                 rating: 5,
               },
               {
-                name: "Mahmudul Hasan Shuvo",
-                vehicle: "Honda X-Blade 160 · Chittagong",
+                name: "Daniel Brooks",
+                vehicle: "Honda CB500X · Touring & Commute",
                 avatar: "/images/testimonials/mahmudul-hasan.jpg",
-                text: "Keeping track of engine oil drain intervals on random paper receipts was a headache. With MotoCare, entering my odometer takes 5 seconds, and it reminds me before my semi-synthetic oil burns out. Highly recommended!",
+                text: "Keeping track of service dates and oil changes on random receipts used to be a headache. With MotoCare, logging odometer readings takes seconds and keeps my vehicle in top shape.",
                 rating: 5,
               },
             ].map((review, idx) => (
@@ -858,7 +858,7 @@ export default function LandingPageClient() {
                   of <span className="text-orange-500">Your Vehicle</span> Today!
                 </h2>
                 <p className="mt-4 text-sm sm:text-base text-slate-300 leading-relaxed max-w-lg">
-                  Trusted by motorcycle riders and car owners across Bangladesh for daily fuel log, mileage tracking, and timely service alerts.
+                  Trusted by riders and car owners worldwide for daily fuel logs, mileage tracking, and timely service alerts.
                 </p>
 
                 {/* App Store & Google Play Badges */}
@@ -900,7 +900,7 @@ export default function LandingPageClient() {
                 </div>
               </div>
               <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
-                Bangladesh&apos;s smart vehicle telemetry logbook. Track fuel expenses in BDT, calculate mileage, and set service alerts.
+                The smart digital vehicle logbook. Track fuel expenses, calculate real-world mileage, and stay on top of scheduled maintenance.
               </p>
 
               {/* Social media icons */}
@@ -943,17 +943,17 @@ export default function LandingPageClient() {
                 </li>
                 <li>
                   <Link href="/tax-insurance-fitness-reminder" className="hover:text-orange-400 transition-colors">
-                    BRTA Tax &amp; Fitness Reminder
+                    Tax, Insurance &amp; Fitness Reminder
                   </Link>
                 </li>
                 <li>
                   <Link href="/motorcycle-maintenance-app" className="hover:text-orange-400 transition-colors">
-                    Motorcycle Care App BD
+                    Motorcycle Maintenance App
                   </Link>
                 </li>
                 <li>
                   <Link href="/car-expense-tracker" className="hover:text-orange-400 transition-colors">
-                    Car Expense Tracker BD
+                    Car Expense Tracker
                   </Link>
                 </li>
                 <li>
@@ -982,12 +982,12 @@ export default function LandingPageClient() {
                 </li>
                 <li>
                   <Link href="/bike-maintenance-schedule-bangladesh" className="hover:text-orange-400 transition-colors">
-                    Bike Service Schedule
+                    Bike Maintenance Schedule
                   </Link>
                 </li>
                 <li>
                   <Link href="/blog/brta-vehicle-document-renewal-guide" className="hover:text-orange-400 transition-colors">
-                    BRTA Document Renewal
+                    Vehicle Document Renewal Guide
                   </Link>
                 </li>
                 <li>

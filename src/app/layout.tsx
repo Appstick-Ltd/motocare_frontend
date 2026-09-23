@@ -13,20 +13,20 @@ const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://motocare.appstick.co
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "MotoCare | Fuel, Mileage, Service & Vehicle Expense Tracker Bangladesh",
+    default: "MotoCare | Smart Fuel, Mileage, Service & Vehicle Expense Tracker",
     template: "%s | MotoCare",
   },
   description:
-    "The smartest vehicle maintenance app for Bangladesh. Track bike & car fuel efficiency (km/L), engine oil service reminders, BRTA tax token/fitness expiry, and maintenance history.",
+    "The complete vehicle maintenance logbook and expense manager. Track fuel efficiency, calculate accurate mileage, schedule automated service reminders, and monitor vehicle costs.",
   keywords: [
-    "bike mileage tracker bangladesh",
+    "vehicle mileage tracker",
+    "fuel expense tracker",
     "vehicle service reminder app",
-    "fuel cost tracker bd",
-    "motorcycle maintenance app",
-    "car expense tracker bangladesh",
-    "brta tax token reminder",
-    "fitness certificate renewal tracker",
-    "bike engine oil change reminder",
+    "motorcycle maintenance log",
+    "car expense tracker",
+    "engine oil change reminder",
+    "digital service history book",
+    "vehicle management app",
     "motocare",
     "appstick motocare",
   ],
@@ -37,9 +37,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "MotoCare - Fuel, Mileage & Vehicle Service Reminder App",
+    title: "MotoCare - Smart Fuel, Mileage & Vehicle Service Reminder App",
     description:
-      "Never miss an engine oil change or BRTA renewal again. Track vehicle fuel, mileage, and expenses seamlessly in Bangladesh.",
+      "Never miss an engine oil change or document renewal. Track fuel economy, log maintenance expenses, and keep your vehicles running smooth.",
     url: siteUrl,
     siteName: "MotoCare",
     images: [
@@ -55,9 +55,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "MotoCare - Fuel, Mileage & Service Tracker for Bikes & Cars",
+    title: "MotoCare - Smart Fuel, Mileage & Service Tracker for Bikes & Cars",
     description:
-      "Digital vehicle logbook & maintenance reminder tailored for riders and car owners in Bangladesh.",
+      "Digital vehicle logbook & maintenance reminder tailored for riders and car owners worldwide.",
     images: ["/logo.png"],
   },
   verification: {
