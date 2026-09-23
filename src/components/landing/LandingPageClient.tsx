@@ -223,10 +223,15 @@ export function AppStoreButton({ className = "", onClick }: { className?: string
 // ── Main Component ──────────────────────────────────────────────────────────
 
 export default function LandingPageClient() {
+  const [isMounted, setIsMounted] = useState(false);
   const [activeNav, setActiveNav] = useState("home");
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Smooth active nav observer
   useEffect(() => {
@@ -330,7 +335,6 @@ export default function LandingPageClient() {
                 className={`relative py-1 transition-colors duration-150 hover:text-white ${activeNav === item.id ? "text-orange-500 font-semibold" : "text-slate-300"
                   }`}
               >
-                {item.label}
                 {activeNav === item.id && (
                   <motion.span
                     layoutId="activeNavIndicator"
@@ -340,6 +344,12 @@ export default function LandingPageClient() {
                 )}
               </a>
             ))}
+            <Link
+              href="/blog"
+              className="relative py-1 transition-colors duration-150 text-slate-300 hover:text-orange-400 font-medium"
+            >
+              Blog &amp; Guides
+            </Link>
           </nav>
 
           {/* Download App Top Right Pill */}
@@ -367,30 +377,37 @@ export default function LandingPageClient() {
               <InView>
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-orange-400 border border-orange-500/40 bg-orange-500/10 shadow-sm backdrop-blur-md">
                   <Sparkles className="w-3.5 h-3.5 text-orange-400" />
-                  <span>ALL-IN-ONE VEHICLE ASSISTANT</span>
+                  <span>#1 FUEL, MILEAGE &amp; VEHICLE CARE APP IN BANGLADESH</span>
                 </div>
               </InView>
 
               {/* Main Headline with Full-Sentence Typewriter Effect */}
               <InView variants={fadeUpDelayedSnappy(0.05)}>
-                <h1 className="text-4xl sm:text-5xl lg:text-[48px] font-extrabold tracking-tight leading-[1.18] text-white min-h-[110px] sm:min-h-[125px] flex items-center">
+                <h1 className="text-4xl sm:text-5xl lg:text-[46px] font-extrabold tracking-tight leading-[1.18] text-white min-h-[110px] sm:min-h-[125px] flex items-center">
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-white inline-block">
-                    <Typewriter
-                      options={{
-                        strings: [
-                          "Never Miss an Engine Oil Change or Service.",
-                          "Track Fuel, Mileage & Vehicle Expenses.",
-                          "Smart Digital Care for Your Bikes & Cars.",
-                          "Your All-in-One Digital Vehicle Assistant.",
-                        ],
-                        autoStart: true,
-                        loop: true,
-                        delay: 50,
-                        deleteSpeed: 25,
-                      }}
-                    />
+                    {isMounted ? (
+                      <Typewriter
+                        options={{
+                          strings: [
+                            "Track Fuel, Mileage (km/L) & Cost per KM.",
+                            "Never Miss an Engine Oil Change or Service.",
+                            "Renew BRTA Tax Token & Fitness on Time.",
+                            "Smart Digital Care for Bikes & Cars in BD.",
+                          ],
+                          autoStart: true,
+                          loop: true,
+                          delay: 50,
+                          deleteSpeed: 25,
+                        }}
+                      />
+                    ) : (
+                      <span>Track Fuel, Mileage (km/L) &amp; Cost per KM.</span>
+                    )}
                   </span>
                 </h1>
+                <p className="mt-3 text-sm sm:text-base text-slate-300 leading-relaxed max-w-lg">
+                  The ultimate vehicle telemetry logbook built for Bangladesh. Track petrol/octane fill-ups in BDT, monitor real-world mileage, set timely maintenance alerts, and prevent traffic fines.
+                </p>
               </InView>
 
               {/* Side-by-Side Official Google Play & App Store Badges */}
@@ -761,24 +778,24 @@ export default function LandingPageClient() {
           <InViewStagger className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                name: "Tanvir Ahmed",
-                vehicle: "Yamaha MT-15 & Honda City",
-                avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
-                text: "MotoCare saved my engine! The timely notification for engine oil change popped right when I was crossing 3,000 km. Super clean UI!",
+                name: "Tanvir Hasan Rifat",
+                vehicle: "Yamaha FZ-S V3 · Mirpur, Dhaka",
+                avatar: "/images/testimonials/tanvir-hasan.jpg",
+                text: "I commute daily from Mirpur to Motijheel. Tracking fuel tank-to-tank on MotoCare helped me uncover my exact cost per kilometer (৳3.15/km). The oil change reminder popped right when I hit 2,500 km. Essential app for every Dhaka biker!",
                 rating: 5,
               },
               {
-                name: "Shahriar Hossain",
-                vehicle: "KTM Duke 250",
-                avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-                text: "The expense breakdown is insane. I can see my exact cost per kilometer and fuel efficiency without doing any manual math.",
+                name: "Sabbir Hossain",
+                vehicle: "Toyota Allion & Suzuki Gixxer · Uttara",
+                avatar: "/images/testimonials/sabbir-hossain.jpg",
+                text: "Managing my family car and office motorcycle in one single dashboard is a lifesaver. The BRTA Tax Token expiration notification alerted me 15 days ahead and saved me from an unexpected fine on Airport Road!",
                 rating: 5,
               },
               {
-                name: "Mahmudur Rahman",
-                vehicle: "Toyota Corolla Cross",
-                avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face",
-                text: "Managing both my family car and office motorcycle in one single dashboard is a lifesaver. Highly recommend MotoCare!",
+                name: "Mahmudul Hasan Shuvo",
+                vehicle: "Honda X-Blade 160 · Chittagong",
+                avatar: "/images/testimonials/mahmudul-hasan.jpg",
+                text: "Keeping track of engine oil drain intervals on random paper receipts was a headache. With MotoCare, entering my odometer takes 5 seconds, and it reminds me before my semi-synthetic oil burns out. Highly recommended!",
                 rating: 5,
               },
             ].map((review, idx) => (
@@ -798,9 +815,11 @@ export default function LandingPageClient() {
                   </p>
                 </div>
                 <div className="flex items-center gap-3 pt-4 border-t border-white/5">
-                  <img
+                  <Image
                     src={review.avatar}
                     alt={review.name}
+                    width={40}
+                    height={40}
                     className="w-10 h-10 rounded-full object-cover border border-orange-500/30"
                   />
                   <div>
@@ -837,7 +856,7 @@ export default function LandingPageClient() {
                   of <span className="text-orange-500">Your Vehicle</span> Today!
                 </h2>
                 <p className="mt-4 text-sm sm:text-base text-slate-300 leading-relaxed max-w-lg">
-                  Join over 10,000+ passionate motorcycle riders and automotive enthusiasts maintaining peak road performance with MotoCare.
+                  Trusted by motorcycle riders and car owners across Bangladesh for daily fuel log, mileage tracking, and timely service alerts.
                 </p>
 
                 {/* App Store & Google Play Badges */}
@@ -854,9 +873,9 @@ export default function LandingPageClient() {
       {/* ── 10. FOOTER ── */}
       <footer className="border-t border-white/10 bg-[#030408] relative z-10" suppressHydrationWarning>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-16">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 sm:gap-12 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 mb-12">
             {/* Brand column */}
-            <div className="md:col-span-4 space-y-4 text-left">
+            <div className="lg:col-span-3 space-y-4 text-left">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 p-0.5 shadow-md shadow-orange-500/20">
                   <div className="h-full w-full bg-[#0a0d17] rounded-[14px] flex items-center justify-center p-1.5">
@@ -878,8 +897,8 @@ export default function LandingPageClient() {
                   </p>
                 </div>
               </div>
-              <p className="text-xs sm:text-sm text-slate-400 max-w-sm leading-relaxed">
-                Your all-in-one solution for vehicle maintenance, tracking and expense management.
+              <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
+                Bangladesh&apos;s smart vehicle telemetry logbook. Track fuel expenses in BDT, calculate mileage, and set service alerts.
               </p>
 
               {/* Social media icons */}
@@ -904,29 +923,81 @@ export default function LandingPageClient() {
               </div>
             </div>
 
-            {/* Quick Links */}
-            <div className="md:col-span-2 text-left">
+            {/* Solutions / Features SEO Links */}
+            <div className="lg:col-span-3 text-left">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 mb-4">
-                Quick Links
+                Solutions
               </h4>
-              <ul className="space-y-2.5 text-xs text-slate-400">
-                {["Home", "Features", "How It Works", "Benefits", "Testimonials", "Download"].map(
-                  (link, i) => (
-                    <li key={i}>
-                      <a
-                        href={`#${link.toLowerCase().replace(/\s+/g, "-")}`}
-                        className="hover:text-orange-400 transition-colors"
-                      >
-                        {link}
-                      </a>
-                    </li>
-                  )
-                )}
+              <ul className="space-y-2 text-xs text-slate-400">
+                <li>
+                  <Link href="/fuel-mileage-tracker" className="hover:text-orange-400 transition-colors">
+                    Fuel &amp; Mileage Tracker
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/vehicle-service-reminder" className="hover:text-orange-400 transition-colors">
+                    Engine Oil Service Reminder
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/tax-insurance-fitness-reminder" className="hover:text-orange-400 transition-colors">
+                    BRTA Tax &amp; Fitness Reminder
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/motorcycle-maintenance-app" className="hover:text-orange-400 transition-colors">
+                    Motorcycle Care App BD
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/car-expense-tracker" className="hover:text-orange-400 transition-colors">
+                    Car Expense Tracker BD
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/vehicle-service-history" className="hover:text-orange-400 transition-colors">
+                    Digital Service History Log
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Guides & Resources */}
+            <div className="lg:col-span-2 text-left">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 mb-4">
+                Guides &amp; Blog
+              </h4>
+              <ul className="space-y-2 text-xs text-slate-400">
+                <li>
+                  <Link href="/blog" className="hover:text-orange-400 transition-colors font-semibold text-slate-300">
+                    All Guides &amp; Blog
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/how-to-calculate-bike-mileage" className="hover:text-orange-400 transition-colors">
+                    Mileage Calculator Tool
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/bike-maintenance-schedule-bangladesh" className="hover:text-orange-400 transition-colors">
+                    Bike Service Schedule
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blog/brta-vehicle-document-renewal-guide" className="hover:text-orange-400 transition-colors">
+                    BRTA Document Renewal
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blog/why-bike-mileage-drops-solutions" className="hover:text-orange-400 transition-colors">
+                    Why Mileage Drops (Fix)
+                  </Link>
+                </li>
               </ul>
             </div>
 
             {/* Support & Contact Column */}
-            <div className="md:col-span-3 text-left space-y-3.5">
+            <div className="lg:col-span-2 md:col-span-6 text-left space-y-3.5">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 mb-4">
                 Support &amp; Contact
               </h4>
@@ -977,7 +1048,7 @@ export default function LandingPageClient() {
             </div>
 
             {/* Newsletter Column */}
-            <div className="md:col-span-3 text-left">
+            <div className="lg:col-span-2 md:col-span-6 text-left">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 mb-4">
                 Newsletter
               </h4>
@@ -986,6 +1057,8 @@ export default function LandingPageClient() {
               </p>
               <form onSubmit={handleNewsletterSubmit} className="relative max-w-sm">
                 <input
+                  suppressHydrationWarning
+                  data-lpignore="true"
                   type="email"
                   value={newsletterEmail}
                   onChange={(e) => setNewsletterEmail(e.target.value)}

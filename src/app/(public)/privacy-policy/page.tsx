@@ -35,7 +35,7 @@ export default async function PrivacyPolicyPage() {
     : "August 2026";
 
   return (
-    <article className="space-y-6 animate-in fade-in duration-300" suppressHydrationWarning>
+    <article className="max-w-4xl mx-auto px-4 py-8 md:py-12 space-y-6 animate-in fade-in duration-300" suppressHydrationWarning>
       {/* Page Header */}
       <div className="border-b border-border/70 pb-6 space-y-2" suppressHydrationWarning>
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 text-xs font-bold border border-orange-500/20 shadow-2xs">
